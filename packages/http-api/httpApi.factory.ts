@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import axios, { AxiosResponse } from 'axios';
+import axios, { AxiosError } from 'axios';
 import { MarshalableType } from '../types';
 import { getFileName } from '../util';
 import { HttpApi, HttpApiErrorParser, UploadStateArgs } from './network.type';
@@ -19,7 +19,7 @@ import {
  */
 export const createHttpApi = (
   baseUrl: string,
-  parserVisitor: HttpApiErrorParser<AxiosResponse>,
+  parserVisitor: HttpApiErrorParser<AxiosError>,
   headerProvider: () => Record<string, string> = () => ({}),
   withCredentials = true
 ): HttpApi => {
@@ -29,7 +29,7 @@ export const createHttpApi = (
     headerProvider,
     withCredentials
   );
-  const fnCatchCommon = throwNewErrorForLib<AxiosResponse>(parserVisitor);
+  const fnCatchCommon = throwNewErrorForLib<AxiosError>(parserVisitor);
   const fnExceptCommon = parserVisitor.throwOther;
 
   return {

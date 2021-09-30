@@ -1,4 +1,4 @@
-import axios, { AxiosResponse, Method } from 'axios';
+import axios, { AxiosError, AxiosResponse, Method } from 'axios';
 import {
   HttpApiErrorParser,
   UploadStateArgs,
@@ -30,7 +30,7 @@ export const throwNewErrorForLib =
 export const axiosUploadCommon =
   (
     baseUrl: string,
-    parserVisitor: HttpApiErrorParser<AxiosResponse>,
+    parserVisitor: HttpApiErrorParser<AxiosError>,
     headerProvider: () => Record<string, string>,
     withCredentials = true
   ) =>
