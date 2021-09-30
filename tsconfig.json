@@ -1,0 +1,23 @@
+{
+  "include": ["packages/**/*"],
+  "exclude": ["node_modules", "**/*.test.ts", "**/*.test.tsx", "**/*.fixtures.tsx", "**/*.fixtures.ts"],
+  "compilerOptions": {
+    "noImplicitAny": true,
+    "declaration": false,
+    "removeComments": true,
+    "importHelpers": true,
+    "module": "esnext",
+    "target": "es5",
+    "jsx": "react",
+    "allowJs": true,
+    "allowSyntheticDefaultImports": true,
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "baseUrl": ".",
+    "paths": {
+      "ts-fe-toolkit": [
+        "packages/index"
+      ]
+    }
+  }
+}

@@ -1,0 +1,33 @@
+import axios from 'axios';
+import { ErrorRes } from '../types';
+import { HttpApi } from '../types/network.type';
+import { createHttpApi } from '../src/httpApi.factory';
+
+jest.mock('axios');
+
+const mockedAxios = axios as jest.Mocked<typeof axios>;
+
+describe('baseApi factory', () => {
+  let baseApi: HttpApi;
+
+  beforeEach(() => {
+    baseApi = createHttpApi('https://www.test.com');
+  });
+
+  it('오류 결과에 내용이 없다면 기본 객체를 내어준다.', async () => {
+    mockedAxios.get.mockRejectedValueOnce({
+      response: { status: 200 },
+    });
+
+    let status = 0;
+
+    try {
+      await baseApi.get('/haha');
+    } catch (error) {
+      status = (error as ErrorRes).status;
+    }
+    expect(status).toBe(200);
+
+    expect(axios.get).toBeCalled();
+  });
+});
