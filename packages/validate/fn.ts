@@ -1,11 +1,13 @@
 import { isNullable } from '../util/typeCheck';
 
 /**
- * 값이 비어있는지 여부를 확인한다.
+ * 값이 비어있지 않은지 여부를 확인한다.
  * undefined, null 여부도 확인하며, 값이 'undefined', 'null' 이라는 문자열로 된 것인지도 확인 한다.
+ *
  * @param val
+ * @returns 비어있지 않다면 true, 아니면 false.
  */
-function empty(val: string) {
+function required(val: string) {
   return !isNullable(val) && !!val;
 }
 
@@ -16,7 +18,7 @@ function empty(val: string) {
  * @param max 최대 길이
  */
 const length = (min: number, max: number) => (val: string) =>
-  empty(val) && val.length >= min && val.length <= max;
+  required(val) && val.length >= min && val.length <= max;
 
 /**
  * 이메일 유효성을 검증한다.
@@ -97,7 +99,7 @@ function korAndEng(val: string) {
  * @param val 확인할 값
  */
 function numberOnly(val: string) {
-  return !empty(val) && /^\d{1,}$/.test(val);
+  return !required(val) && /^\d{1,}$/.test(val);
   // isFinite(parseInt(val, 10));
 }
 
@@ -130,7 +132,7 @@ function companyRegNumber(val: string) {
 }
 
 export default {
-  empty,
+  required,
   email,
   passwordWeak,
   password,
