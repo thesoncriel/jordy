@@ -129,7 +129,7 @@ function companyRegNumber(val: string) {
   return /^\d{3}-\d{2}-\d{5}$/.test(val);
 }
 
-export const fn = {
+export default {
   empty,
   email,
   passwordWeak,
