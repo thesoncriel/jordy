@@ -17,21 +17,10 @@ import {
   renderRouteSystem,
 } from './route-system';
 import { createStorage, createTokenProvider } from './storage';
-import {
-  cookie,
-  debounce,
-  envCheck,
-  getFileName,
-  noop,
-  numberFormat,
-  parseQueryString,
-  throttle,
-  timeout,
-  typeCheck,
-} from './util';
 import validate from './validate';
 
-export * from './types/component.type';
+export * from './util';
+export * from './types';
 export {
   UploadStateArgs,
   XhrUploadStateArgs,
@@ -51,15 +40,5 @@ export {
   createGuardSelector,
   createStorage,
   createTokenProvider,
-  cookie,
-  envCheck,
-  timeout,
-  noop,
-  throttle,
-  debounce,
-  numberFormat,
-  getFileName,
-  parseQueryString,
-  typeCheck,
   validate,
 };

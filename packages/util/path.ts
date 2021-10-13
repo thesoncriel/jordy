@@ -1,4 +1,7 @@
+import { isObject } from './typeCheck';
+
 /**
+import { isObject } from './typeCheck';
  * 특정 URL에서 파일명만 가져온다.
  * @param url 파일명을 가져오고싶은 경로
  */
@@ -21,13 +24,13 @@ export function parseQueryString(url: string) {
 
   try {
     const queryString = url.split('?')[1];
-    const splitedQueries = queryString.split('&');
-    const len = splitedQueries.length;
+    const splittedQueries = queryString.split('&');
+    const len = splittedQueries.length;
     let key = '';
     let value = '';
 
     for (let i = 0; i < len; i++) {
-      [key, value] = splitedQueries[i].split('=');
+      [key, value] = splittedQueries[i].split('=');
 
       result[key] = decodeURIComponent(value);
     }
@@ -36,4 +39,35 @@ export function parseQueryString(url: string) {
   }
 
   return result;
+}
+
+/**
+ * 전달되는 객체의 key 와 value 를 이용하여 쿼리 파라미터 문자열로 바꿔준다.
+ * @param params
+ * @param withQuestionMark
+ * @returns
+ */
+export function serializeToQueryString<T = Record<string, unknown>>(
+  params: T,
+  withQuestionMark = false
+) {
+  if (!isObject(params)) {
+    throw new Error(
+      `serializeToQueryString: params is not object.\n${
+        params ? JSON.stringify(params) : params
+      }`
+    );
+  }
+  return withQuestionMark
+    ? '?'
+    : '' +
+        Object.entries(params).reduce((acc, [key, value]) => {
+          return (
+            acc +
+            (acc.length > 1 ? '&' : '') +
+            key +
+            '=' +
+            encodeURIComponent(value)
+          );
+        }, '');
 }
