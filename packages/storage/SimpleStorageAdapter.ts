@@ -1,8 +1,8 @@
-import { MarshalableType } from '../types';
+import { MarshallingType } from '../types';
 import { marshalJson, unmarshalJson } from '../util';
 import { SimpleStorage } from './storage.type';
 
-export class SimpleStorageAdapter<T extends MarshalableType>
+export class SimpleStorageAdapter<T extends MarshallingType>
   implements SimpleStorage<T>
 {
   constructor(readonly key: string, private storage: Storage) {}

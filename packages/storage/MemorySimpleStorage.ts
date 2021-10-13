@@ -1,11 +1,11 @@
-import { MarshalableType } from '../types';
+import { MarshallingType } from '../types';
 import { SimpleStorage } from './storage.type';
 
-const memoryCache: Record<string, MarshalableType> = {};
+const memoryCache: Record<string, MarshallingType> = {};
 let memoryCacheKeys: string[] = [];
 const MEMORY_CACHE_MAX = 100;
 
-export class MemorySimpleStorage<T extends MarshalableType>
+export class MemorySimpleStorage<T extends MarshallingType>
   implements SimpleStorage<T>
 {
   constructor(readonly key: string) {}

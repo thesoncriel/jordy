@@ -1,4 +1,4 @@
-import { MarshalableType } from '../types';
+import { MarshallingType } from '../types';
 
 /**
  * 스토리지 타입
@@ -13,7 +13,7 @@ export type StorageType = 'local' | 'session' | 'memory' | 'cookie';
  *
  * 사용 가능한 타입은 string 이나 객체형이다.
  */
-export interface SimpleStorage<T extends MarshalableType> {
+export interface SimpleStorage<T extends MarshallingType> {
   /**
    * 현재 스토리지가 사용하고 있는 키값.
    * get, set, remove 이용 시 지정된 키값을 자동으로 사용 한다.

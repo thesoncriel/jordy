@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import axios, { AxiosError } from 'axios';
-import { MarshalableType } from '../types';
+import { MarshallingType } from '../types';
 import { getFileName } from '../util';
 import { HttpApi, HttpApiErrorParser, UploadStateArgs } from './network.type';
 import {
@@ -50,7 +50,7 @@ export const createHttpApi = (
         return Promise.reject(error).catch(fnExceptCommon);
       }
     },
-    get<T = MarshalableType, P = Record<string, any> | void>(
+    get<T = MarshallingType, P = Record<string, any> | void>(
       url: string,
       params?: P,
       timeout?: number

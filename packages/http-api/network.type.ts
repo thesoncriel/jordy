@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { MarshalableType } from '../types';
+import { MarshallingType } from '../types';
 
 /**
  * 업로드 상태를 확인할 수 있는 객체.
@@ -53,7 +53,7 @@ export interface HttpApi {
    * @param params 전달할 파라미터
    * @param timeout 응답 제한시간 설정. 설정한 시간이 넘도록 응답이 없다면 중단하고 throw 를 일으킨다.
    */
-  get<T = MarshalableType, P = Record<string, any> | void>(
+  get<T = MarshallingType, P = Record<string, any> | void>(
     url: string,
     params?: P,
     timeout?: number
@@ -64,7 +64,7 @@ export interface HttpApi {
    * @param body 요청으로 보낼 데이터. json 으로 바꿔서 보내게 된다.
    * @param timeout 응답 제한시간 설정. 설정한 시간이 넘도록 응답이 없다면 중단하고 throw 를 일으킨다.
    */
-  post<T = MarshalableType, P = Record<string, any> | void>(
+  post<T = MarshallingType, P = Record<string, any> | void>(
     url: string,
     body?: P,
     timeout?: number
@@ -75,7 +75,7 @@ export interface HttpApi {
    * @param body 요청으로 보낼 데이터. json 으로 바꿔서 보내게 된다.
    * @param timeout 응답 제한시간 설정. 설정한 시간이 넘도록 응답이 없다면 중단하고 throw 를 일으킨다.
    */
-  put<T = MarshalableType, P = Record<string, any> | void>(
+  put<T = MarshallingType, P = Record<string, any> | void>(
     url: string,
     body?: P,
     timeout?: number
@@ -86,7 +86,7 @@ export interface HttpApi {
    * @param body 요청으로 보낼 데이터. json 으로 바꿔서 보내게 된다.
    * @param timeout 응답 제한시간 설정. 설정한 시간이 넘도록 응답이 없다면 중단하고 throw 를 일으킨다.
    */
-  patch<T = MarshalableType, P = Record<string, any> | void>(
+  patch<T = MarshallingType, P = Record<string, any> | void>(
     url: string,
     body?: P,
     timeout?: number
@@ -97,7 +97,7 @@ export interface HttpApi {
    * @param params 전달할 파라미터
    * @param timeout 응답 제한시간 설정. 설정한 시간이 넘도록 응답이 없다면 중단하고 throw 를 일으킨다.
    */
-  delete<T = MarshalableType, P = Record<string, any> | void>(
+  delete<T = MarshallingType, P = Record<string, any> | void>(
     url: string,
     params?: P,
     timeout?: number

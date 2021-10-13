@@ -1,8 +1,8 @@
 import { CookieService, SimpleStorage } from './storage.type';
 import { marshalJson, unmarshalJson } from '../util';
-import { MarshalableType } from '../types';
+import { MarshallingType } from '../types';
 
-export class CookieStorageAdapter<T extends MarshalableType>
+export class CookieStorageAdapter<T extends MarshallingType>
   implements SimpleStorage<T>
 {
   constructor(

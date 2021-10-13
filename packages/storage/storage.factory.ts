@@ -9,7 +9,7 @@ import { MemorySimpleStorage } from './MemorySimpleStorage';
 import { SimpleStorageAdapter } from './SimpleStorageAdapter';
 import { cookie } from './cookie';
 import { isServer, isStorageAvailable } from '../util/envCheck';
-import { MarshalableType } from '../types';
+import { MarshallingType } from '../types';
 
 /**
  * 캐시용 스토리지를 만드는 빌더.
@@ -39,7 +39,7 @@ import { MarshalableType } from '../types';
  * @param key 스토리지에서 쓰이는 키. 기본값은 '_' (underbar).
  * @param expiredTime 유효시간 (seconds). 시간을 주지 않거나 0보다 작다면 자료 유효시간이 없다. 기본값은 0.
  */
-export const createStorage = <T extends MarshalableType>(
+export const createStorage = <T extends MarshallingType>(
   type: StorageType = 'session',
   key = '_',
   expiredTime = 0
