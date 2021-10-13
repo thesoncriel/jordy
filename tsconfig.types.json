@@ -7,7 +7,7 @@
     "declaration": true,
     "declarationMap": false,
     "emitDeclarationOnly": true,
-    "outDir": "./types",
+    "outDir": "./libs",
     // "outFile": "./types/index.d.ts"
   }
 }

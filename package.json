@@ -1,15 +1,15 @@
 {
   "name": "ts-fe-toolkit",
-  "version": "0.1.9",
+  "version": "0.1.10",
   "description": "typescript based frontend toolkit",
   "main": "./cjs/index.js",
   "module": "./esm5/index.js",
-  "types": "./types/index.d.ts",
+  "types": "./libs/index.d.ts",
   "scripts": {
     "compile:esm5": "tsc -b tsconfig.esm5.json",
     "compile:cjs": "tsc -b tsconfig.cjs.json",
     "compile:types": "tsc -b tsconfig.types.json",
-    "clean": "rimraf cjs esm5 types",
+    "clean": "rimraf cjs esm5 types libs",
     "build": "npm-run-all clean compile:cjs compile:esm5 compile:types",
     "test": "jest",
     "prettier": "prettier './packages/**/*.ts'",
@@ -47,8 +47,8 @@
     "typescript": "^4.4.3"
   },
   "files": [
-    "cjs",
-    "esm5",
-    "types"
+    "cjs/**/*.js",
+    "esm5/**/*.js",
+    "libs/**/*.d.ts"
   ]
 }
