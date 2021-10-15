@@ -1,6 +1,5 @@
 import * as envCheck from './envCheck';
 export * from './typeCheck';
-export * from './cookie';
 export * from './etc';
 export * from './filter';
 export * from './format';

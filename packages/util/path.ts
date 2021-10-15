@@ -1,4 +1,4 @@
-import { isObject } from './typeCheck';
+import { isObject, isNullable } from './typeCheck';
 
 /**
 import { isObject } from './typeCheck';
@@ -41,6 +41,27 @@ export function parseQueryString(url: string) {
   return result;
 }
 
+function _serialize<T>(params: T, parentKey = '') {
+  return Object.entries(params).reduce((acc, [oriKey, value]) => {
+    const key = parentKey ? `${parentKey}%5B${oriKey}%5D` : oriKey;
+    let ret = acc + (acc.length > 1 ? '&' : '');
+
+    if (isObject(value)) {
+      ret += _serialize(value, key);
+    } else {
+      ret =
+        ret +
+        key +
+        '=' +
+        encodeURIComponent(
+          isNullable(value) || Number.isNaN(value) ? '' : value
+        );
+    }
+
+    return ret;
+  }, '');
+}
+
 /**
  * 전달되는 객체의 key 와 value 를 이용하여 쿼리 파라미터 문자열로 바꿔준다.
  * @param params
@@ -58,16 +79,5 @@ export function serializeToQueryString<T = Record<string, unknown>>(
       }`
     );
   }
-  return withQuestionMark
-    ? '?'
-    : '' +
-        Object.entries(params).reduce((acc, [key, value]) => {
-          return (
-            acc +
-            (acc.length > 1 ? '&' : '') +
-            key +
-            '=' +
-            encodeURIComponent(value)
-          );
-        }, '');
+  return (withQuestionMark ? '?' : '') + _serialize(params);
 }
