@@ -1,5 +1,5 @@
 /* eslint-disable no-undef */
-jest.mock('../util/storage.util', () => {
+jest.mock('../cookie', () => {
   const map: Record<
     string,
     {
@@ -38,14 +38,12 @@ jest.mock('../util/storage.util', () => {
   };
 });
 
-import {
-  cookie,
-  setIsServer,
-  setIsStorageAvailable,
-  timeout,
-} from '../../util';
-import { StorageType, SimpleStorage } from '../../storage/storage.type';
+import { timeout, envCheck } from '../../util';
+import { StorageType, SimpleStorage } from '../storage.type';
 import { createStorage } from '../storage.factory';
+import { cookie } from '../cookie';
+
+const { setIsServer, setIsStorageAvailable } = envCheck;
 
 interface TestModel {
   name: string;
@@ -60,11 +58,12 @@ interface TempWindow {
   localStorage?: Storage;
   sessionStorage?: Storage;
 }
-type Global = NodeJS.Global;
+type Global = typeof global;
 
-interface TempGlobal extends Global, TempWindow {
-  window?: TempWindow;
-}
+type TempGlobal = Global &
+  TempWindow & {
+    window?: TempWindow;
+  };
 
 function makeNumberArray(start: number, end: number) {
   const arr: number[] = [];
@@ -542,7 +541,7 @@ describe('storage factory : memory mode', () => {
     });
 
     afterAll(() => {
-      const mGlobal: NodeJS.Global & { window?: TempWindow } = global;
+      const mGlobal: Global & { window?: TempWindow } = global;
 
       delete mGlobal.window;
     });
@@ -570,11 +569,19 @@ describe('expired time test', () => {
 
       sto.set(origin);
 
-      await timeout(300);
+      jest.useFakeTimers();
+
+      await timeout(300, 0, () => {
+        jest.runAllTimers();
+      });
+
+      jest.useFakeTimers();
 
       expect(sto.get()).toEqual(origin);
 
-      await timeout(800);
+      await timeout(800, 0, () => {
+        jest.runAllTimers();
+      });
 
       expect(sto.get()).toBeNull();
     });
@@ -612,11 +619,17 @@ describe('expired time test', () => {
 
       expect(cookie.set).toBeCalledWith(KEY, JSON.stringify(origin), 1);
 
-      await timeout(300);
+      jest.useFakeTimers();
+      await timeout(300, 0, () => {
+        jest.runAllTimers();
+      });
 
       expect(sto.get()).toEqual(origin);
 
-      await timeout(800);
+      jest.useFakeTimers();
+      await timeout(800, 0, () => {
+        jest.runAllTimers();
+      });
 
       expect(sto.get()).toBeNull();
       expect(cookie.get).toBeCalledTimes(2);
