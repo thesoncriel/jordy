@@ -44,14 +44,13 @@ export function cache(type?: CacheType, expiredTime = 0): CacheProxy {
    * 캐시 디코레이터. API 함수를 내포하여 대신 수행한다.
    * @param fn API 함수
    */
-  const cacheProxy =
-    (
-      fn: <T extends string | string[] | Record<string, any>, P = void>(
-        url: string,
-        params?: P
-      ) => Promise<T>
-    ) =>
-    <T extends string | string[] | Record<string, any>, P = void>(
+  const cacheProxy = function (
+    fn: <T extends string | string[] | Record<string, any>, P = void>(
+      url: string,
+      params?: P
+    ) => Promise<T>
+  ) {
+    return <T extends string | string[] | Record<string, any>, P = void>(
       url: string,
       params?: P
     ) => {
@@ -72,6 +71,8 @@ export function cache(type?: CacheType, expiredTime = 0): CacheProxy {
         return data;
       });
     };
+  };
 
-  return (baseApi: HttpApi) => cacheProxy(baseApi.get);
+  return (baseApi: HttpApi) =>
+    cacheProxy((...args) => baseApi.get.apply(baseApi, [...args]));
 }
