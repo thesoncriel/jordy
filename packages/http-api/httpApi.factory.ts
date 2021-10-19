@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import axios, { AxiosError } from 'axios';
 import { MarshallingType } from '../types';
-import { getFileName } from '../util';
+import { getFileName, serializeToQueryString } from '../util';
 import { HttpApi, HttpApiErrorParser, UploadStateArgs } from './network.type';
 import {
   axiosCreateHeader,
@@ -21,7 +21,8 @@ export const createHttpApi = (
   baseUrl: string,
   parserVisitor: HttpApiErrorParser<AxiosError>,
   headerProvider: () => Record<string, string> = () => ({}),
-  withCredentials = true
+  withCredentials = true,
+  paramsSerializer: (params: any) => string = serializeToQueryString
 ): HttpApi => {
   const fnUploadCommon = uploadCommon(
     baseUrl,
@@ -43,6 +44,7 @@ export const createHttpApi = (
             params,
             withCredentials,
             timeout,
+            paramsSerializer,
           })
           .then(axiosResponseToData)
           .catch(fnCatchCommon);
@@ -64,6 +66,7 @@ export const createHttpApi = (
             params,
             withCredentials,
             timeout,
+            paramsSerializer,
           })
           .then(axiosResponseToData)
           .catch(fnCatchCommon);
@@ -85,6 +88,7 @@ export const createHttpApi = (
             params,
             responseType: 'blob',
             withCredentials,
+            paramsSerializer,
           })
           .then(axiosResponseToData)
           .then((blob) => new File([blob], filename || getFileName(url)))
@@ -106,6 +110,7 @@ export const createHttpApi = (
             params,
             responseType: 'blob',
             withCredentials,
+            paramsSerializer,
           })
           .then(axiosResponseToData)
           .catch(fnCatchCommon);
