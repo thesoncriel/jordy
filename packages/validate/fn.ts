@@ -99,8 +99,28 @@ function korAndEng(val: string) {
  * @param val 확인할 값
  */
 function numberOnly(val: string) {
-  return !required(val) && /^\d{1,}$/.test(val);
-  // isFinite(parseInt(val, 10));
+  return /^[0-9]{1,}$/.test(val);
+}
+
+/**
+ * 특정범위의 값인지 여부를 확인한다.
+ * ```ts
+ * const checker = validate.fn.range(10, 100);
+ *
+ * checker(50); // true
+ * checker(9); // false
+ * checker(101); // false
+ * ```
+ * @param min
+ * @param max
+ * @returns
+ */
+function range(min: number, max: number) {
+  return function innerRange(val: string) {
+    const num = Number(val);
+
+    return num >= min && num <= max;
+  };
 }
 
 /**
@@ -142,6 +162,7 @@ export default {
   symbols,
   korAndEng,
   numberOnly,
+  range,
   phoneWithDash,
   phone,
   companyRegNumber,
