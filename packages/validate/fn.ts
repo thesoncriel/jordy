@@ -116,7 +116,7 @@ function numberOnly(val: string) {
  * @returns
  */
 function range(min: number, max: number) {
-  return function innerRange(val: string) {
+  return function innerRange(val: string | number) {
     const num = Number(val);
 
     return num >= min && num <= max;
