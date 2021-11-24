@@ -16,7 +16,7 @@ import {
   ModuleRouteModel,
   renderRouteSystem,
 } from './route-system';
-import { createStorage, createTokenProvider } from './storage';
+export * from './storage';
 import validate from './validate';
 
 export * from './util';
@@ -38,7 +38,5 @@ export {
   renderRouteSystem,
   createGuardDispatch,
   createGuardSelector,
-  createStorage,
-  createTokenProvider,
   validate,
 };
