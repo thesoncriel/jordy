@@ -21,7 +21,10 @@ function validateSingle<T>(
 
 function _validateBulk<T>(
   val: T,
-  opt: ValidateCheckModel<T> | ValidateCheckModel<T>[]
+  opt:
+    | ValidateCheckModel<T>
+    | ValidateCheckModel<T>[]
+    | ((value: T) => ValidateBulkResultModel)
 ): ValidateResultModel {
   let mRes: ValidateResultModel | undefined;
 
@@ -35,6 +38,12 @@ function _validateBulk<T>(
 
       return _mRes.result;
     });
+  } else if (typeof opt === 'function') {
+    const tmpRes = opt(val);
+    mRes = {
+      result: tmpRes.isValid,
+      message: tmpRes.firstMessage,
+    };
   } else {
     mRes = validateSingle(val, opt);
   }
