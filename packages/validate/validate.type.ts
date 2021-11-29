@@ -84,5 +84,8 @@ export type ValidateBulkOptionType<T extends Record<string, any>> = {
    *
    * 순차적으로 검사 중 유효성 통과를 못하면 뒤이은 내용은 검사하지 않는다.
    */
-  [key in keyof T]?: ValidateCheckModel<T[key]> | ValidateCheckModel<T[key]>[];
+  [key in keyof T]?:
+    | ValidateCheckModel<T[key]>
+    | ValidateCheckModel<T[key]>[]
+    | ((value: T[key]) => ValidateBulkResultModel);
 };
