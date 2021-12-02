@@ -1,4 +1,3 @@
-import { isFunction } from 'packages/util/typeCheck';
 import React, {
   createContext,
   FC,
