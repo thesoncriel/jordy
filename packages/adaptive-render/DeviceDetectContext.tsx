@@ -67,7 +67,7 @@ export const DeviceDetectProvider: FC = ({ children }) => {
   const isNative = useMemo(isNativeAppCheck, []);
 
   useEffect(() => {
-    if (isServer()) {
+    if (isServer() || !window || !window.matchMedia) {
       return undefined;
     }
 
@@ -87,24 +87,12 @@ export const DeviceDetectProvider: FC = ({ children }) => {
       setIsTablet(e.matches);
     };
 
-    // TODO: IE를 더이상 고려하지 않아도 될 때 deprecated 된 내용 지우기
-    if (mqMobile.addListener) {
-      mqMobile.addListener(handleResizeForMobile);
-      mqTablet.addListener(handleResizeForTablet);
-    } else {
-      mqMobile.addEventListener('change', handleResizeForMobile);
-      mqTablet.addEventListener('change', handleResizeForTablet);
-    }
+    mqMobile.addEventListener('change', handleResizeForMobile);
+    mqTablet.addEventListener('change', handleResizeForTablet);
 
     return () => {
-      // TODO: IE를 더이상 고려하지 않아도 될 때 deprecated 된 내용 지우기
-      if (mqMobile.removeListener) {
-        mqMobile.removeListener(handleResizeForMobile);
-        mqTablet.removeListener(handleResizeForTablet);
-      } else {
-        mqMobile.removeEventListener('change', handleResizeForMobile);
-        mqTablet.removeEventListener('change', handleResizeForTablet);
-      }
+      mqMobile.removeEventListener('change', handleResizeForMobile);
+      mqTablet.removeEventListener('change', handleResizeForTablet);
     };
   }, []);
 
