@@ -1,3 +1,4 @@
+import { isFunction } from 'packages/util/typeCheck';
 import React, {
   createContext,
   FC,
@@ -67,7 +68,7 @@ export const DeviceDetectProvider: FC = ({ children }) => {
   const isNative = useMemo(isNativeAppCheck, []);
 
   useEffect(() => {
-    if (isServer() || !window || !window.matchMedia) {
+    if (isServer() || !window || !isFunction(window.matchMedia)) {
       return undefined;
     }
 
