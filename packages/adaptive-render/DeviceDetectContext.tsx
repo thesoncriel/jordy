@@ -68,7 +68,7 @@ export const DeviceDetectProvider: FC = ({ children }) => {
   const isNative = useMemo(isNativeAppCheck, []);
 
   useEffect(() => {
-    if (isServer() || !window || !isFunction(window.matchMedia)) {
+    if (isServer() || !window || typeof window.matchMedia !== 'function') {
       return undefined;
     }
 
