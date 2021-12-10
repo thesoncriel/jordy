@@ -34,20 +34,17 @@ export function useThrottle<T = any>(
 
   useEffect(() => () => clearTimeout(timerRef.current), []);
 
-  const callback = useCallback(
-    (args: T) => {
-      if (timerRef.current) {
-        return;
-      }
+  const callback = useCallback((args: T) => {
+    if (timerRef.current) {
+      return;
+    }
 
-      timerRef.current = setTimeout(() => {
-        timerRef.current = 0;
-      }, time) as unknown as number;
+    timerRef.current = setTimeout(() => {
+      timerRef.current = 0;
+    }, time) as unknown as number;
 
-      fn(args);
-    },
-    [fn, ...deps]
-  );
+    fn(args);
+  }, deps);
 
   return callback;
 }

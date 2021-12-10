@@ -33,18 +33,15 @@ export function useDebounce<T = any>(
 
   useEffect(() => () => clearTimeout(timerRef.current), [fn]);
 
-  const callback = useCallback(
-    (args: T) => {
-      if (timerRef.current) {
-        clearTimeout(timerRef.current);
-      }
+  const callback = useCallback((args: T) => {
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
+    }
 
-      timerRef.current = setTimeout(() => {
-        fn(args);
-      }, time) as unknown as number;
-    },
-    [fn, ...deps]
-  );
+    timerRef.current = setTimeout(() => {
+      fn(args);
+    }, time) as unknown as number;
+  }, deps);
 
   return callback;
 }
