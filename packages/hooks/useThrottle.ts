@@ -33,7 +33,7 @@ export function useThrottle<T = any>(
   const timerRef = useRef(0);
   const memoizeFn = useCallback(fn, deps);
 
-  useEffect(() => () => clearTimeout(timerRef.current), []);
+  useEffect(() => () => clearTimeout(timerRef.current), [memoizeFn]);
 
   const callback = useCallback(
     (args: T) => {
