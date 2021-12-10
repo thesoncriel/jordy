@@ -31,20 +31,24 @@ export function useThrottle<T = any>(
   deps: any[] = []
 ) {
   const timerRef = useRef(0);
+  const memoizeFn = useCallback(fn, deps);
 
   useEffect(() => () => clearTimeout(timerRef.current), []);
 
-  const callback = useCallback((args: T) => {
-    if (timerRef.current) {
-      return;
-    }
+  const callback = useCallback(
+    (args: T) => {
+      if (timerRef.current) {
+        return;
+      }
 
-    timerRef.current = setTimeout(() => {
-      timerRef.current = 0;
-    }, time) as unknown as number;
+      timerRef.current = setTimeout(() => {
+        timerRef.current = 0;
+      }, time) as unknown as number;
 
-    fn(args);
-  }, deps);
+      memoizeFn(args);
+    },
+    [memoizeFn]
+  );
 
   return callback;
 }
