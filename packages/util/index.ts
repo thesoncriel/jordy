@@ -8,6 +8,7 @@ export * from './josa';
 export * from './json';
 export * from './path';
 export * from './redux';
+export * from './template';
 
 const isServer = envCheck.isServer;
 
