@@ -48,9 +48,13 @@ export function isNumberLike(val: unknown) {
   return false;
 }
 
-// 객체가 비어있는지 확인
-export function isEmptyObject(obj: Record<string, unknown>) {
-  return Object.keys(obj).length === 0 && obj.constructor === Object;
+/**
+ * 주어진 값이 빈 객체인지 여부를 확인한다.
+ * @param val 
+ * @returns 
+ */
+export function isEmptyObject(val: unknown): val is Record<string, never> {
+  return val && Object.keys(val).length === 0 && val.constructor === Object;
 }
 
 /**
