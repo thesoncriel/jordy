@@ -487,57 +487,6 @@ describe('storage factory : memory mode', () => {
 
         expect(sto.get()).toBe(null);
       });
-      it('check capacity: 메모리 스토리지는 종류에 관계 없이 최대 100개만 저장할 수 있다.', () => {
-        type ManyTypes =
-          | string
-          | TestModel
-          | TestModel[]
-          | string[]
-          | TestNumberField;
-        const aValues = createManyData(100);
-        const indices = makeNumberArray(1, 100);
-        const aSto = indices.map((i) =>
-          createStorage<ManyTypes>(type, `mkey${i}`)
-        );
-
-        aSto.forEach((stoItem, idx) => {
-          stoItem.set(aValues[idx]);
-        });
-
-        aSto.forEach((stoItem, idx) => {
-          expect(stoItem.get()).toEqual(aValues[idx]);
-        });
-
-        // 101 번째 스토리지를 만들고 값을 넣는다.
-        const stoLast = createStorage<string>(type, 'lastKey');
-
-        stoLast.set('last last !!');
-
-        expect(stoLast.get()).toEqual('last last !!');
-
-        const stoFirst = createStorage<ManyTypes>(type, 'mkey1');
-
-        // 가장 처음 저장 했던 값은 null 이어야 한다.
-        expect(stoFirst.get()).toEqual(null);
-
-        stoLast.remove();
-
-        const stoLastOver = createStorage<TestModel>(type, 'lastOverKey');
-
-        const model: TestModel = {
-          age: 102,
-          isYouth: false,
-          name: 'at last',
-        };
-
-        stoLastOver.set(model);
-
-        expect(stoLastOver.get()).toEqual(model);
-
-        const stoSecond = createStorage<ManyTypes>(type, 'mkey2');
-
-        expect(stoSecond.get()).toEqual(aValues[1]);
-      });
     });
 
     afterAll(() => {
