@@ -21,8 +21,8 @@ class MemoryStorageImpl implements MemoryStorage {
   getItem(key: string): any {
     return this.cacheMap.get(key);
   }
-  key(index: number): string {
-    return this.keys[index];
+  key(index: number): string | null {
+    return this.keys[index] || null;
   }
   removeItem(key: string): void {
     this.cacheMap.delete(key);

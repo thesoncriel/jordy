@@ -26,7 +26,7 @@ export interface StorageKeyManager {
    * 주어진 인덱스를 통해 스토리지의 키를 가져온다.
    * @param index
    */
-  key(index: number): string;
+  key(index: number): string | null;
   /**
    * 주어진 키로 저장된 자료를 제거한다.
    * @param key
