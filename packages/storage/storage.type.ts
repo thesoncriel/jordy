@@ -9,6 +9,32 @@ import { MarshallingType } from '../types';
 export type StorageType = 'local' | 'session' | 'memory' | 'cookie';
 
 /**
+ * 스토리지의 키를 관리한다.
+ *
+ * sessionStorage 와 localStorage, memoryStorage 의 공통기능 모음이다.
+ */
+export interface StorageKeyManager {
+  /**
+   * 스토리지가 가진 자료의 개수
+   */
+  readonly length: number;
+  /**
+   * 스토리지 내 모든 자료를 제거한다.
+   */
+  clear(): void;
+  /**
+   * 주어진 인덱스를 통해 스토리지의 키를 가져온다.
+   * @param index
+   */
+  key(index: number): string;
+  /**
+   * 주어진 키로 저장된 자료를 제거한다.
+   * @param key
+   */
+  removeItem(key: string): void;
+}
+
+/**
  * 간단한 스토리지를 구성할 때 쓰이는 인터페이스.
  *
  * 사용 가능한 타입은 string 이나 객체형이다.
