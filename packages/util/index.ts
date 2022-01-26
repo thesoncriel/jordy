@@ -9,6 +9,7 @@ export * from './json';
 export * from './path';
 export * from './redux';
 export * from './template';
+export * from './libLoader';
 
 const isServer = envCheck.isServer;
 
