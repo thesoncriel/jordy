@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import axios, { AxiosError } from 'axios';
 import { MarshallingType } from '../types';
-import { getFileName, serializeToQueryString } from '../util';
+import { getFileName, qs } from '../util';
 import { HttpApi, HttpApiErrorParser, UploadStateArgs } from './network.type';
 import {
   axiosCreateHeader,
@@ -22,7 +22,7 @@ export const createHttpApi = (
   parserVisitor: HttpApiErrorParser<AxiosError>,
   headerProvider: () => Record<string, string> = () => ({}),
   withCredentials = true,
-  paramsSerializer: (params: any) => string = serializeToQueryString
+  paramsSerializer: (params: any) => string = qs.serialize
 ): HttpApi => {
   const fnUploadCommon = uploadCommon(
     baseUrl,

@@ -7,6 +7,7 @@ export * from './format';
 export * from './josa';
 export * from './json';
 export * from './path';
+export * from './queryString';
 export * from './redux';
 export * from './template';
 export * from './libLoader';
