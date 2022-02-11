@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import _throttle from 'lodash/throttle';
-import _debounce from 'lodash/debounce';
+import _throttle from 'lodash-es/throttle';
+import _debounce from 'lodash-es/debounce';
 
 export function throttle(func: (...args: any) => any, wait = 300) {
   return _throttle(func, wait, { trailing: false });

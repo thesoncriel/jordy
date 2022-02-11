@@ -30,6 +30,17 @@ describe('messageTemplate', () => {
     );
     expect(result).toBe('구입 개수: 105개\n가격: 1000\n전체 가격: 105 * 1000');
   });
+  it('템플릿에 html tag 가 있어도 정상적으로 적용된다.', () => {
+    const result = messageTemplate(
+      '<strong class="red">최대 {count}개 만큼</strong> 적용 하실래요?',
+      {
+        count: 15,
+      }
+    );
+    expect(result).toBe(
+      '<strong class="red">최대 15개 만큼</strong> 적용 하실래요?'
+    );
+  });
   it('적용될 자료가 빈 객체라면 빈 문자열을 내보낸다.', () => {
     const result = messageTemplate(
       '구입 개수: {count}개\n가격: {price}\n전체 가격: {count} * {price}',
