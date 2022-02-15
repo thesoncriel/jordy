@@ -63,7 +63,7 @@ export interface SimpleStorage<T extends MarshallingType> {
 /**
  * 유효기간이 있는 스토리지 데이터 모델.
  */
-export interface ExpirableStorageModel<T> {
+export interface ExpiableStorageModel<T> {
   /**
    * 최대 유효시간. Unix Time Stamp 값을 기준으로 기록한다.
    *

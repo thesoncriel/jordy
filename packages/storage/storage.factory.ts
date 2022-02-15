@@ -1,10 +1,10 @@
 import { CookieStorageAdapter } from './CookieStorageAdapter';
 import {
-  ExpirableStorageModel,
+  ExpiableStorageModel,
   SimpleStorage,
   StorageType,
 } from './storage.type';
-import { ExpirableStorageAdapter } from './ExpirableStorageAdapter';
+import { ExpiableStorageAdapter } from './ExpiableStorageAdapter';
 import { MemorySimpleStorage } from './MemorySimpleStorage';
 import { SimpleStorageAdapter } from './SimpleStorageAdapter';
 import { cookie } from './cookie';
@@ -47,8 +47,8 @@ export const createStorage = <T extends MarshallingType>(
   let ret: SimpleStorage<T>;
 
   if (type !== 'cookie' && expiredTime > 0) {
-    return new ExpirableStorageAdapter<T>(
-      createStorage<ExpirableStorageModel<T>>(type, key),
+    return new ExpiableStorageAdapter<T>(
+      createStorage<ExpiableStorageModel<T>>(type, key),
       expiredTime
     );
   }
