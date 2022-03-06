@@ -82,10 +82,10 @@ let compiledFns: Record<string, CompiledTemplateFunction> = {};
  *
  * ### 한글 조사 처리
  *
- * 아래와 같이 템플릿 변수 우측에 파이프(|)와 해당하는 조사를 넣어주면 된다.
+ * 아래와 같이 변수 템플릿 우측에 조사를 템플릿으로 넣어주면 된다.
  *
  * ```ts
- * const tmpl = '이제 {name|으로}만 유효합니다.';
+ * const tmpl = '이제 {name}{으로}만 유효합니다.';
  *
  * messageTemplate(tmpl, { name: '원숭이' });
  * // 이제 원숭이로만 유효합니다.
