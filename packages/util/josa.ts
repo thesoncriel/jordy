@@ -27,6 +27,10 @@ const _f = [
     //으로/로 구분
     return _hasJong(string) ? '으로' : '로';
   },
+  function (string: string) {
+    //이 단독 구분
+    return _hasJong(string) ? '이' : '';
+  },
 ];
 
 const _formats = {
@@ -50,6 +54,7 @@ const _formats = {
   으로: _f[4],
   로: _f[4],
   으로로: _f[4],
+  '이/': _f[5],
 };
 
 type JosaResultType = keyof typeof _formats;

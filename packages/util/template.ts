@@ -1,5 +1,68 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { isEmptyObject, isString } from './typeCheck';
+import { isEmptyObject } from './typeCheck';
+import { josa } from './josa';
+
+interface CompiledTemplateFunction {
+  (data: any, j: typeof josa): string;
+}
+
+function parse(value: string) {
+  const arr: string[] = [];
+  let template = value;
+  let result = /{(.*?)}/g.exec(template);
+  let firstPos = -1;
+
+  while (result) {
+    firstPos = result.index;
+
+    if (firstPos !== 0) {
+      arr.push(template.substring(0, firstPos));
+      template = template.slice(firstPos);
+    }
+
+    arr.push(result[0]);
+    template = template.slice(result[0].length);
+    result = /{(.*?)}/g.exec(template);
+  }
+
+  if (template) {
+    arr.push(template);
+  }
+
+  return arr;
+}
+
+function compileToString(arr: string[]) {
+  let result: string[] = ['\'\''];
+
+  result = arr.reduce((acc, tmp) => {
+    let subTmp = '';
+    let josaTmp: string[];
+
+    if (tmp.startsWith('{') && tmp.endsWith('}')) {
+      subTmp = tmp.split(/\{|\}/).filter(Boolean)[0].trim();
+      josaTmp = subTmp.split('|');
+
+      if (josaTmp.length > 1) {
+        josaTmp[0] = josaTmp[0].trim();
+        josaTmp[1] = josaTmp[1].trim();
+
+        // acc.push(`+d.${josaTmp[0]}`);
+        acc.push(`+j.r(d.${josaTmp[0]},'${josaTmp[1]}')`);
+      } else {
+        acc.push(`+d.${subTmp}`);
+      }
+    } else {
+      acc.push(`+'${tmp.replace(/\n/gm, '\\n')}'`);
+    }
+
+    return acc;
+  }, result);
+
+  return result.join('');
+}
+
+let compiledFns: Record<string, CompiledTemplateFunction> = {};
 
 /**
  * 간단한 템플릿 메시지 처리기.
@@ -14,6 +77,20 @@ import { isEmptyObject, isString } from './typeCheck';
  * };
  * const message = messageTemplate(tmpl, data);
  * // 총 320개의 상태가 배송중으로 바뀝니다.\n계속 하시겠습니까?
+ * ```
+ *
+ * ### 한글 조사 처리
+ *
+ * 아래와 같이 템플릿 변수 우측에 파이프(|)와 해당하는 조사를 넣어주면 된다.
+ *
+ * ```ts
+ * const tmpl = '이제 {name|으로}만 유효합니다.';
+ *
+ * messageTemplate(tmpl, { name: '원숭이' });
+ * // 이제 원숭이로만 유효합니다.
+ *
+ * messageTemplate(tmpl, { name: '고객님' });
+ * // 이제 고객님으로만 유효합니다.
  * ```
  *
  * @param tmplText 템플릿이 적용된 메시지
@@ -31,16 +108,24 @@ export function messageTemplate<T extends Record<string, string | number>>(
   if (Array.isArray(data)) {
     throw new Error('messageTemplate: The "data" argument cannot be an array.');
   }
-  return Object.entries(data).reduce((semiResult, [key, value]) => {
-    if (isString(value) || Number.isFinite(value)) {
-      return semiResult.replace(
-        new RegExp(`\\{${key}\\}`, 'gi'),
-        value.toString()
-      );
-    }
 
-    throw new Error(
-      `messageTemplate: The "${value}" of key "${key}" is not valid.`
-    );
-  }, tmplText);
+  let fn = compiledFns[tmplText];
+
+  if (!fn) {
+    fn = new Function(
+      'd',
+      'j',
+      `return ${compileToString(messageTemplate.parse(tmplText))}`
+    ) as CompiledTemplateFunction;
+
+    compiledFns[tmplText] = fn;
+  }
+
+  return fn(data, josa);
 }
+
+messageTemplate.parse = parse;
+
+messageTemplate.clear = function () {
+  compiledFns = {};
+};
