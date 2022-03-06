@@ -6,6 +6,10 @@ interface CompiledTemplateFunction {
   (data: any, j: typeof josa): string;
 }
 
+function getJosaRegexp() {
+  return /^(을\/를|을|를|을를|은\/는|은|는|은는|이\/가|이|가|이가|와\/과|와|과|와과|으로\/로|으로|로|으로로|이\/)$/;
+}
+
 function parse(value: string) {
   const arr: string[] = [];
   let template = value;
@@ -35,29 +39,26 @@ function parse(value: string) {
 function compileToString(arr: string[]) {
   let result: string[] = ['\'\''];
 
-  result = arr.reduce((acc, tmp) => {
-    let subTmp = '';
-    let josaTmp: string[];
+  result = arr.reduce(
+    (acc, tmp) => {
+      let subTmp = '';
 
-    if (tmp.startsWith('{') && tmp.endsWith('}')) {
-      subTmp = tmp.split(/\{|\}/).filter(Boolean)[0].trim();
-      josaTmp = subTmp.split('|');
-
-      if (josaTmp.length > 1) {
-        josaTmp[0] = josaTmp[0].trim();
-        josaTmp[1] = josaTmp[1].trim();
-
-        // acc.push(`+d.${josaTmp[0]}`);
-        acc.push(`+j.r(d.${josaTmp[0]},'${josaTmp[1]}')`);
+      if (tmp.startsWith('{') && tmp.endsWith('}')) {
+        subTmp = tmp.split(/\{|\}/).filter(Boolean)[0].trim();
+        if (getJosaRegexp().test(subTmp) && acc.latestTmp) {
+          acc.result.push(`+j.c(d.${acc.latestTmp},'${subTmp}')`);
+        } else {
+          acc.result.push(`+d.${subTmp}`);
+          acc.latestTmp = subTmp;
+        }
       } else {
-        acc.push(`+d.${subTmp}`);
+        acc.result.push(`+'${tmp.replace(/\n/gm, '\\n')}'`);
       }
-    } else {
-      acc.push(`+'${tmp.replace(/\n/gm, '\\n')}'`);
-    }
 
-    return acc;
-  }, result);
+      return acc;
+    },
+    { result, latestTmp: '' }
+  ).result;
 
   return result.join('');
 }

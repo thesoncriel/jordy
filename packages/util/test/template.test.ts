@@ -90,7 +90,7 @@ describe('messageTemplate', () => {
     expect(result).toBe('');
   });
   it('조사가 템플릿에 있을 경우, 들어온 명사에 대하여 적용된다.', () => {
-    const template = '곧바로 {word|을를} 시작합니다!';
+    const template = '곧바로 {word}{을를} 시작합니다!';
     const result1 = messageTemplate(template, {
       word: '엑셀 작업',
     });
@@ -101,7 +101,7 @@ describe('messageTemplate', () => {
     expect(result2).toBe('곧바로 마케팅 통화를 시작합니다!');
   });
   it('(이)가 붙는 보조사도 정상 동작한다.', () => {
-    const template = '{sonic} {sonic} 바람돌이 {sonic} 우리들의 {word|이/}야~';
+    const template = '{sonic} {sonic} 바람돌이 {sonic} 우리들의 {word}{이/}야~';
     const result1 = messageTemplate(template, {
       sonic: '소닉',
       word: '친구',
@@ -116,7 +116,7 @@ describe('messageTemplate', () => {
   });
   it('특정 템플릿을 컴파일 하면 두번 다시 같은 컴파일을 수행하지 않는다.', () => {
     const spiedFn = jest.spyOn(messageTemplate, 'parse');
-    const template = '{sonic} {sonic} 바람돌이 {sonic} 우리들의 {word|이/}야~';
+    const template = '{sonic} {sonic} 바람돌이 {sonic} 우리들의 {word}{이/}야~';
     messageTemplate(template, {
       sonic: '소닉',
       word: '친구',
@@ -129,6 +129,18 @@ describe('messageTemplate', () => {
     expect(spiedFn).toBeCalledTimes(1);
 
     spiedFn.mockRestore();
+  });
+  it('조사 앞에 태그가 있어도 정상적으로 동작된다.', () => {
+    const template =
+      '정말로 <strong>{count}건의 {name}</strong>{을를} 하시겠습니까?\n<u>{name}</u>{이가} 진행되면 되돌릴 수 없습니다.';
+    const result = messageTemplate(template, {
+      count: 3,
+      name: '정보처리',
+    });
+
+    expect(result).toBe(
+      '정말로 <strong>3건의 정보처리</strong>를 하시겠습니까?\n<u>정보처리</u>가 진행되면 되돌릴 수 없습니다.'
+    );
   });
 
   it('적용될 자료가 배열이면 오류를 일으킨다.', () => {
