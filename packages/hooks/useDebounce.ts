@@ -1,5 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useCallback, useEffect, useRef } from 'react';
+import { useMemo } from 'react';
+
+interface DebounceHooksResult<T> {
+  (args: T): void;
+  stop(): void;
+}
 
 /**
  * 훅: 디바운스를 적용 한다.
@@ -34,8 +40,8 @@ export function useDebounce<T = any>(
 
   useEffect(() => () => clearTimeout(timerRef.current), [memoizeFn]);
 
-  const callback = useCallback(
-    (args: T) => {
+  const callback = useMemo(() => {
+    const result = ((args: T) => {
       if (timerRef.current) {
         clearTimeout(timerRef.current);
       }
@@ -43,9 +49,16 @@ export function useDebounce<T = any>(
       timerRef.current = setTimeout(() => {
         memoizeFn(args);
       }, time) as unknown as number;
-    },
-    [memoizeFn]
-  );
+    }) as DebounceHooksResult<T>;
+
+    result.stop = () => {
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+      }
+    };
+
+    return result;
+  }, [memoizeFn]);
 
   return callback;
 }

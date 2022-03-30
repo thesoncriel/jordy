@@ -16,7 +16,12 @@ import {
   ModuleRouteModel,
   renderRouteSystem,
 } from './route-system';
-import validate from './validate';
+import validate, {
+  ValidateResultModel,
+  ValidateBulkResultModel,
+  ValidateCheckModel,
+  ValidateBulkOptionType,
+} from './validate';
 
 export * from './storage';
 export * from './hooks';
@@ -39,4 +44,8 @@ export {
   createGuardDispatch,
   createGuardSelector,
   validate,
+  ValidateResultModel,
+  ValidateBulkResultModel,
+  ValidateCheckModel,
+  ValidateBulkOptionType,
 };

@@ -59,3 +59,5 @@ const validateFn = validate as ValidationCheckerType;
 validateFn.fn = fn;
 
 export default validateFn;
+
+export * from './validate.type';
