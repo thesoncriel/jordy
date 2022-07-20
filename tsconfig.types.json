@@ -1,5 +1,6 @@
 {
   "extends": "./tsconfig.json",
+  "exclude": ["node_modules", "**/*.fixtures.tsx", "**/*.fixtures.ts", "**/*.test.ts", "**/*.test.tsx"],
   "compilerOptions": {
     "module": "es2015",
     "target": "esnext",

@@ -1,5 +1,5 @@
 /* eslint-disable no-undef */
-jest.mock('../cookie', () => {
+vi.mock('../cookie', () => {
   const map: Record<
     string,
     {
@@ -10,13 +10,13 @@ jest.mock('../cookie', () => {
 
   return {
     cookie: {
-      set: jest.fn((key: string, value: string, expiredTime = 0) => {
+      set: vi.fn((key: string, value: string, expiredTime = 0) => {
         map[key] = {
           value,
           expires: Date.now() + expiredTime * 1000,
         };
       }),
-      get: jest.fn((key: string) => {
+      get: vi.fn((key: string) => {
         const item = map[key];
 
         if (item.expires <= Date.now()) {
@@ -31,7 +31,7 @@ jest.mock('../cookie', () => {
 
         return item.value;
       }),
-      remove: jest.fn((key: string) => {
+      remove: vi.fn((key: string) => {
         delete map[key];
       }),
     },
@@ -518,18 +518,18 @@ describe('expired time test', () => {
 
       sto.set(origin);
 
-      jest.useFakeTimers();
+      vi.useFakeTimers();
 
       await timeout(300, 0, () => {
-        jest.runAllTimers();
+        vi.runAllTimers();
       });
 
-      jest.useFakeTimers();
+      vi.useFakeTimers();
 
       expect(sto.get()).toEqual(origin);
 
       await timeout(800, 0, () => {
-        jest.runAllTimers();
+        vi.runAllTimers();
       });
 
       expect(sto.get()).toBeNull();
@@ -568,16 +568,16 @@ describe('expired time test', () => {
 
       expect(cookie.set).toBeCalledWith(KEY, JSON.stringify(origin), 1);
 
-      jest.useFakeTimers();
+      vi.useFakeTimers();
       await timeout(300, 0, () => {
-        jest.runAllTimers();
+        vi.runAllTimers();
       });
 
       expect(sto.get()).toEqual(origin);
 
-      jest.useFakeTimers();
+      vi.useFakeTimers();
       await timeout(800, 0, () => {
-        jest.runAllTimers();
+        vi.runAllTimers();
       });
 
       expect(sto.get()).toBeNull();

@@ -115,7 +115,7 @@ describe('messageTemplate', () => {
     expect(result2).toBe('에그맨 에그맨 바람돌이 에그맨 우리들의 영웅이야~');
   });
   it('특정 템플릿을 컴파일 하면 두번 다시 같은 컴파일을 수행하지 않는다.', () => {
-    const spiedFn = jest.spyOn(messageTemplate, 'parse');
+    const spiedFn = vi.spyOn(messageTemplate, 'parse');
     const template = '{sonic} {sonic} 바람돌이 {sonic} 우리들의 {word}{이/}야~';
     messageTemplate(template, {
       sonic: '소닉',
