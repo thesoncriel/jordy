@@ -29,6 +29,16 @@ function validateSingle<T>(
   };
 }
 
+function checkIgnore<T>(
+  ignore: undefined | boolean | ((val: T) => boolean),
+  val: T
+) {
+  if (!ignore) {
+    return false;
+  }
+  return ignore === true || ignore(val);
+}
+
 function validateBulk<T>(
   val: T,
   opt:
@@ -39,7 +49,7 @@ function validateBulk<T>(
   let mRes: ValidateResultModel | undefined;
 
   if (Array.isArray(opt)) {
-    if (opt.length > 0 && opt[0].ignore && opt[0].ignore(val)) {
+    if (opt.length > 0 && checkIgnore(opt[0].ignore, val)) {
       return {
         result: true,
         message: '',
@@ -77,4 +87,5 @@ export const validateSubUtils = {
   createValidateBulkResultModel,
   validateSingle,
   validateBulk,
+  checkIgnore,
 };

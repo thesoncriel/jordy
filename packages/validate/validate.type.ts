@@ -67,7 +67,7 @@ export interface ValidateCheckModel<T> {
    *
    * 설정 시 가장 첫번째 유효성 체크 설정에만 유효하다.
    */
-  ignore?: (val: T) => boolean;
+  ignore?: ((val: T) => boolean) | boolean;
   /**
    * 유효성 체크에 실패 했을 때 출력될 메시지
    */
