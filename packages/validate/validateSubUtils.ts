@@ -39,6 +39,13 @@ function checkIgnore<T>(
   return ignore === true || ignore(val);
 }
 
+function createValidateResultModel(): ValidateResultModel {
+  return {
+    result: true,
+    message: '',
+  };
+}
+
 function validateBulk<T>(
   val: T,
   opt:
@@ -50,10 +57,7 @@ function validateBulk<T>(
 
   if (Array.isArray(opt)) {
     if (opt.length > 0 && checkIgnore(opt[0].ignore, val)) {
-      return {
-        result: true,
-        message: '',
-      };
+      return createValidateResultModel();
     }
 
     opt.every((_opt) => {
@@ -72,15 +76,14 @@ function validateBulk<T>(
       message: tmpRes.firstMessage,
     };
   } else {
+    if (checkIgnore(opt.ignore, val)) {
+      return createValidateResultModel();
+    }
+
     mRes = validateSingle(val, opt);
   }
 
-  return (
-    mRes || {
-      result: true,
-      message: '',
-    }
-  );
+  return mRes || createValidateResultModel();
 }
 
 export const validateSubUtils = {
