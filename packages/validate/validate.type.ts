@@ -61,6 +61,14 @@ export interface ValidateBulkResultModel extends ErrorMessagesModel {
  */
 export interface ValidateCheckModel<T> {
   /**
+   * 해당 유효성 체크를 무시하는 조건.
+   *
+   * 설정하여 그 결과값이 true 라면 해당 필드의 모든 유효성 체크를 무시한다.
+   *
+   * 설정 시 가장 첫번째 유효성 체크 설정에만 유효하다.
+   */
+  ignore?: (val: T) => boolean;
+  /**
    * 유효성 체크에 실패 했을 때 출력될 메시지
    */
   message: string;
@@ -83,6 +91,8 @@ export type ValidateBulkOptionType<T extends Record<string, any>> = {
    * 유효성 통과 못했을 때 알려줄 메시지를 key 로, 유효서 검사를 할 함수를 value 로 가진다.
    *
    * 순차적으로 검사 중 유효성 통과를 못하면 뒤이은 내용은 검사하지 않는다.
+   *
+   * 또 한 각 필드의 ignore 가 true 일 경우 그 필드 내 다음 조건은 무시하고 통과 된 것으로 간주한다.
    */
   [key in keyof T]?:
     | ValidateCheckModel<T[key]>
