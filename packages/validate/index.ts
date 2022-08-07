@@ -60,4 +60,5 @@ validateFn.fn = fn;
 
 export default validateFn;
 
+export * from './mergeValidates';
 export * from './validate.type';
