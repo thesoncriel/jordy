@@ -17,6 +17,7 @@ import {
   renderRouteSystem,
 } from './route-system';
 import validate, {
+  mergeValidates,
   ValidateResultModel,
   ValidateBulkResultModel,
   ValidateCheckModel,
@@ -44,6 +45,7 @@ export {
   createGuardDispatch,
   createGuardSelector,
   validate,
+  mergeValidates,
   ValidateResultModel,
   ValidateBulkResultModel,
   ValidateCheckModel,
