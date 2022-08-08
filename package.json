@@ -1,6 +1,6 @@
 {
   "name": "ts-fe-toolkit",
-  "version": "0.10.2",
+  "version": "0.10.3",
   "description": "typescript based frontend toolkit",
   "main": "./esm5/index.js",
   "module": "./esm5/index.js",
