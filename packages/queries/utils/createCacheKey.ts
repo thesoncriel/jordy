@@ -1,4 +1,4 @@
-import { isNumber, isObject, isString } from 'packages/util';
+import { isNumber, isObject, isString } from '../../util';
 
 export function createCacheKey<P>(
   key: string,
