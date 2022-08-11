@@ -1,7 +1,7 @@
 import { EnhancedStore } from '@reduxjs/toolkit';
 import { useCallback, useLayoutEffect, useRef, useState } from 'react';
 
-import { createStorage, StorageType } from 'packages/storage';
+import { createStorage, StorageType } from '../storage';
 import { useMakeDeps } from './useMakeDeps';
 import { clearCacheByKeyword, createCacheKey } from './utils';
 
