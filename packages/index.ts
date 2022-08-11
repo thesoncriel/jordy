@@ -24,6 +24,7 @@ import validate, {
   ValidateBulkOptionType,
 } from './validate';
 
+export * from './queries';
 export * from './storage';
 export * from './hooks';
 export * from './util';
