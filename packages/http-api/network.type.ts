@@ -43,10 +43,7 @@ export interface HttpApiErrorParser<T, E extends Error = Error> {
   interrupt: <E extends Error>(error: E) => Promise<void>;
 }
 
-/**
- * HTTP 프로토콜을 이용하여 비동기 통신을 수행한다.
- */
-export interface HttpApi {
+export interface HttpRestApi {
   /**
    * GET 메서드 호출
    * @param url 호출 경로
@@ -102,6 +99,9 @@ export interface HttpApi {
     params?: P,
     timeout?: number
   ): Promise<T>;
+}
+
+export interface HttpUploadApi {
   /**
    * POST 메서드로 업로드 한다.
    * @param url 업로드 경로
@@ -134,6 +134,9 @@ export interface HttpApi {
     progCallback?: (args: UploadStateArgs) => void,
     timeout?: number
   ): Promise<T>;
+}
+
+export interface HttpFileApi {
   /**
    * GET 메서드로 파일을 비동기로 가져온다.
    * @param url 파일을 가져올 경로
@@ -154,4 +157,42 @@ export interface HttpApi {
     url: string,
     params?: P
   ): Promise<Blob>;
+}
+
+/**
+ * HTTP 프로토콜을 이용하여 비동기 통신을 수행한다.
+ */
+export interface HttpApi extends HttpRestApi, HttpFileApi {}
+
+export type RestHttpMethodType = 'get' | 'post' | 'put' | 'patch' | 'delete';
+
+export interface BaseAsyncHttpNetworkConfig {
+  url: string;
+  headers: Record<string, string>;
+  withCredentials?: boolean;
+  timeout?: number;
+}
+
+export interface AsyncHttpNetworkConfig extends BaseAsyncHttpNetworkConfig {
+  params?: any;
+  paramsSerializer?: (params: any) => string;
+}
+
+export interface AsyncHttpNetworkProvider {
+  get<T>(config: AsyncHttpNetworkConfig): Promise<T>;
+  post<T>(config: AsyncHttpNetworkConfig): Promise<T>;
+  put<T>(config: AsyncHttpNetworkConfig): Promise<T>;
+  patch<T>(config: AsyncHttpNetworkConfig): Promise<T>;
+  delete<T>(config: AsyncHttpNetworkConfig): Promise<T>;
+  getBlob(config: AsyncHttpNetworkConfig): Promise<Blob>;
+}
+
+export interface AsyncHttpUploadConfig extends BaseAsyncHttpNetworkConfig {
+  data: Record<string, string | File | File[]>;
+  onProgress?: (args: UploadStateArgs) => void;
+}
+
+export interface AsyncHttpUploadProvider {
+  post<T>(config: AsyncHttpUploadConfig): Promise<T>;
+  put<T>(config: AsyncHttpUploadConfig): Promise<T>;
 }
