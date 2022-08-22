@@ -6,7 +6,7 @@ slug: /introduce
 # Getting Started
 
 ## Introduce
-**ts-fe-toolkit**은 타입스크립트를 기반으로 제작된 프론트엔드 핵심 업무 구성을 위한 툴킷입니다.
+**Jordy**은 타입스크립트를 기반으로 제작된 프론트엔드 핵심 업무 구성을 위한 툴킷입니다.
 
 해당 툴킷은 여러가지 기능을 내포합니다.
 
@@ -24,11 +24,11 @@ slug: /introduce
 ### NPM
 
 ```shell
-npm install ts-fe-toolkit
+npm install jordy
 ```
 
 ### YARN
 
 ```shell
-yarn add ts-fe-toolkit
+yarn add jordy
 ```
