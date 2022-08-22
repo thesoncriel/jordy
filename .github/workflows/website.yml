@@ -1,0 +1,30 @@
+name: Jordy Website Release
+
+on: workflow_dispatch
+
+jobs:
+  build:
+    name: npm package publish website process
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        node_version: ['16.14']
+        os: [ubuntu-latest]
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node_version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node_version }}
+          registry-url: 'https://registry.npmjs.org'
+      - name: Launched Website
+        working-directory: website
+        run: |
+          npm ci
+          npm run build
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./website/build
