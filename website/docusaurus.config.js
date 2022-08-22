@@ -9,7 +9,7 @@ const config = {
   title: 'jordy',
   tagline: 'FrontEnd Toolkit with Typescript',
   url: 'https://thesoncriel.github.io',
-  baseUrl: '/jordy',
+  baseUrl: '/jordy/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
   favicon: 'img/favicon.png',
