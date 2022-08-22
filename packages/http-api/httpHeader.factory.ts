@@ -1,6 +1,7 @@
 /* eslint-disable no-param-reassign */
 import { isServer } from '../util/envCheck';
-import { TokenProvider } from '../storage';
+import { JWTProvider, TokenProvider } from '../storage';
+import { isJWTProvider, isTokenProvider } from '../storage/storage.util';
 
 /**
  * 헤더 파이프.
@@ -71,26 +72,26 @@ export const headerPipe = {
   bearerToken,
 };
 
+type HeaderFieldMaker = (
+  defHeader: Record<string, string>,
+  token?: string
+) => Record<string, string>;
+
 /**
  * HTTP 헤더를 제공한다.
  * tokenProvider 설정 후 pipe 로 필요한 헤더 요소를 함수로 구성하여
  * 다양한 HTTP 헤더를 만들 수 있다.
- * @param tokenProvider 토큰을 보관하는 제공자.
+ * @param provider 토큰을 보관하는 제공자.
  */
 export const createHttpHeaderProvider =
-  (tokenProvider?: TokenProvider) =>
-  (
-    ...pipes: Array<
-      (
-        defHeader: Record<string, string>,
-        token?: string
-      ) => Record<string, string>
-    >
-  ) => {
+  (provider?: TokenProvider | JWTProvider) =>
+  async (...pipes: HeaderFieldMaker[]) => {
     let token = '';
 
-    if (tokenProvider) {
-      token = tokenProvider.get();
+    if (isJWTProvider(provider)) {
+      token = await provider.get();
+    } else if (isTokenProvider(provider)) {
+      token = provider.get();
 
       if (!token && !isServer()) {
         throw new Error(
