@@ -74,7 +74,7 @@ const config = {
             items: [
               {
                 label: 'GitHub',
-                href: 'https://github.com/thesoncriel/ts-fe-toolkit',
+                href: 'https://github.com/thesoncriel/jordy',
               },
             ],
           },
