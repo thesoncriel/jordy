@@ -6,21 +6,15 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: 'jordy',
+  title: 'Jordy',
   tagline: 'FrontEnd Toolkit with Typescript',
   url: 'https://thesoncriel.github.io',
   baseUrl: '/jordy/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
   favicon: 'img/favicon.png',
-  // GitHub pages deployment config.
-  // If you aren't using GitHub pages, you don't need these.
   organizationName: 'thesoncriel', // Usually your GitHub org/user name.
   projectName: 'jordy', // Usually your repo name.
-
-  // Even if you don't use internalization, you can use this field to set useful
-  // metadata like html lang. For example, if your site is Chinese, you may want
-  // to replace "en" with "zh-Hans".
   i18n: {
     defaultLocale: 'ko',
     locales: ['ko'],
@@ -44,7 +38,7 @@ const config = {
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     {
       navbar: {
-        title: 'jordy',
+        title: 'Jordy',
         logo: {
           alt: 'jordy logo',
           src: 'img/logo.png',
