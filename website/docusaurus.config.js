@@ -6,9 +6,9 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: 'ts-fe-toolkit',
+  title: 'jordy',
   tagline: 'FrontEnd Toolkit with Typescript',
-  url: 'https://ts-fe-toolkit.com',
+  url: 'https://thesoncriel.github.io/jordy/',
   baseUrl: '/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
@@ -16,7 +16,7 @@ const config = {
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
   organizationName: 'thesoncriel', // Usually your GitHub org/user name.
-  projectName: 'ts-fe-toolkit', // Usually your repo name.
+  projectName: 'jordy', // Usually your repo name.
 
   // Even if you don't use internalization, you can use this field to set useful
   // metadata like html lang. For example, if your site is Chinese, you may want
@@ -44,9 +44,9 @@ const config = {
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     {
       navbar: {
-        title: 'ts-fe-toolkit',
+        title: 'jordy',
         logo: {
-          alt: 'ts-fe-toolkit logo',
+          alt: 'jordy logo',
           src: 'img/logo.png',
         },
         items: [
@@ -57,7 +57,7 @@ const config = {
           },
           { to: '/docs/api', label: 'API', position: 'left' },
           {
-            href: 'https://github.com/thesoncriel/ts-fe-toolkit',
+            href: 'https://github.com/thesoncriel/jordy',
             label: 'GitHub',
             position: 'right',
           },
