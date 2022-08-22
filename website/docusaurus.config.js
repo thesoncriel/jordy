@@ -8,8 +8,8 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 const config = {
   title: 'jordy',
   tagline: 'FrontEnd Toolkit with Typescript',
-  url: 'https://thesoncriel.github.io/jordy/',
-  baseUrl: '/',
+  url: 'https://thesoncriel.github.io',
+  baseUrl: '/jordy',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
   favicon: 'img/favicon.png',
