@@ -17,10 +17,10 @@ type UnionHttpNetworkProviderType = HttpApi &
  *
  * 정해진 타입을 구현한 클래스를 대상으로 오류 내용을 일관성있게 파싱하는 기능을 추가한다.
  *
- * 해당 내용
+ * 클래스 내 메서드 수행시 오류가 발생되지 않는다면 아무런 동작을 하지 않는다.
  *
  * @param throwableParser 별도로 에러 파싱을 수행할 함수
- * @returns
+ * @see HttpRestError
  */
 export function ErrorParser<E = any>(throwableParser: (error: E) => any) {
   function doParse(error: any): any {

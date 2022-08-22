@@ -19,6 +19,8 @@ export function isNullable(val: unknown): val is void {
 }
 
 /**
+ * @deprecated 삭제 예정
+ *
  * 들어온 값이 빈 배열인지 확인한다.
  * @param val
  */
@@ -50,11 +52,20 @@ export function isNumberLike(val: unknown) {
 
 /**
  * 주어진 값이 빈 객체인지 여부를 확인한다.
- * @param val 
- * @returns 
+ * @param val
+ * @returns
  */
 export function isEmptyObject(val: unknown): val is Record<string, never> {
-  return val && Object.keys(val).length === 0 && val.constructor === Object;
+  try {
+    return (
+      val &&
+      isObject(val) &&
+      Object.keys(val).length === 0 &&
+      val.constructor === Object
+    );
+  } catch (error) {
+    return false;
+  }
 }
 
 /**
