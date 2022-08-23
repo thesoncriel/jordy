@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { HttpRestError } from '../types';
-import { isAxiosError } from './network.util';
+import { HttpRestError } from '../../types';
+import { isAxiosError } from './axios.util';
 
 export function throwableAxiosErrorParser(error: any) {
   if (isAxiosError(error)) {

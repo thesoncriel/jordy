@@ -155,15 +155,15 @@ export class HttpRestError extends Error implements HttpRestErrorLike {
     return false;
   }
 
-  static from(error: any): HttpRestError {
+  static from(error: any, errorType?: HttpRestErrorType): HttpRestError {
     if (HttpRestError.isHttpRestErrorLike(error)) {
       return new HttpRestError(error.message, error);
     }
     if (HttpRestError.isErrorLike(error)) {
-      return new HttpRestError(error.message);
+      return new HttpRestError(error.message, errorType);
     }
     if (typeof error === 'string') {
-      return new HttpRestError(error);
+      return new HttpRestError(error, errorType);
     }
     return new HttpRestError();
   }

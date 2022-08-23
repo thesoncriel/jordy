@@ -1,17 +1,23 @@
 import axios, { AxiosResponse } from 'axios';
-import { ErrorParser } from './ErrorParser.decorator';
+import { ErrorParser } from '../ErrorParser.decorator';
 import {
   AsyncHttpUploadConfig,
   AsyncHttpUploadProvider,
   UploadStateArgs,
   XhrUploadStateArgs,
-} from './network.type';
+} from '../network.type';
+import { convertToFormData } from '../network.util';
 import { throwableAxiosErrorParser } from './throwableAxiosErrorParser';
 
 @ErrorParser(throwableAxiosErrorParser)
 export class AxiosHttpUploadProvider implements AsyncHttpUploadProvider {
   private extractData<T>(axiosRes: AxiosResponse<T>) {
     return axiosRes.data;
+  }
+  private makeAxiosHeaders(headers: Record<string, string>) {
+    return {
+      common: headers,
+    };
   }
   private handleDownloadProgressCurried =
     (onProgress: (args: UploadStateArgs) => void) =>
@@ -36,8 +42,8 @@ export class AxiosHttpUploadProvider implements AsyncHttpUploadProvider {
   ) {
     return axios(url, {
       method,
-      data,
-      headers,
+      data: convertToFormData(data),
+      headers: this.makeAxiosHeaders(headers),
       withCredentials,
       timeout,
       onDownloadProgress: onProgress

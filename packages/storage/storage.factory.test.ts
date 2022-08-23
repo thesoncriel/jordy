@@ -1,5 +1,5 @@
 /* eslint-disable no-undef */
-vi.mock('../cookie', () => {
+vi.mock('./cookie', () => {
   const map: Record<
     string,
     {
@@ -38,10 +38,10 @@ vi.mock('../cookie', () => {
   };
 });
 
-import { timeout, envCheck } from '../../util';
-import { StorageType, SimpleStorage } from '../storage.type';
-import { createStorage } from '../storage.factory';
-import { cookie } from '../cookie';
+import { timeout, envCheck } from '../util';
+import { StorageType, SimpleStorage } from './storage.type';
+import { createStorage } from './storage.factory';
+import { cookie } from './cookie';
 
 const { setIsServer, setIsStorageAvailable } = envCheck;
 
@@ -51,9 +51,6 @@ interface TestModel {
   isYouth: boolean;
 }
 
-interface TestNumberField {
-  ss: number;
-}
 interface TempWindow {
   localStorage?: Storage;
   sessionStorage?: Storage;
@@ -64,16 +61,6 @@ type TempGlobal = Global &
   TempWindow & {
     window?: TempWindow;
   };
-
-function makeNumberArray(start: number, end: number) {
-  const arr: number[] = [];
-
-  for (let i = start; i <= end; i++) {
-    arr.push(i);
-  }
-
-  return arr;
-}
 
 function createMockStorage(): Storage {
   let data: { [key: string]: string } = {};
@@ -137,33 +124,6 @@ function createTestModelArray(): TestModel[] {
       name: '우짜',
     },
   ];
-}
-
-function createManyData(count = 100) {
-  const aRet: Array<
-    TestModel | TestModel[] | string | string[] | TestNumberField
-  > = [];
-  let iRand = 0;
-
-  for (let i = 0; i < count; i++) {
-    iRand = Math.floor(Math.random() * 1000);
-
-    if (iRand % 3 === 0) {
-      aRet.push(createTestModel());
-    } else if (iRand % 4 === 0) {
-      aRet.push(createTestArray());
-    } else if (iRand % 5 === 0) {
-      aRet.push(createTestModelArray());
-    } else if (iRand % 7 === 0) {
-      aRet.push(`random number : ${iRand}`);
-    } else {
-      aRet.push({
-        ss: iRand,
-      });
-    }
-  }
-
-  return aRet;
 }
 
 describe('storage factory', () => {
@@ -546,15 +506,8 @@ describe('expired time test', () => {
     setIsStorageAvailable(false);
   });
 
-  describe('type: session', () => {
-    doCheck('session');
-  });
-  describe('type: local', () => {
-    doCheck('local');
-  });
-  describe('type: memory', () => {
-    doCheck('memory');
-  });
+  describe.each(['session', 'local', 'memory'])('type: %s', doCheck);
+
   describe('type: cookie', () => {
     it('expired - mode=cookie: 자료를 설정하고 지정된 시간이 지나면 값이 존재하지 않아야 한다.', async () => {
       const sto = createStorage<TestModel>('cookie', KEY, 1);

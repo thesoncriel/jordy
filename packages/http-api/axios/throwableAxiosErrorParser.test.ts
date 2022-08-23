@@ -1,14 +1,14 @@
-import { HttpRestError } from '../types';
+import { HttpRestError } from '../../types';
 import { throwableAxiosErrorParser } from './throwableAxiosErrorParser';
 
-vi.mock('./network.util', () => {
+vi.mock('./axios.util', () => {
   return {
     isAxiosError: vi.fn(() => true),
   };
 });
 
 describe('throwableAxiosErrorParser', async () => {
-  const { isAxiosError } = await import('./network.util');
+  const { isAxiosError } = await import('./axios.util');
 
   beforeEach(() => {
     vi.mocked(isAxiosError).mockClear();
