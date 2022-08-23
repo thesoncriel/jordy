@@ -10,9 +10,9 @@ describe('isBaseAsyncHttpNetworkConfig', () => {
     const result2 = isBaseAsyncHttpNetworkConfig(undefined);
     const result3 = isBaseAsyncHttpNetworkConfig(NaN);
 
-    expect(result1).toBeFalsy();
-    expect(result2).toBeFalsy();
-    expect(result3).toBeFalsy();
+    expect(result1).toBe(false);
+    expect(result2).toBe(false);
+    expect(result3).toBe(false);
   });
 
   it('객체값이 아니면 false 다.', () => {
@@ -20,9 +20,9 @@ describe('isBaseAsyncHttpNetworkConfig', () => {
     const result2 = isBaseAsyncHttpNetworkConfig(12);
     const result3 = isBaseAsyncHttpNetworkConfig(true);
 
-    expect(result1).toBeFalsy();
-    expect(result2).toBeFalsy();
-    expect(result3).toBeFalsy();
+    expect(result1).toBe(false);
+    expect(result2).toBe(false);
+    expect(result3).toBe(false);
   });
 
   it('url 필드가 비어있다면 false 다.', () => {
@@ -31,7 +31,7 @@ describe('isBaseAsyncHttpNetworkConfig', () => {
       headers: {},
     });
 
-    expect(result).toBeFalsy();
+    expect(result).toBe(false);
   });
 
   it('headers 필드가 비어있다면 false 다.', () => {
@@ -42,7 +42,7 @@ describe('isBaseAsyncHttpNetworkConfig', () => {
       timeout: 0,
     });
 
-    expect(result).toBeFalsy();
+    expect(result).toBe(false);
   });
 
   it('url 과 headers 필드가 채워져 있다면 true 다.', () => {
@@ -53,7 +53,7 @@ describe('isBaseAsyncHttpNetworkConfig', () => {
       },
     });
 
-    expect(result).toBeTruthy();
+    expect(result).toBe(true);
   });
 
   it('withCredentials 와 timeout 은 있어도 되고 없어도 된다.', () => {
@@ -75,9 +75,9 @@ describe('isBaseAsyncHttpNetworkConfig', () => {
       timeout: 5000,
     });
 
-    expect(result1).toBeTruthy();
-    expect(result2).toBeTruthy();
-    expect(result3).toBeTruthy();
+    expect(result1).toBe(true);
+    expect(result2).toBe(true);
+    expect(result3).toBe(true);
   });
 
   it('withCredentials 와 timeout 은 지정된 타입이어야 한다.', () => {
@@ -99,9 +99,9 @@ describe('isBaseAsyncHttpNetworkConfig', () => {
       timeout: () => 1234,
     });
 
-    expect(result1).toBeFalsy();
-    expect(result2).toBeFalsy();
-    expect(result3).toBeFalsy();
+    expect(result1).toBe(false);
+    expect(result2).toBe(false);
+    expect(result3).toBe(false);
   });
 });
 

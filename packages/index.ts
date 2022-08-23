@@ -2,7 +2,7 @@ import { DeviceDetectProvider, withAdaptiveRender } from './adaptive-render';
 
 import {
   createHttpApi,
-  createHttpHeaderProvider,
+  createHttpHeaderMaker,
   headerPipe,
   HttpApi,
   HttpApiErrorParser,
@@ -40,7 +40,7 @@ export {
   withAdaptiveRender,
   createHttpApi,
   headerPipe,
-  createHttpHeaderProvider,
+  createHttpHeaderMaker,
   cache,
   renderRouteSystem,
   createGuardDispatch,

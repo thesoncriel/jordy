@@ -9,8 +9,8 @@ import { isJWTProvider, isTokenProvider } from '../storage/storage.util';
  * Accept: 'application/json'
  * @param headerData 데이터를 추가 할 헤더
  */
-const acceptContentType = (headerData: Record<string, string>) => {
-  headerData.Accept = 'application/json';
+const acceptContentType = (headerData: Map<string, string>) => {
+  headerData.set('Accept', 'application/json');
 
   return headerData;
 };
@@ -21,8 +21,8 @@ const acceptContentType = (headerData: Record<string, string>) => {
  * Content-Type = 'application/x-www-form-urlencoded'
  * @param headerData 데이터를 추가 할 헤더
  */
-const contentTypeFormPost = (headerData: Record<string, string>) => {
-  headerData['Content-Type'] = 'application/x-www-form-urlencoded';
+const contentTypeFormPost = (headerData: Map<string, string>) => {
+  headerData.set('Content-Type', 'application/x-www-form-urlencoded');
 
   return headerData;
 };
@@ -32,8 +32,8 @@ const contentTypeFormPost = (headerData: Record<string, string>) => {
  * Content-Type = 'multipart/form-data'
  * @param headerData 데이터를 추가 할 헤더
  */
-const contentTypeFormMultipart = (headerData: Record<string, string>) => {
-  headerData['Content-Type'] = 'multipart/form-data';
+const contentTypeFormMultipart = (headerData: Map<string, string>) => {
+  headerData.set('Content-Type', 'multipart/form-data');
 
   return headerData;
 };
@@ -43,8 +43,8 @@ const contentTypeFormMultipart = (headerData: Record<string, string>) => {
  * Content-Type = 'application/json; charset=utf-8'
  * @param headerData 데이터를 추가 할 헤더
  */
-const contentTypeJson = (headerData: Record<string, string>) => {
-  headerData['Content-Type'] = 'application/json; charset=utf-8';
+const contentTypeJson = (headerData: Map<string, string>) => {
+  headerData.set('Content-Type', 'application/json; charset=utf-8');
 
   return headerData;
 };
@@ -56,9 +56,9 @@ const contentTypeJson = (headerData: Record<string, string>) => {
  * @param headerData 데이터를 추가 할 헤더
  * @param token 사용될 베어러 토큰.
  */
-const bearerToken = (headerData: Record<string, string>, token?: string) => {
+const bearerToken = (headerData: Map<string, string>, token?: string) => {
   if (token) {
-    headerData.Authorization = `Bearer ${token}`;
+    headerData.set('Authorization', `Bearer ${token}`);
   }
 
   return headerData;
@@ -73,9 +73,9 @@ export const headerPipe = {
 };
 
 type HeaderFieldMaker = (
-  defHeader: Record<string, string>,
+  defHeader: Map<string, string>,
   token?: string
-) => Record<string, string>;
+) => Map<string, string>;
 
 /**
  * HTTP 헤더를 제공한다.
@@ -83,8 +83,11 @@ type HeaderFieldMaker = (
  * 다양한 HTTP 헤더를 만들 수 있다.
  * @param provider 토큰을 보관하는 제공자.
  */
-export const createHttpHeaderProvider =
-  (provider?: TokenProvider | JWTProvider) =>
+export const createHttpHeaderMaker =
+  (
+    provider?: TokenProvider | JWTProvider,
+    loginRequiredMessage = '로그인 상태가 만료 되었습니다.\n다시 로그인 하여 주시기 바랍니다.'
+  ) =>
   async (...pipes: HeaderFieldMaker[]) => {
     let token = '';
 
@@ -94,14 +97,14 @@ export const createHttpHeaderProvider =
       token = provider.get();
 
       if (!token && !isServer()) {
-        throw new Error(
-          '로그인 상태가 만료 되었습니다.\n다시 로그인 하여 주시기 바랍니다.'
-        );
+        throw new Error(loginRequiredMessage);
       }
     }
 
-    return pipes.reduce((prev, fn) => fn(prev, token), {}) as Record<
-      string,
-      string
-    >;
+    const rawMap = pipes.reduce(
+      (prev, fn) => fn(prev, token),
+      new Map<string, string>()
+    );
+
+    return Object.fromEntries(rawMap) as Record<string, string>;
   };

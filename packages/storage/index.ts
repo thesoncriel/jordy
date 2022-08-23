@@ -7,7 +7,7 @@ export * from './StorageTokenProvider';
 export * from './cookie';
 export * from './jwtProvider.factory';
 export * from './memoryStorage';
-export * from './storage.factory';
+export * from './createStorage.factory';
 export * from './storage.type';
 export * from './storage.util';
 export * from './tokenProvider.factory';

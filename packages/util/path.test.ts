@@ -1,4 +1,4 @@
-import { getFileName } from '../path';
+import { getFileName } from './path';
 
 describe('getFileName', () => {
   it('주어진 경로의 최하위 경로 값을 반환한다.', () => {
