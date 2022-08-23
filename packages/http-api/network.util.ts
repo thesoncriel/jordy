@@ -1,6 +1,5 @@
-import { AxiosError } from 'axios';
 import { HttpRestError } from '../types';
-import { isObject, isString, isUndefined, isNumber } from '../util/typeCheck';
+import { isNumber, isObject, isString, isUndefined } from '../util/typeCheck';
 import { BaseAsyncHttpNetworkConfig } from './network.type';
 
 function isOptionalBoolean(value: unknown): value is undefined | boolean {
@@ -63,13 +62,25 @@ export function throwHttpRestError(error: unknown) {
   });
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function isAxiosError(error: any): error is AxiosError {
-  return (
-    error &&
-    error.response &&
-    typeof error.response.status === 'number' &&
-    error.config &&
-    typeof error.config.url === 'string'
-  );
+export function convertToFormData(
+  data: Record<string, string | File | File[]>
+) {
+  return Object.entries(data).reduce((formData, [key, value]) => {
+    if (Array.isArray(value)) {
+      return value.reduce((innerFormData, file) => {
+        innerFormData.append(key, file, file.name);
+
+        return innerFormData;
+      }, formData);
+    }
+    if (typeof value === 'string') {
+      formData.set(key, value);
+
+      return formData;
+    }
+
+    formData.set(key, value, value.name);
+
+    return formData;
+  }, new FormData());
 }
