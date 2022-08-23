@@ -1,4 +1,5 @@
-import { createAsyncQueue } from '../AsyncQueue';
+import { PromiseResolver } from '../types';
+import { createAsyncQueue } from './AsyncQueue';
 
 describe('AsyncQueue', () => {
   function create() {
@@ -8,7 +9,7 @@ describe('AsyncQueue', () => {
   it('큐 생성 시 내부 요소는 비어있다.', () => {
     const result = create();
 
-    expect(result.has()).toBeFalsy();
+    expect(result.has()).toBe(false);
     expect(result.size()).toBe(0);
   });
 
@@ -31,7 +32,7 @@ describe('AsyncQueue', () => {
         reject: vi.fn(),
       });
 
-      expect(q.has()).not.toBeFalsy();
+      expect(q.has()).not.toBe(false);
       expect(q.size()).toBe(1);
 
       q.enqueue({
@@ -48,12 +49,12 @@ describe('AsyncQueue', () => {
         reject: vi.fn(),
       });
 
-      expect(q.has()).not.toBeFalsy();
+      expect(q.has()).not.toBe(false);
       expect(q.size()).toBe(1);
 
       q.dequeue();
 
-      expect(q.has()).toBeFalsy();
+      expect(q.has()).toBe(false);
       expect(q.size()).toBe(0);
     });
 
@@ -81,7 +82,7 @@ describe('AsyncQueue', () => {
 
       expect(workingSize).toBe(items.length);
       expect(q.size()).toBe(0);
-      expect(q.has()).toBeFalsy();
+      expect(q.has()).toBe(false);
     });
 
     it('rejectAll 을 수행하면 내부 요소는 모두 reject 를 수행하고 비워진다.', () => {
@@ -109,7 +110,7 @@ describe('AsyncQueue', () => {
 
       expect(workingSize).toBe(items.length);
       expect(q.size()).toBe(0);
-      expect(q.has()).toBeFalsy();
+      expect(q.has()).toBe(false);
     });
 
     it('clear 를 수행하면 내부 요소는 모두 reject 를 수행하고 자동으로 모두 비워진다.', () => {
@@ -139,7 +140,7 @@ describe('AsyncQueue', () => {
       });
 
       expect(q.size()).toBe(0);
-      expect(q.has()).toBeFalsy();
+      expect(q.has()).toBe(false);
     });
 
     describe('Promise 직접 활용', () => {
@@ -278,6 +279,151 @@ describe('AsyncQueue', () => {
           })
         );
       });
-    }); // awaiting 활용 [end]
+    }); // awaiting 수행 [end]
+
+    describe('First In First Out 테스트', () => {
+      let resolveHistories: number[] = [];
+      let rejectHistories: number[] = [];
+
+      function createResolver(index: number): PromiseResolver<string> {
+        return {
+          resolve: vi.fn(() => {
+            resolveHistories.push(index);
+
+            return index;
+          }),
+          reject: vi.fn((err) => {
+            rejectHistories.push(index);
+
+            return err;
+          }),
+        };
+      }
+
+      afterEach(() => {
+        resolveHistories = [];
+        rejectHistories = [];
+      });
+
+      it('삽입하고 뺄 때 FIFO 규칙을 따른다.', () => {
+        const samples = [1, 2, 3, 4, 5, 6];
+
+        expect.assertions(samples.length);
+        samples.forEach((_, index) => {
+          q.enqueue(createResolver(index));
+        });
+
+        let index = 0;
+
+        while (q.has()) {
+          const resolver = q.dequeue();
+
+          expect(resolver.resolve('theson')).toBe(index++);
+        }
+      });
+
+      it('resolveAll 수행 시 삽입된 순서대로 resolve 시킨다.', () => {
+        const samples = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
+
+        expect.assertions(samples.length);
+        samples.forEach((_, index) => {
+          q.enqueue(createResolver(index));
+        });
+
+        q.resolveAll('lookpin!');
+
+        resolveHistories.forEach((callHistory, pushedIndex) => {
+          expect(callHistory).toBe(pushedIndex);
+        });
+      });
+
+      it('rejectAll 수행 시 삽입된 순서대로 reject 시킨다.', () => {
+        const samples = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
+
+        expect.assertions(samples.length);
+        samples.forEach((_, index) => {
+          q.enqueue(createResolver(index));
+        });
+
+        q.rejectAll(new Error('lookpin!'));
+
+        rejectHistories.forEach((callHistory, pushedIndex) => {
+          expect(callHistory).toBe(pushedIndex);
+        });
+      });
+
+      it('몇번의 awaiting 후 resolveAll 을 수행해도 정상적으로 순서를 지킨다.', async () => {
+        const samples = [
+          '룩핀',
+          'FE',
+          'BE',
+          'IOS',
+          'AOS',
+          'Data',
+          'AI',
+          'fashion',
+          'coordinate',
+        ];
+        const resultKeys = [] as string[];
+        const promises = samples.map((key) => q.awaiting(key));
+
+        const nextPromises = promises.map((prm, index) => {
+          return prm.then(() => index);
+        });
+
+        setTimeout(() => {
+          q.resolveAll('lookpin!', (key: string) => {
+            resultKeys.push(key);
+          });
+          expect(resultKeys).toEqual(samples);
+        }, 5);
+
+        const results = await Promise.all(nextPromises);
+
+        expect(results).toEqual(samples.map((_, index) => index));
+      });
+
+      it('몇번의 awaiting 후 rejectAll 을 수행해도 정상적으로 순서를 지킨다.', async () => {
+        const samples = [
+          '룩핀',
+          'FE',
+          'BE',
+          'IOS',
+          'AOS',
+          'theson',
+          'Data',
+          'AI',
+          'fashion',
+          'coordinate',
+        ];
+        const resultKeys = [] as string[];
+        const promises = samples.map((key) => q.awaiting(key));
+
+        const nextPromises = promises.map((prm, index) => {
+          return prm.catch((err) =>
+            Promise.reject(new Error(`${err.message}: ${index}`))
+          );
+        });
+
+        setTimeout(() => {
+          q.rejectAll(new Error('lookpin!'), (key: string) => {
+            resultKeys.push(key);
+          });
+          expect(resultKeys).toEqual(samples);
+        }, 5);
+
+        const results = await Promise.allSettled(nextPromises);
+
+        expect(results).toEqual(
+          samples.map((_, index) => {
+            return expect.objectContaining({
+              reason: expect.objectContaining({
+                message: expect.stringContaining(index.toString()),
+              }),
+            });
+          })
+        );
+      });
+    }); // First In First Out 테스트 [end]
   });
 });

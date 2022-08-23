@@ -9,8 +9,10 @@ export interface AsyncQueue<T, E = any> {
    * 곧바로 Promise 를 만들고 반환한다.
    *
    * 만들어진 Promise 의 resolve 와 reject 는 자동으로 queue 에 삽입된다.
+   *
+   * @params key 내부 Resolver 에 적용할 고유 키.
    */
-  awaiting(): Promise<T>;
+  awaiting(key?: string | number): Promise<T>;
   /**
    * Promise 를 제어하는 resolver 를 queue 에 삽입한다.
    * @param resolver 삽입 할 resolver
@@ -36,15 +38,23 @@ export interface AsyncQueue<T, E = any> {
   /**
    * queue 내의 모든 resolver 에 resolve 명령을 내린 후 queue 를 비운다.
    * @param data 전달될 데이터
+   * @param onEach resolve 될 때 수행된 resolver 의 key 와 적용되어 있던 index 를 확인하는 콜백
    * @return 수행된 개수
    */
-  resolveAll(data: T): number;
+  resolveAll(
+    data: T,
+    onEach?: (key: string | number | undefined, index: number) => void
+  ): number;
   /**
    * queue 내의 모든 resolver 에 reject 명령을 내린 후 queue 를 비운다.
    * @param reason 전달될 에러 내용
+   * @param onEach reject 될 때 수행된 resolver 의 key 와 적용되어 있던 index 를 확인하는 콜백
    * @return 수행된 개수
    */
-  rejectAll(reason: E): number;
+  rejectAll(
+    reason: E,
+    onEach?: (key: string | number | undefined, index: number) => void
+  ): number;
   /**
    * 모든 내부 요소에 reject 를 자동으로 수행 시킨 후 queue 를 비운다.
    */
@@ -54,21 +64,22 @@ export interface AsyncQueue<T, E = any> {
 class PromiseResolverQueue<T, E = any> implements AsyncQueue<T, E> {
   private elements: PromiseResolver<T, E>[] = [];
 
-  awaiting(): Promise<T> {
+  awaiting(key?: string | number): Promise<T> {
     return new Promise<T>((resolve, reject) => {
       this.enqueue({
+        key,
         resolve,
         reject,
       });
     });
   }
   enqueue(resolver: PromiseResolver<T, E>): number {
-    this.elements.unshift(resolver);
+    this.elements.push(resolver);
 
     return this.elements.length;
   }
   dequeue(): PromiseResolver<T, E> | null {
-    return this.elements.pop() || null;
+    return this.elements.shift() || null;
   }
   has(): boolean {
     return this.elements.length > 0;
@@ -76,9 +87,13 @@ class PromiseResolverQueue<T, E = any> implements AsyncQueue<T, E> {
   size(): number {
     return this.elements.length;
   }
-  resolveAll(data: T): number {
-    this.elements.forEach((resolver) => {
+  resolveAll(
+    data: T,
+    onEach?: (key: string | number | undefined, index: number) => void
+  ): number {
+    this.elements.forEach((resolver, index) => {
       resolver.resolve(data);
+      onEach && onEach(resolver.key, index);
     });
     const size = this.elements.length;
 
@@ -86,9 +101,13 @@ class PromiseResolverQueue<T, E = any> implements AsyncQueue<T, E> {
 
     return size;
   }
-  rejectAll(reason: E): number {
-    this.elements.forEach((resolver) => {
+  rejectAll(
+    reason: E,
+    onEach?: (key: string | number | undefined, index: number) => void
+  ): number {
+    this.elements.forEach((resolver, index) => {
       resolver.reject(reason);
+      onEach && onEach(resolver.key, index);
     });
     const size = this.elements.length;
 
