@@ -52,14 +52,9 @@ export interface SimpleStorage<T extends MarshallingType> {
   /**
    * 스토리지에 값을 설정한다.
    * @param value 설정할 값
-   */
-  set(value: T): void;
-  /**
-   * 스토리지에 값을 설정한다.
-   * @param value 설정할 값
    * @param expiredDate 다시 설정 할 만료일자
    */
-  set(value: T, expiredDate: string): void;
+  set(value: T, expiredDate?: string): void;
   /**
    * 스토리지에 설정된 값을 지운다.
    */
@@ -93,14 +88,9 @@ export interface TokenProvider {
   /**
    * 토큰 값을 설정 한다.
    * @param token 토큰값
-   */
-  set(token: string): void;
-  /**
-   * 토큰 값을 설정 한다.
-   * @param token 토큰값
    * @param expiredDate 다시 설정 할 만료일자
    */
-  set(token: string, expiredDate: string): void;
+  set(token: string, expiredDate?: string): void;
   /**
    * 현재 토큰값을 지운다.
    */

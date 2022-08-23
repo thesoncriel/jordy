@@ -68,11 +68,11 @@ describe('RefreshableJWTProvider', () => {
     });
 
     it('refresh 수행전후 상황에 따라 refreshed 상태가 바뀐다.', async () => {
-      expect(provider.refreshed).toBeFalsy();
+      expect(provider.refreshed).toBe(false);
 
       await provider.get();
 
-      expect(provider.refreshed).toBeTruthy();
+      expect(provider.refreshed).toBe(true);
     });
 
     it('한번 토큰을 가져오면 다시 refresh 를 수행하지 않는다.', async () => {
@@ -119,7 +119,7 @@ describe('RefreshableJWTProvider', () => {
       );
     });
 
-    it('refresh 성공 후 토큰값 요청을 여러번 하면, 그 요청은 내부 토큰 제공자에게 위임된다.', async () => {
+    it('refresh 성공 후 토큰값 요청을 여러번 하면, 내부 토큰 제공자에 위임하여 이것이 가진 값을 내보낸다.', async () => {
       expect(accessTokenMock.get).not.toBeCalled();
 
       await provider.get();
@@ -222,11 +222,11 @@ describe('RefreshableJWTProvider', () => {
     it('refreshed 된 후에 clear 수행 시 상태가 초기화된다.', async () => {
       await provider.get();
 
-      expect(provider.refreshed).toBeTruthy();
+      expect(provider.refreshed).toBe(true);
 
       provider.clear();
 
-      expect(provider.refreshed).toBeFalsy();
+      expect(provider.refreshed).toBe(false);
     });
   });
 });

@@ -40,7 +40,7 @@ vi.mock('./cookie', () => {
 
 import { timeout, envCheck } from '../util';
 import { StorageType, SimpleStorage } from './storage.type';
-import { createStorage } from './storage.factory';
+import { createStorage } from './createStorage.factory';
 import { cookie } from './cookie';
 
 const { setIsServer, setIsStorageAvailable } = envCheck;

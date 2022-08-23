@@ -58,7 +58,7 @@ export function isNumberLike(val: unknown) {
 export function isEmptyObject(val: unknown): val is Record<string, never> {
   try {
     return (
-      val &&
+      Boolean(val) &&
       isObject(val) &&
       Object.keys(val).length === 0 &&
       val.constructor === Object
