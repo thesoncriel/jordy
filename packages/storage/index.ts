@@ -10,4 +10,4 @@ export * from './memoryStorage';
 export * from './createStorage.factory';
 export * from './storage.type';
 export * from './storage.util';
-export * from './tokenProvider.factory';
+export * from './createTokenProvider.factory';

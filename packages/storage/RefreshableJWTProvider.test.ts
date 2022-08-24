@@ -1,7 +1,7 @@
 import { PromiseResolver } from 'packages/types';
 import { noop } from '../util';
 import { RefreshableJWTProvider } from './RefreshableJWTProvider';
-import { JWTAuthTokenDto } from './storage.type';
+import { JWTAuthTokenDto, TokenProvider } from './storage.type';
 
 describe('RefreshableJWTProvider', () => {
   const TOKEN = {
@@ -48,8 +48,8 @@ describe('RefreshableJWTProvider', () => {
   const refresherMock = vi.fn().mockResolvedValue(AUTH_TOKEN_DTO);
 
   const provider = new RefreshableJWTProvider(
-    accessTokenMock,
-    refreshTokenMock,
+    accessTokenMock as TokenProvider,
+    refreshTokenMock as TokenProvider,
     asyncQueueMock,
     refresherMock
   );
