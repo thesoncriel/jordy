@@ -5,14 +5,13 @@ import { ModuleRouteModel } from './moduleRoute.model';
 import { RenderRouteSystem } from './renderRouteSystem';
 
 interface WrapperProps {
-  title: string;
   children: React.ReactNode;
 }
 const createTestWrapper = (text: string) =>
   function Wrap({ children }: WrapperProps) {
     return (
       <section>
-        <h1 data-testid={text}>{text}</h1>
+        <h1>{text}</h1>
         {children}
       </section>
     );
@@ -20,7 +19,7 @@ const createTestWrapper = (text: string) =>
 
 const createTestComp = (text: string) => {
   return function Test() {
-    return <div data-testid={text}>{text}</div>;
+    return <div>{text}</div>;
   };
 };
 

@@ -4,7 +4,7 @@ import { Outlet, RouteObject, useRoutes } from 'react-router-dom';
 import { ModuleRouteChildModel, ModuleRouteModel } from './moduleRoute.model';
 
 function toJSXElement(
-  Wrapper?: React.ComponentType<{ children: React.ReactNode }>,
+  Wrapper?: React.ComponentType<any>,
   Element?: React.ComponentType<any>
 ) {
   if (!Wrapper && !Element) {
