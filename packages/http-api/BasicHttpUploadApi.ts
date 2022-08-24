@@ -9,10 +9,10 @@ export class BasicHttpUploadApi implements HttpUploadApi {
   constructor(
     private provider: AsyncHttpUploadProvider,
     private baseUrl: string,
-    private headersCreator: () => Record<string, string>,
+    private headersCreator: () => Promise<Record<string, string>>,
     private withCredentials = true
   ) {}
-  postUpload<
+  async postUpload<
     T = void,
     P extends Record<string, any> = Record<string, string | File | File[]>
   >(
@@ -23,14 +23,14 @@ export class BasicHttpUploadApi implements HttpUploadApi {
   ): Promise<T> {
     return this.provider.post({
       url: `${this.baseUrl}${url}`,
-      headers: this.headersCreator(),
+      headers: await this.headersCreator(),
       withCredentials: this.withCredentials,
       data,
       timeout,
       onProgress: progressCallback,
     });
   }
-  putUpload<
+  async putUpload<
     T = void,
     P extends Record<string, any> = Record<string, string | File | File[]>
   >(
@@ -41,7 +41,7 @@ export class BasicHttpUploadApi implements HttpUploadApi {
   ): Promise<T> {
     return this.provider.put({
       url: `${this.baseUrl}${url}`,
-      headers: this.headersCreator(),
+      headers: await this.headersCreator(),
       withCredentials: this.withCredentials,
       data,
       timeout,

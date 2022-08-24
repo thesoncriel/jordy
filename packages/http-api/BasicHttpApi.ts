@@ -11,6 +11,7 @@ export class BasicHttpApi implements HttpApi {
     private paramsSerializer: (params: any) => string,
     private withCredentials = true
   ) {}
+
   async get<T = MarshallingType, P = void | Record<string, any>>(
     url: string,
     params?: P,
@@ -81,6 +82,7 @@ export class BasicHttpApi implements HttpApi {
       timeout,
     });
   }
+
   getFile<P = void | Record<string, any>>(
     url: string,
     params?: P,
