@@ -1,131 +1,105 @@
-/* eslint-disable @typescript-eslint/no-use-before-define */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { ComponentType, Suspense } from 'react';
-import { Redirect, Route, Switch } from 'react-router-dom';
-import { AsyncGuard } from './AsyncGuard';
-import { ModuleRouteModel } from './moduleRoute.model';
+import React from 'react';
+import { Outlet, RouteObject, useRoutes } from 'react-router-dom';
+import { ModuleRouteChildModel, ModuleRouteModel } from './moduleRoute.model';
 
-type GuardFunctionType = () => boolean | Promise<boolean>;
-
-function toPromiseList(guardList: GuardFunctionType[]) {
-  return guardList.map((fn) => {
-    const ret = fn();
-
-    if (ret instanceof Promise) {
-      return ret;
-    }
-    return Promise.resolve(ret);
-  });
-}
-
-function renderSubRoute(
-  route: ModuleRouteModel,
-  notFound?: ComponentType<any>,
-  guardList: GuardFunctionType[] = []
+function toJSXElement(
+  Wrapper?: React.ComponentType<{ children: React.ReactNode }>,
+  Element?: React.ComponentType<any>
 ) {
-  const Comp = route.component;
-  const Wrap = route.wrap || React.Fragment;
+  if (!Wrapper && !Element) {
+    return;
+  }
 
-  if (route.guard) {
-    guardList.push(route.guard);
-
-    if (route.child) {
-      return (
-        <Wrap>
-          {renderRouteSystem(route.child, true, notFound, [...guardList])}
-        </Wrap>
-      );
-    }
-
-    const guardResults = () =>
-      Promise.all(toPromiseList(guardList)).then((items) =>
-        items.every(Boolean)
-      );
-
+  if (Wrapper) {
     return (
-      <Wrap>
-        <Suspense fallback={<></>}>
-          <AsyncGuard
-            guard={guardResults}
-            redirect={route.redirect}
-            failComponent={route.failComponent}
-          >
-            {Comp && <Comp />}
-          </AsyncGuard>
-        </Suspense>
-      </Wrap>
+      <Wrapper>
+        <Outlet />
+      </Wrapper>
     );
   }
 
-  if (route.redirect) {
-    return <Redirect to={route.redirect} />;
+  if (Element) {
+    return <Element />;
   }
-  if (route.child) {
-    return (
-      <Wrap>
-        {renderRouteSystem(route.child, true, notFound, [...guardList])}
-      </Wrap>
-    );
-  }
-
-  if (guardList.length > 0) {
-    const guardResults = () =>
-      Promise.all(toPromiseList(guardList)).then((items) =>
-        items.every(Boolean)
-      );
-
-    return (
-      <Wrap>
-        <Suspense fallback={<></>}>
-          <AsyncGuard
-            guard={guardResults}
-            redirect={route.redirect}
-            failComponent={route.failComponent}
-          >
-            {Comp && <Comp />}
-          </AsyncGuard>
-        </Suspense>
-      </Wrap>
-    );
-  }
-
-  return (
-    <Wrap>
-      <Suspense fallback={<></>}>{Comp && <Comp />}</Suspense>
-    </Wrap>
-  );
 }
 
-export const renderRouteSystem = (
-  routes: ModuleRouteModel[],
-  withSwitch?: boolean,
-  notFound?: ComponentType<any>,
-  guardList: GuardFunctionType[] = []
-): JSX.Element | JSX.Element[] => {
-  const NotFound = notFound;
-
-  if (withSwitch) {
-    return (
-      <Switch>
-        {routes.map((route) => (
-          <Route key={route.path} path={route.path} exact={route.exact}>
-            {renderSubRoute(route, notFound, [...guardList])}
-          </Route>
-        ))}
-        {NotFound && <NotFound />}
-      </Switch>
-    );
+function recursionChildren({
+  path,
+  element,
+  children = [],
+  index = false,
+}: ModuleRouteChildModel): RouteObject {
+  if (Element && children.length > 0) {
+    return {
+      path,
+      index,
+      children: [
+        { index: true, element: toJSXElement(undefined, element) },
+        ...children.map(recursionChildren),
+      ],
+    };
   }
 
-  const renders = routes.map((route) => (
-    <Route key={route.path} path={route.path} exact={route.exact}>
-      {renderSubRoute(route, notFound, [...guardList])}
-    </Route>
-  ));
+  return {
+    path,
+    index,
+    element: toJSXElement(undefined, element),
+    children: children.map(recursionChildren),
+  };
+}
 
-  if (NotFound) {
-    renders.push(<NotFound key="%%not-found%%" />);
-  }
+/**
+ * react-router-dom V6의 route system을 적용한다.
+ *
+ * @example
+ * ```tsx
+ * const routes = [
+ *  {
+ *    path: "/",
+ *    wrap: Wrapper,
+ *    element: Element,
+ *    children: [{
+ *      path: "main", // '/main'
+ *      element: Element,
+ *      children: [{
+ *        path: ":id", // '/main/:id'
+ *        element: Element
+ *      }]
+ *    }]
+ *  }
+ * ]
+ * ```
+ *
+ * renderRouteSystem을 사용하기 위해선 `BrowserRouter`로 감싸주어야 한다.
+ * ```ts
+ * <BrowserRouter>{renderRouteSystem(routes)}</BrowserRouter>
+ * ```
+ *
+ * @param moduleRoutes
+ * @returns
+ */
+export const RenderRouteSystem = (moduleRoutes: ModuleRouteModel[]) => {
+  const routeObject: RouteObject[] = moduleRoutes.map(
+    ({ path, wrap, element, children = [] }) => {
+      if (wrap && element) {
+        return {
+          path,
+          element: toJSXElement(wrap),
+          children: [
+            { index: true, element: toJSXElement(undefined, element) },
+            ...children.map(recursionChildren),
+          ],
+        };
+      }
 
-  return renders;
+      return {
+        path,
+        element: toJSXElement(wrap, element),
+        children: children?.map(recursionChildren),
+      };
+    }
+  );
+
+  return useRoutes(routeObject);
 };
