@@ -84,3 +84,7 @@ export function convertToFormData(
     return formData;
   }, new FormData());
 }
+
+export function defaultHeaderCreator() {
+  return Promise.resolve({} as Record<string, string>);
+}
