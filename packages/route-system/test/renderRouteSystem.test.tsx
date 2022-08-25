@@ -27,42 +27,35 @@ describe.only('renderRouteSystem', () => {
     expect(screen.getByText('indexWrapper')).toBeInTheDocument();
   });
 
-  it('main(/main) 페이지가 렌더링 된다.', () => {
+  it('wrap과 element가 동시에 설정되어 있으면 설정된 element가 wrap에 감싸져 렌더링 된다.', () => {
     renderWithRouter('/main');
 
     expect(screen.getByText('mainWrapper')).toBeInTheDocument();
     expect(screen.getByText('main')).toBeInTheDocument();
   });
 
-  it('main order(/main/order) 페이지가 렌더링 된다.', () => {
+  it('wrap가 적용된 main order 페이지가 렌더링 된다.', () => {
     renderWithRouter('/main/order');
 
+    expect(screen.getByText('mainWrapper')).toBeInTheDocument();
     expect(screen.getByText('mainOrder')).toBeInTheDocument();
   });
 
-  it('main order news(/main/order/news) 페이지가 렌더링 된다.', () => {
+  it('wrap가 적용된 main order news 페이지가 렌더링 된다.', () => {
     renderWithRouter('/main/order/news');
 
+    expect(screen.getByText('mainWrapper')).toBeInTheDocument();
     expect(screen.getByText('mainOrderNews')).toBeInTheDocument();
   });
 
-  it(':id(/main/order/news/:id)에 따라 페이지가 렌더링 된다.', () => {
+  it('wrap가 적용된 :id에 따른 main order news 페이지가 렌더링 된다.', () => {
     renderWithRouter('/main/order/news/123');
 
+    expect(screen.getByText('mainWrapper')).toBeInTheDocument();
     expect(screen.getByText('123')).toBeInTheDocument();
-
-    renderWithRouter('/main/order/news/456');
-
-    expect(screen.getByText('456')).toBeInTheDocument();
   });
 
-  it('main order(/main/order) 페이지가 렌더링 된다.', () => {
-    renderWithRouter('/main/order');
-
-    expect(screen.getByText('mainOrder')).toBeInTheDocument();
-  });
-
-  it('wrap가 지정되지 않으면 감싸는 Wrapper는 렌더링 되지 않는다.', () => {
+  it('만약 wrap가 지정되지 않으면 wrap는 렌더링 되지 않는다.', () => {
     renderWithRouter('/product');
 
     expect(screen.queryByText('productWrapper')).not.toBeInTheDocument();
@@ -78,5 +71,11 @@ describe.only('renderRouteSystem', () => {
     renderWithRouter('/main/anything');
 
     expect(screen.getByText('mainFallback')).toBeInTheDocument();
+  });
+
+  it('특정 path에 element가 지정되지 않았어도, children에 path="" 속성이 있다면 element로 적용된다.', () => {
+    renderWithRouter('/hello');
+
+    expect(screen.getByText('hello world')).toBeInTheDocument();
   });
 });

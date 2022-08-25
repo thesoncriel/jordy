@@ -65,6 +65,15 @@ export const routes: ModuleRouteModel[] = [
     ],
   },
   {
+    path: '/hello',
+    children: [
+      {
+        path: '',
+        element: createTestComp('hello world'),
+      },
+    ],
+  },
+  {
     path: '*',
     element: createTestComp('fallback'),
   },
