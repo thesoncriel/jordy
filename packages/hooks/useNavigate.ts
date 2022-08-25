@@ -9,8 +9,8 @@ import {
 
 import { isObject, isUndefined } from '../util';
 
-type SearchParams = Record<string, any>;
-type SearchParamsOptions = NavigateOptions & { merge?: boolean };
+export type SearchParams = Record<string, any>;
+export type SearchParamsOptions = NavigateOptions & { merge?: boolean };
 
 function instanceOfTo(to: unknown): to is Partial<Path> {
   return isObject(to) && ('pathname' in to || 'search' in to || 'hash' in to);

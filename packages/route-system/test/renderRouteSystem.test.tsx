@@ -13,7 +13,7 @@ function renderWithRouter(link: string) {
   );
 }
 
-describe.only('renderRouteSystem', () => {
+describe('renderRouteSystem', () => {
   beforeAll(() => {
     render(<App />, { wrapper: BrowserRouter });
   });
