@@ -28,12 +28,10 @@ function recursionChildren({
   path,
   element,
   children = [],
-  index = false,
 }: ModuleRouteChildModel): RouteObject {
-  if (Element && children.length > 0) {
+  if (element && children.length > 0) {
     return {
       path,
-      index,
       children: [
         { index: true, element: toJSXElement(undefined, element) },
         ...children.map(recursionChildren),
@@ -43,7 +41,6 @@ function recursionChildren({
 
   return {
     path,
-    index,
     element: toJSXElement(undefined, element),
     children: children.map(recursionChildren),
   };

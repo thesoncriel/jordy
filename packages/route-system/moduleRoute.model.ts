@@ -14,18 +14,6 @@ export interface ModuleRouteChildModel {
    */
   element?: ComponentType<any>;
   /**
-   * 설정된 경로의 index component로 사용하고 싶은 Element가 있을 시
-   *
-   * @example
-   * {
-   *  path: "/",
-   *  children :[
-   *    { index: true, element : () => <div>I am Index</div>}
-   *  ]
-   * }
-   */
-  index?: boolean;
-  /**
    * 설정된 경로의 하위 경로 설정
    *
    * `children`에서의 경로(`path`) 설정은 **상대적**이다.
@@ -33,6 +21,7 @@ export interface ModuleRouteChildModel {
    * @example
    * {
    *  path: "/main",
+   *  elemet: MainElement,
    *  children: [
    *    { path: "order", element: Element } // `/main/order`
    *  ]
