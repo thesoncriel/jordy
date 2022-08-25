@@ -1,7 +1,7 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
 
-import { ModuleRouteModel } from './moduleRoute.model';
+import { ModuleRouteModel } from './renderRouteSystem.model';
 import { RenderRouteSystem } from './renderRouteSystem';
 
 interface WrapperProps {

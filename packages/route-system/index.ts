@@ -1,2 +1,2 @@
 export * from './renderRouteSystem';
-export * from './moduleRoute.model';
+export * from './renderRouteSystem.model';
