@@ -4,7 +4,7 @@ import { Outlet, RouteObject, useRoutes } from 'react-router-dom';
 import {
   ModuleRouteChildModel,
   ModuleRouteModel,
-} from './renderRouteSystem.model';
+} from './useRouteSystem.model';
 
 function toJSXElement(
   Wrapper?: React.ComponentType<any>,
@@ -50,7 +50,9 @@ function recursionChildren({
 }
 
 /**
- * react-router-dom V6의 route system을 적용한다.
+ * react-router-dom V6의 route system을 적용하는 hooks
+ *
+ * 내부적으로 useRoutes()를 사용한다.
  *
  * @example
  * ```tsx
@@ -79,7 +81,7 @@ function recursionChildren({
  * @param moduleRoutes
  * @returns
  */
-export const RenderRouteSystem = (moduleRoutes: ModuleRouteModel[]) => {
+export const useRouteSystem = (moduleRoutes: ModuleRouteModel[]) => {
   const routeObject: RouteObject[] = moduleRoutes.map(
     ({ path, wrap, element, children = [] }) => {
       if (wrap && element) {

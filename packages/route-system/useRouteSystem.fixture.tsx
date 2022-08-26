@@ -1,8 +1,8 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
 
-import { ModuleRouteModel } from './renderRouteSystem.model';
-import { RenderRouteSystem } from './renderRouteSystem';
+import { ModuleRouteModel } from './useRouteSystem.model';
+import { useRouteSystem } from './useRouteSystem';
 
 interface WrapperProps {
   children: React.ReactNode;
@@ -80,5 +80,5 @@ export const routes: ModuleRouteModel[] = [
 ];
 
 export default function App() {
-  return RenderRouteSystem(routes);
+  return useRouteSystem(routes);
 }

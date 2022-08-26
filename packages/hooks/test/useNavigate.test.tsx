@@ -3,7 +3,7 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import { BrowserRouter, NavigateOptions, To } from 'react-router-dom';
 import '@testing-library/jest-dom';
 
-import { ModuleRouteModel, RenderRouteSystem } from '../../route-system';
+import { ModuleRouteModel, useRouteSystem } from '../../route-system';
 import { SearchParamsOptions, useNavigate } from '../useNavigate';
 
 function Home() {
@@ -72,7 +72,7 @@ function App() {
     },
   ];
 
-  return RenderRouteSystem(routes);
+  return useRouteSystem(routes);
 }
 
 describe('useNavigate', () => {
