@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { HttpRestError } from '../types';
 import { isNumber, isObject, isString, isUndefined } from '../util/typeCheck';
 import { BaseAsyncHttpNetworkConfig } from './network.type';
