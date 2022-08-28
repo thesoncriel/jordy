@@ -23,14 +23,10 @@ describe('createHttpHeaderPipe', () => {
     clear: vi.fn(),
   };
   const pipeMock1 = vi.fn((data: Map<string, string>) => {
-    data.set('name', 'lookpin');
-
-    return data;
+    return data.set('name', 'lookpin');
   });
   const pipeMock2 = vi.fn((data: Map<string, string>) => {
-    data.set('age', '21');
-
-    return data;
+    return data.set('age', '21');
   });
   const pipeMock3 = vi.fn((data: Map<string, string>, token = '') => {
     if (token) {
@@ -62,14 +58,10 @@ describe('createHttpHeaderPipe', () => {
 
     it('만들어진 헤더는 오퍼레이터에서 제공된 내용을 기반으로 만들어진다.', async () => {
       pipeMock1.mockImplementationOnce((data) => {
-        data.set('gameName', 'sonic3');
-
-        return data;
+        return data.set('gameName', 'sonic3');
       });
       pipeMock2.mockImplementationOnce((data) => {
-        data.set('genre', 'action');
-
-        return data;
+        return data.set('genre', 'action');
       });
       const result = await headerPipe(pipeMock1, pipeMock2);
 

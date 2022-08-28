@@ -4,11 +4,10 @@ import { isAxiosError } from './axios.util';
 
 export function throwableAxiosErrorParser(error: any) {
   if (isAxiosError(error)) {
-    const axiosErr = error;
-    const errorData = axiosErr.response?.data;
+    const errorData = error.response?.data;
     const meta = {
-      url: axiosErr.config.url || '',
-      status: axiosErr.response?.status || 0,
+      url: error.config.url || '',
+      status: error.response?.status || 0,
       rawData: errorData,
     };
 
