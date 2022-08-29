@@ -1,7 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React from 'react';
 import { Outlet, RouteObject, useRoutes } from 'react-router-dom';
-import { ModuleRouteChildModel, ModuleRouteModel } from './moduleRoute.model';
+import {
+  ModuleRouteChildModel,
+  ModuleRouteModel,
+} from './renderRouteSystem.model';
 
 function toJSXElement(
   Wrapper?: React.ComponentType<any>,
