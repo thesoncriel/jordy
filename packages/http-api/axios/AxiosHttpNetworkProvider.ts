@@ -68,10 +68,16 @@ export class AxiosHttpNetworkProvider implements AsyncHttpNetworkProvider {
       .then(this.extractData);
   }
 
-  delete<T>({ url, headers, ...config }: AsyncHttpNetworkConfig): Promise<T> {
+  delete<T>({
+    url,
+    headers,
+    params: data,
+    ...config
+  }: AsyncHttpNetworkConfig): Promise<T> {
     return axios
       .delete<T>(url, {
         ...config,
+        data,
         headers: this.makeAxiosHeaders(headers),
       })
       .then(this.extractData);
