@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { useCallback } from 'react';
 import {
   NavigateOptions,
   Path,
@@ -11,6 +12,12 @@ import { isObject, isUndefined } from '../util';
 
 export type SearchParams = Record<string, any>;
 export type SearchParamsOptions = NavigateOptions & { merge?: boolean };
+
+interface NavigationCommander {
+  (to: To, option?: NavigateOptions): void;
+  (delta: number): void;
+  (searchParams: SearchParams, option?: SearchParamsOptions): void;
+}
 
 function instanceOfTo(to: unknown): to is Partial<Path> {
   return isObject(to) && ('pathname' in to || 'search' in to || 'hash' in to);
@@ -25,7 +32,9 @@ function isMergeQueries(option: SearchParamsOptions): boolean {
 }
 
 /**
- * react-router-dom v6의 useNavigate를 손쉽게 사용하기 위한 Adapter
+ * react-router-dom v6의 useNavigate 기반으로 기능을 확장한 hooks.
+ *
+ * navigate 동작 방식을 똑같이 사용할 수 있으며, 필요에 따라 query 조작이 가능하다.
  *
  * 일반 navigate 함수 활용
  * @example
@@ -56,50 +65,47 @@ function isMergeQueries(option: SearchParamsOptions): boolean {
  *
  * ```
  */
-export function useNavigate() {
+export function useNavigate(): NavigationCommander {
   const [currentSearchParams, setSearchParams] = useSearchParams();
   const navigate = useRcNavigate();
 
-  function navigation(to: To, option?: NavigateOptions): void;
-  function navigation(delta: number): void;
-  function navigation(
-    searchParams: SearchParams,
-    option?: SearchParamsOptions
-  ): void;
-  function navigation(
-    to: To | number | SearchParams,
-    option?: NavigateOptions | SearchParamsOptions
-  ): void {
-    if (typeof to === 'number') {
-      return navigate(to);
-    }
-
-    if (typeof to === 'string') {
-      return navigate(to, option);
-    }
-
-    if (instanceOfTo(to)) {
-      return navigate(to, option);
-    }
-
-    if (instanceOfSearchParams(to)) {
-      if (isMergeQueries(option)) {
-        const currentQueries = [...currentSearchParams].reduce(
-          (acc, [key, value]) => {
-            acc[key] = value;
-            return acc;
-          },
-          {} as Record<string, any>
-        );
-
-        return setSearchParams({ ...currentQueries, ...to }, option);
+  const navigation = useCallback(
+    (
+      to: To | number | SearchParams,
+      option?: NavigateOptions | SearchParamsOptions
+    ): void => {
+      if (typeof to === 'number') {
+        return navigate(to);
       }
 
-      return setSearchParams(to, option);
-    }
+      if (typeof to === 'string') {
+        return navigate(to, option);
+      }
 
-    return navigate(to, option);
-  }
+      if (instanceOfTo(to)) {
+        return navigate(to, option);
+      }
+
+      if (instanceOfSearchParams(to)) {
+        if (isMergeQueries(option)) {
+          const currentQueries = [...currentSearchParams].reduce(
+            (acc, [key, value]) => {
+              acc[key] = value;
+              return acc;
+            },
+            {} as Record<string, any>
+          );
+
+          return setSearchParams({ ...currentQueries, ...to }, option);
+        }
+
+        return setSearchParams(to, option);
+      }
+
+      return navigate(to, option);
+    },
+    [currentSearchParams, navigate, setSearchParams]
+  );
 
   return navigation;
 }

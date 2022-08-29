@@ -3,7 +3,7 @@ import React from 'react';
 import { BrowserRouter, MemoryRouter } from 'react-router-dom';
 import '@testing-library/jest-dom';
 
-import App from '../renderRouteSystem.fixture';
+import App from '../useRouteSystem.fixture';
 
 function renderWithRouter(link: string) {
   return render(
