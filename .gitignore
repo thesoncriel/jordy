@@ -4,3 +4,4 @@ node_modules
 /esm5
 /types
 /libs
+_sample.ts
