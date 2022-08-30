@@ -2,14 +2,10 @@
 import {
   AsyncHttpNetworkProvider,
   AsyncHttpUploadProvider,
-  HttpApi,
-  HttpUploadApi,
 } from './network.type';
 import { throwHttpRestError } from './network.util';
 
-type UnionHttpNetworkProviderType = HttpApi &
-  HttpUploadApi &
-  AsyncHttpNetworkProvider &
+type UnionHttpNetworkProviderType = AsyncHttpNetworkProvider &
   AsyncHttpUploadProvider;
 
 type ConstructorType = {
@@ -27,8 +23,12 @@ function isConstructor(val: unknown): val is ConstructorType {
  *
  * 클래스 내 메서드 수행시 오류가 발생되지 않는다면 아무런 동작을 하지 않는다.
  *
+ * AsyncHttpNetworkProvider 혹은 AsyncHttpUploadProvider 를 구현하는 클래스에만 선언 가능하며 정상 동작이 보장된다.
+ *
  * @param throwableParser 별도로 에러 파싱을 수행할 함수
  * @see HttpRestError
+ * @see AsyncHttpNetworkProvider
+ * @see AsyncHttpUploadProvider
  */
 export function ErrorParser<E = any>(throwableParser: (error: E) => any) {
   return function <C extends ConstructorType>(ClassConstructor: C): C {
@@ -80,23 +80,8 @@ export function ErrorParser<E = any>(throwableParser: (error: E) => any) {
           .apply(this.network, [...args])
           .catch(this.parse);
       }
-      getFile(...args: any[]) {
-        return this.network.getFile
-          .apply(this.network, [...args])
-          .catch(this.parse);
-      }
       getBlob(...args: any[]) {
         return this.network.getBlob
-          .apply(this.network, [...args])
-          .catch(this.parse);
-      }
-      postUpload(...args: any[]) {
-        return this.network.postUpload
-          .apply(this.network, [...args])
-          .catch(this.parse);
-      }
-      putUpload(...args: any[]) {
-        return this.network.putUpload
           .apply(this.network, [...args])
           .catch(this.parse);
       }
