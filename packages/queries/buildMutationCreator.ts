@@ -1,4 +1,9 @@
-import { EnhancedStore } from '@reduxjs/toolkit';
+import {
+  AnyAction,
+  EnhancedStore,
+  Middleware,
+  MiddlewareArray,
+} from '@reduxjs/toolkit';
 import { useCallback, useRef, useState } from 'react';
 
 interface MutationHooksCreatorSettingOptionDto<SR, SP, R, P, ReduxRootState> {
@@ -42,7 +47,9 @@ function defineConverter<P, R>(args: P) {
   return args as unknown as R;
 }
 
-export function buildMutationCreator<S>(store: EnhancedStore<S>) {
+export function buildMutationCreator<S>(
+  store: EnhancedStore<S, AnyAction, MiddlewareArray<Middleware[]>>
+) {
   const keyDic: Record<string, boolean> = {};
 
   return function createRepositoryMutation<SR, SP, R, P, E extends Error>({

@@ -2,6 +2,8 @@
   "include": ["packages/**/*"],
   "exclude": ["node_modules", "**/*.fixtures.tsx", "**/*.fixtures.ts"],
   "compilerOptions": {
+    "lib": ["DOM","DOM.Iterable"],
+    "downlevelIteration": true,
     "noImplicitAny": true,
     "declaration": false,
     "removeComments": true,

@@ -1,7 +1,7 @@
 import React, { ReactElement, ReactNode } from 'react';
 import { useIsMobile, useIsTablet } from './DeviceDetectContext';
 
-interface Props {
+interface AdaptiveRenderProps {
   /**
    * 데스크탑에서만 보여질 컴포넌트
    */
@@ -14,6 +14,8 @@ interface Props {
    * 태블릿일 때는 보이지 않음 여부. 기본 false
    */
   notTablet?: boolean;
+
+  children?: ReactNode;
 }
 
 /**
@@ -24,11 +26,11 @@ interface Props {
  * 모바일일 경우에만 보이게 할 때는 mobile 프로퍼티를 적용 시키면 된다.
  * @param props
  */
-export const AdaptiveRender: React.FC<Props> = ({
+export const AdaptiveRender = ({
   mobile,
   notTablet,
   children,
-}) => {
+}: AdaptiveRenderProps) => {
   const isMobile = useIsMobile();
   const isTablet = useIsTablet();
 

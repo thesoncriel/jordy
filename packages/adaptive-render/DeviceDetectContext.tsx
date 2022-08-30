@@ -1,6 +1,5 @@
 import React, {
   createContext,
-  FC,
   useContext,
   useEffect,
   useMemo,
@@ -51,6 +50,10 @@ export const DeviceDetectContext = createContext([
 
 const { Provider: DeviceDetectContextProvider } = DeviceDetectContext;
 
+interface DeviceDetectProviderProps {
+  children: React.ReactNode;
+}
+
 /**
  * 컨텍스트: UserAgent 및 Resizing 여부에 따른 태블릿/모바일 여부를 판별 해 준다.
  *
@@ -61,7 +64,9 @@ const { Provider: DeviceDetectContextProvider } = DeviceDetectContext;
  * @see https://stackoverflow.com/questions/29046324/whats-the-most-reliable-way-to-integrate-javascript-with-media-queries
  * @see https://jsperf.com/matchmedia-vs-resize/3
  */
-export const DeviceDetectProvider: FC = ({ children }) => {
+export const DeviceDetectProvider = ({
+  children,
+}: DeviceDetectProviderProps) => {
   const [isMobile, setIsMobile] = useState(getIsMobile());
   const [isTablet, setIsTablet] = useState(getIsTablet());
   const isNative = useMemo(isNativeAppCheck, []);
