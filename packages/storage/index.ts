@@ -5,7 +5,7 @@ export * from './RefreshableJWTProvider';
 export * from './SimpleStorageAdapter';
 export * from './StorageTokenProvider';
 export * from './cookie';
-export * from './jwtProvider.factory';
+export * from './createJWTProvider.factory';
 export * from './memoryStorage';
 export * from './createStorage.factory';
 export * from './storage.type';
