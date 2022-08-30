@@ -11,6 +11,7 @@ export * from './queryString';
 export * from './redux';
 export * from './template';
 export * from './libLoader';
+export * from './AsyncQueue';
 
 const isServer = envCheck.isServer;
 

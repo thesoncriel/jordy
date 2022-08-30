@@ -51,9 +51,10 @@ export interface SimpleStorage<T extends MarshallingType> {
   get(): T | null;
   /**
    * 스토리지에 값을 설정한다.
-   * @param {T} value
+   * @param value 설정할 값
+   * @param expiredDate 다시 설정 할 만료일자
    */
-  set(value: T): void;
+  set(value: T, expiredDate?: string): void;
   /**
    * 스토리지에 설정된 값을 지운다.
    */
@@ -87,10 +88,53 @@ export interface TokenProvider {
   /**
    * 토큰 값을 설정 한다.
    * @param token 토큰값
+   * @param expiredDate 다시 설정 할 만료일자
    */
-  set(token: string): void;
+  set(token: string, expiredDate?: string): void;
   /**
    * 현재 토큰값을 지운다.
+   */
+  clear(): void;
+}
+
+export interface JWTAuthTokenDto {
+  accessToken: string;
+  accessTokenExpiredDate: string;
+  refreshToken: string;
+  refreshTokenExpiredDate: string;
+}
+
+/**
+ * JWT 를 제공한다.
+ */
+export interface JWTProvider {
+  /**
+   * 새로고침 했는지 여부
+   */
+  readonly refreshed: boolean;
+  /**
+   * 새로고침 진행중 여부
+   */
+  readonly pending: boolean;
+  /**
+   * 액세스 토큰. 비어있다면 아직 가져오지 않은 것이다.
+   */
+  readonly accessToken: string;
+  /**
+   * 리프레시 토큰. 비어있다면 아직 가져오지 않은 것이다.
+   */
+  readonly refreshToken: string;
+  /**
+   * 토큰값을 설정한다.
+   * @param tokenValue
+   */
+  set(tokenValue: JWTAuthTokenDto): void;
+  /**
+   * 엑세스 토큰값을 가져온다.
+   */
+  get(): Promise<string>;
+  /**
+   * 설정된 토큰 정보를 모두 삭제한다.
    */
   clear(): void;
 }
