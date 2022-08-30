@@ -2,7 +2,7 @@
 import { qs } from '../util';
 import { AxiosHttpNetworkProvider } from './axios';
 import { BasicHttpApi } from './BasicHttpApi';
-import { HttpApi } from './network.type';
+import { InterceptorHttpApi } from './network.type';
 import { defaultHeaderCreator } from './network.util';
 
 export function createHttpApi(
@@ -10,7 +10,7 @@ export function createHttpApi(
   headerCreator: () => Promise<Record<string, string>> = defaultHeaderCreator,
   paramsSerializer: (params: any) => string = qs.serialize,
   withCredentials = true
-): HttpApi {
+): InterceptorHttpApi {
   return new BasicHttpApi(
     new AxiosHttpNetworkProvider(),
     baseUrl,
