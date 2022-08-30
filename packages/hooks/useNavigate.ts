@@ -87,6 +87,10 @@ export function useNavigate(): NavigationCommander {
       }
 
       if (instanceOfSearchParams(to)) {
+        for (const key in to) {
+          if (!to[key]) delete to[key];
+        }
+
         if (isMergeQueries(option)) {
           const currentQueries = [...currentSearchParams].reduce(
             (acc, [key, value]) => {

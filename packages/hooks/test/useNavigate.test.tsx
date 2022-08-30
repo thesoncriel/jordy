@@ -35,6 +35,21 @@ function Home() {
         pagination
       </button>
       <button onClick={handleQueryCurried({ color: 'red' })}>color</button>
+      <button
+        onClick={handleQueryCurried({
+          color: undefined,
+          light: null,
+          width: '',
+          height: 0,
+          fail: false,
+          success: 'true',
+        })}
+      >
+        nullCheck
+      </button>
+      <button onClick={handleQueryCurried({ page: { number: 1, size: 20 } })}>
+        deep
+      </button>
       <button onClick={handleQueryCurried({ sort: 'newst' }, { merge: false })}>
         sort
       </button>
@@ -134,6 +149,16 @@ describe('useNavigate', () => {
 
       const search = window.location.search;
       expect(search).toBe('?sort=newst');
+    });
+
+    it('보내려는 query 중 falsy가 있다면 해당 쿼리는 제외하여 변경한다.', () => {
+      const button = screen.getByText('nullCheck');
+
+      fireEvent.click(button);
+
+      const search = window.location.search;
+      expect(search).not.toBe('?sort=newst&color=&fail=');
+      expect(search).toBe('?sort=newst&success=true');
     });
   });
 });
