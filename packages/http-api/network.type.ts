@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { MarshallingType } from '../types';
+import { HttpRestErrorLike, MarshallingType } from '../types';
 
 /**
  * 업로드 상태를 확인할 수 있는 객체.
@@ -35,12 +35,6 @@ export interface XhrUploadStateArgs {
    * 업로드 되어야 할 전체 바이트 수
    */
   total: number;
-}
-
-export interface HttpApiErrorParser<T, E extends Error = Error> {
-  parse(libErrObj: T): E;
-  throwOther<E extends Error>(err: E): never;
-  interrupt: <E extends Error>(error: E) => Promise<void>;
 }
 
 export interface HttpRestApi {
@@ -90,13 +84,13 @@ export interface HttpRestApi {
   ): Promise<T>;
   /**
    * DELETE 메서드 호출
-   * @param url 호출 경로
-   * @param params 전달할 파라미터
+   * @param url 호출 경로. 만약 쿼리 파라미터가 포함된다면 이 곳에 추가적으로 명시 해 주어야 한다.
+   * @param body 요청으로 보낼 데이터. json 으로 바꿔서 보내게 된다.
    * @param timeout 응답 제한시간 설정. 설정한 시간이 넘도록 응답이 없다면 중단하고 throw 를 일으킨다.
    */
   delete<T = MarshallingType, P = Record<string, any> | void>(
     url: string,
-    params?: P,
+    body?: P,
     timeout?: number
   ): Promise<T>;
 }
@@ -165,6 +159,82 @@ export interface HttpFileApi {
 export interface HttpApi extends HttpRestApi, HttpFileApi {}
 
 export type RestHttpMethodType = 'get' | 'post' | 'put' | 'patch' | 'delete';
+
+export interface HttpInterceptorConfig {
+  /**
+   * 요청 쿼리 파라미터에 특별한 값을 덧붙일 때 설정하는 인터셉터.
+   *
+   * @examples
+   * ```ts
+   * const storage = create<MyInfo>('session', 'myInfo');
+   * const httpApi = createHttpApi('https://api.mysite.com', createHeader);
+   *
+   * // 매 요청 시 파라미터에 스토리지 내 값이 항상 포함된다.
+   * httpApi.interceptor.params = () => {
+   *   return {
+   *     info: storage.get()
+   *   };
+   * };
+   * ```
+   */
+  params?: <P = any>(
+    method: RestHttpMethodType,
+    url: string,
+    params: P
+  ) => Record<string, any> | void;
+  /**
+   * 에러 발생 시 추가로 내용을 확인하여 에러 파싱을 따로 할 때 설정하는 인터셉터.
+   *
+   * @examples
+   * ```ts
+   * const httpApi = createHttpApi('https://api.mysite.com', createHeader);
+   *
+   * // 통일되지 않은 특정 오류 발생 시 직접 확인하여 별도 파싱된다.
+   * httpApi.interceptor.error = (prevError) => {
+   *   if (prevError.message.includes('접근 금지')) {
+   *     return new HttpRestError(prevError.message, 'forbidden');
+   *   }
+   *   if (prevError.url.includes('/styles') && prevError.rawData === '') {
+   *     return new HttpRestError('스타일 조회가 잘못되었습니다.');
+   *   }
+   *   if (prevError.url.includes('/unexpects')) {
+   *     // 직접 throw 를 발생시켜도 된다.
+   *     throw new HttpRestError('예측되지 못한 요청');
+   *   }
+   * };
+   * ```
+   */
+  error?: (error: HttpRestErrorLike) => HttpRestErrorLike | void;
+}
+
+export interface HttpInterceptorHandler {
+  /**
+   * 해당 네트워크에서 파라미터 혹은 에러 파싱 때 쓰일 인터셉터를 설정하거나 가져올 수 있다.
+   *
+   * @examples
+   * ```ts
+   * const httpApi = createHttpApi('https://api.mysite.com', createHeader);
+   *
+   * httpApi.interceptor = {
+   *   // 쿼리 파라미터를 추가적으로 처리 할 인터셉터
+   *   params: () => ({ some_id: localStorage.get('some_id') }),
+   *   // 에러 파싱을 추가적으로 처리 할 인터셉터
+   *   error: (error) => {
+   *     if (error.url.includes('/login')) {
+   *       return new HttpRestError('로그인이 필요합니다.', 'auth');
+   *     }
+   *   },
+   * }
+   * ```
+   */
+  interceptor: HttpInterceptorConfig;
+}
+
+export interface InterceptorHttpApi extends HttpApi, HttpInterceptorHandler {}
+
+export interface InterceptorHttpUploadApi
+  extends HttpUploadApi,
+    HttpInterceptorHandler {}
 
 export interface BaseAsyncHttpNetworkConfig {
   url: string;
