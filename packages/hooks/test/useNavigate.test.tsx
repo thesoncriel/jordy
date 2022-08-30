@@ -45,10 +45,7 @@ function Home() {
           success: 'true',
         })}
       >
-        nullCheck
-      </button>
-      <button onClick={handleQueryCurried({ page: { number: 1, size: 20 } })}>
-        deep
+        falsyCheck
       </button>
       <button onClick={handleQueryCurried({ sort: 'newst' }, { merge: false })}>
         sort
@@ -152,7 +149,7 @@ describe('useNavigate', () => {
     });
 
     it('보내려는 query 중 falsy가 있다면 해당 쿼리는 제외하여 변경한다.', () => {
-      const button = screen.getByText('nullCheck');
+      const button = screen.getByText('falsyCheck');
 
       fireEvent.click(button);
 
