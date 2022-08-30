@@ -13,8 +13,8 @@ export default defineConfig({
     }),
   ],
   test: {
-    // TODO: react-router 업데이트 후 테스트코드 다시 작성하여 아래 목록에서 제외 할 것 - theson
-    exclude: ['node_modules', 'packages/route-system'],
+    environment: 'jsdom',
+    exclude: ['node_modules', 'website/**'],
     globals: true,
   },
 });

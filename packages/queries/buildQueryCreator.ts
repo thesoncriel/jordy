@@ -1,4 +1,9 @@
-import { EnhancedStore } from '@reduxjs/toolkit';
+import {
+  AnyAction,
+  EnhancedStore,
+  Middleware,
+  MiddlewareArray,
+} from '@reduxjs/toolkit';
 import { useCallback, useLayoutEffect, useRef, useState } from 'react';
 
 import { createStorage, StorageType } from '../storage';
@@ -133,7 +138,7 @@ function defConverter<P, R>(args: P) {
 }
 
 export function buildQueryCreator<S>(
-  store: EnhancedStore<S>
+  store: EnhancedStore<S, AnyAction, MiddlewareArray<Middleware[]>>
 ): CreateRepositoryQuery<S> {
   const keyDic: Record<string, boolean> = {};
 
@@ -170,7 +175,6 @@ export function buildQueryCreator<S>(
       }
       keyDic[key] = true;
     }
-
     const resultHooks: QueryHooks<R, P, E> = (requestParams?: P) => {
       const refFetching = useRef<boolean>(false);
       const [data, setData] = useState(defaultData);

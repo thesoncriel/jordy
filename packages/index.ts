@@ -13,12 +13,7 @@ import {
   XhrUploadStateArgs,
 } from './http-api';
 import { cache } from './proxies';
-import {
-  createGuardDispatch,
-  createGuardSelector,
-  ModuleRouteModel,
-  renderRouteSystem,
-} from './route-system';
+import { ModuleRouteModel, useRouteSystem } from './route-system';
 import validate, {
   mergeValidates,
   ValidateBulkOptionType,
@@ -47,9 +42,7 @@ export {
   UploadStateArgs,
   XhrUploadStateArgs,
   cache,
-  renderRouteSystem,
-  createGuardDispatch,
-  createGuardSelector,
+  useRouteSystem,
   validate,
   mergeValidates,
   ValidateResultModel,
