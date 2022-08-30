@@ -41,10 +41,12 @@ describe('BasicHttpUploadApi', () => {
     contentType: 'json',
   } as Record<string, string>;
   const headerCreatorMock = vi.fn().mockResolvedValue(headers);
+  const serializerMock = vi.fn(() => 'search=lookpin');
   const httpApi = new BasicHttpUploadApi(
     providerMock as AsyncHttpUploadProvider,
     baseUrl,
     headerCreatorMock,
+    serializerMock,
     true
   );
 
@@ -121,5 +123,102 @@ describe('BasicHttpUploadApi', () => {
 
       expect(providerMock[method]).not.toBeCalled();
     });
-  });
+
+    describe('interceptor 사용', () => {
+      const paramsInterMock = vi.fn();
+      const errorInterMock = vi.fn();
+
+      beforeAll(() => {
+        httpApi.interceptor = {
+          params: paramsInterMock,
+          error: errorInterMock,
+        };
+      });
+
+      afterEach(() => {
+        paramsInterMock.mockClear();
+        errorInterMock.mockClear();
+      });
+
+      afterAll(() => {
+        httpApi.interceptor = {};
+      });
+
+      it('요청 시 설정된 params interceptor 를 호출한다.', async () => {
+        await httpApi[`${method}Upload`]('/user/search', { q: 'lookpin' });
+
+        expect(paramsInterMock).toBeCalledTimes(1);
+        expect(paramsInterMock).toBeCalledWith(method, '/user/search', {
+          q: 'lookpin',
+        });
+      });
+
+      it('params interceptor 에 리턴된 객체값이 있다면 요청 파라미터에 해당 값을 포함한다.', async () => {
+        paramsInterMock.mockImplementationOnce(() => ({
+          n: 123,
+        }));
+        serializerMock.mockImplementationOnce(() => 'q=lookpin&n=123');
+
+        await httpApi[`${method}Upload`]('/user/search', { q: 'lookpin' });
+
+        expect(serializerMock).toBeCalledTimes(1);
+        expect(providerMock[method]).toBeCalledWith(
+          expect.objectContaining({
+            url: expect.stringContaining('q=lookpin&n=123'),
+          })
+        );
+      });
+
+      it('header 에서 오류 발생 시 params interceptor 를 호출하지 않는다.', async () => {
+        headerCreatorMock.mockRejectedValueOnce(new Error('some error!'));
+
+        await expect(
+          httpApi[`${method}Upload`]('/user/search', { q: 'lookpin' })
+        ).rejects.toThrow();
+
+        expect(paramsInterMock).not.toBeCalled();
+      });
+
+      it('오류 발생 시 설정된 error interceptor 를 호출한다.', async () => {
+        providerMock[method].mockRejectedValueOnce(new Error('some error'));
+
+        await expect(
+          httpApi[`${method}Upload`]('/user/search', { q: 'lookpin' })
+        ).rejects.toThrow();
+
+        expect(errorInterMock).toBeCalledTimes(1);
+        expect(errorInterMock).toBeCalledWith(
+          expect.objectContaining({
+            message: 'some error',
+          })
+        );
+      });
+
+      it('오류가 발생되지 않는다면 error interceptor 를 호출하지 않는다.', async () => {
+        await httpApi[`${method}Upload`]('/user/search', { q: 'lookpin' });
+
+        expect(errorInterMock).not.toBeCalled();
+      });
+
+      it('header 에서 오류 발생 시 error interceptor 를 호출하지 않는다.', async () => {
+        headerCreatorMock.mockRejectedValueOnce(new Error('some error!'));
+
+        await expect(
+          httpApi[`${method}Upload`]('/user/search', { q: 'lookpin' })
+        ).rejects.toThrow();
+
+        expect(errorInterMock).not.toBeCalled();
+      });
+
+      it('후속 프로세스에서 오류가 발생된 것에 error interceptor 는 관여하지 않는다.', async () => {
+        await expect(
+          httpApi[`${method}Upload`]('/user/search', { q: 'lookpin' }).then(
+            () => Promise.reject(new Error('what the ??'))
+          )
+        ).rejects.toThrow();
+
+        expect(errorInterMock).not.toBeCalled();
+      });
+    }); // interceptor 사용 [end]
+  }); // %s 메서드 기능 테스트 [end]
 });
