@@ -9,6 +9,10 @@ export class ExpiableStorageAdapter<T extends MarshallingType>
     public expiredTime = 0
   ) {}
 
+  private getExpiredTime() {
+    return this.expiredTime > 0 ? Date.now() + this.expiredTime * 1000 : 0;
+  }
+
   get key() {
     return this.storage.key;
   }
@@ -29,11 +33,20 @@ export class ExpiableStorageAdapter<T extends MarshallingType>
     return null;
   }
 
-  set(value: T): void {
+  set(value: T, expiredDate?: string): void {
+    let expiredTime = this.getExpiredTime();
+
+    try {
+      if (expiredDate && typeof expiredDate === 'string') {
+        expiredTime = new Date(expiredDate).getTime();
+      }
+    } catch (error) {
+      //
+    }
+
     this.storage.set({
       data: value,
-      expiredTime:
-        this.expiredTime > 0 ? Date.now() + this.expiredTime * 1000 : 0,
+      expiredTime,
     });
   }
 

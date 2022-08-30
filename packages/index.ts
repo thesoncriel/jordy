@@ -2,10 +2,13 @@ import { DeviceDetectProvider, withAdaptiveRender } from './adaptive-render';
 
 import {
   createHttpApi,
-  createHttpHeaderProvider,
-  headerPipe,
+  createHttpUploadApi,
+  createHttpHeaderPipe,
+  httpHeaderOperator,
   HttpApi,
-  HttpApiErrorParser,
+  HttpUploadApi,
+  HttpInterceptorHandler,
+  HttpInterceptorConfig,
   UploadStateArgs,
   XhrUploadStateArgs,
 } from './http-api';
@@ -18,29 +21,31 @@ import {
 } from './route-system';
 import validate, {
   mergeValidates,
-  ValidateResultModel,
+  ValidateBulkOptionType,
   ValidateBulkResultModel,
   ValidateCheckModel,
-  ValidateBulkOptionType,
+  ValidateResultModel,
 } from './validate';
 
+export * from './hooks';
 export * from './queries';
 export * from './storage';
-export * from './hooks';
-export * from './util';
 export * from './types';
-
+export * from './util';
 export {
-  UploadStateArgs,
-  XhrUploadStateArgs,
-  HttpApiErrorParser,
-  HttpApi,
   ModuleRouteModel,
   DeviceDetectProvider,
   withAdaptiveRender,
   createHttpApi,
-  headerPipe,
-  createHttpHeaderProvider,
+  createHttpUploadApi,
+  createHttpHeaderPipe,
+  httpHeaderOperator,
+  HttpApi,
+  HttpUploadApi,
+  HttpInterceptorHandler,
+  HttpInterceptorConfig,
+  UploadStateArgs,
+  XhrUploadStateArgs,
   cache,
   renderRouteSystem,
   createGuardDispatch,

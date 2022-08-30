@@ -12,7 +12,7 @@ import { isServer, isStorageAvailable } from '../util/envCheck';
 import { MarshallingType } from '../types';
 
 /**
- * 캐시용 스토리지를 만드는 빌더.
+ * 캐시용 스토리지를 만드는 팩토리.
  * Memory, Local, Session 3가지로 만들 수 있다.
  * 사용 시 type, key 가 필요하다.
  *

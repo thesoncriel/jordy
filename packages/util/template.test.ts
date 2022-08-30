@@ -1,4 +1,4 @@
-import { messageTemplate } from '../template';
+import { messageTemplate } from './template';
 
 describe('messageTemplate.parse', () => {
   it('템플릿이 입력되면 1차적으로 분석하여 배열로 분해한다.', () => {

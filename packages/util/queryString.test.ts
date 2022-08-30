@@ -1,4 +1,4 @@
-import { qs } from '../queryString';
+import { qs } from './queryString';
 
 describe('qs.parse', () => {
   it('일반 문자열이 들어가면 빈 객체를 되돌려준다.', () => {
