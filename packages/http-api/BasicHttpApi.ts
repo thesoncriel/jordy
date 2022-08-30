@@ -23,90 +23,100 @@ export class BasicHttpApi
     params?: P,
     timeout?: number
   ): Promise<T> {
-    const headers = await this.headersCreator();
+    try {
+      const headers = await this.headersCreator();
 
-    return this.provider
-      .get({
+      return await this.provider.get({
         url: `${this.baseUrl}${url}`,
         headers,
         withCredentials: this.withCredentials,
         paramsSerializer: this.paramsSerializer,
         params: this.mergeParams('get', url, params),
         timeout,
-      })
-      .catch(this.throwWithInterceptor) as Promise<T>;
+      });
+    } catch (error) {
+      this.throwWithInterceptor(error);
+    }
   }
   async post<T = MarshallingType, P = void | Record<string, any>>(
     url: string,
     body?: P,
     timeout?: number
   ): Promise<T> {
-    const headers = await this.headersCreator();
+    try {
+      const headers = await this.headersCreator();
 
-    return this.provider
-      .post({
+      return await this.provider.post({
         url: `${this.baseUrl}${this.mergeQueries('post', url, body)}`,
         headers,
         withCredentials: this.withCredentials,
         paramsSerializer: this.paramsSerializer,
         params: body,
         timeout,
-      })
-      .catch(this.throwWithInterceptor) as Promise<T>;
+      });
+    } catch (error) {
+      this.throwWithInterceptor(error);
+    }
   }
   async put<T = MarshallingType, P = void | Record<string, any>>(
     url: string,
     body?: P,
     timeout?: number
   ): Promise<T> {
-    const headers = await this.headersCreator();
+    try {
+      const headers = await this.headersCreator();
 
-    return this.provider
-      .put({
+      return await this.provider.put({
         url: `${this.baseUrl}${this.mergeQueries('put', url, body)}`,
         headers,
         withCredentials: this.withCredentials,
         paramsSerializer: this.paramsSerializer,
         params: body,
         timeout,
-      })
-      .catch(this.throwWithInterceptor) as Promise<T>;
+      });
+    } catch (error) {
+      this.throwWithInterceptor(error);
+    }
   }
   async patch<T = MarshallingType, P = void | Record<string, any>>(
     url: string,
     body?: P,
     timeout?: number
   ): Promise<T> {
-    const headers = await this.headersCreator();
+    try {
+      const headers = await this.headersCreator();
 
-    return this.provider
-      .patch({
+      return await this.provider.patch({
         url: `${this.baseUrl}${this.mergeQueries('patch', url, body)}`,
         headers,
         withCredentials: this.withCredentials,
         paramsSerializer: this.paramsSerializer,
         params: body,
         timeout,
-      })
-      .catch(this.throwWithInterceptor) as Promise<T>;
+      });
+    } catch (error) {
+      this.throwWithInterceptor(error);
+    }
   }
   async delete<T = MarshallingType, P = void | Record<string, any>>(
     url: string,
     body?: P,
     timeout?: number
   ): Promise<T> {
-    const headers = await this.headersCreator();
+    try {
+      const headers = await this.headersCreator();
 
-    return this.provider
-      .delete({
+      return await this.provider.delete({
         url: `${this.baseUrl}${this.mergeQueries('delete', url, body)}`,
         headers,
         withCredentials: this.withCredentials,
         paramsSerializer: this.paramsSerializer,
         params: body,
         timeout,
-      })
-      .catch(this.throwWithInterceptor) as Promise<T>;
+      });
+    } catch (error) {
+      this.throwWithInterceptor(error);
+    }
   }
 
   getFile<P = void | Record<string, any>>(
@@ -124,16 +134,18 @@ export class BasicHttpApi
     url: string,
     params?: P
   ): Promise<Blob> {
-    const headers = await this.headersCreator();
+    try {
+      const headers = await this.headersCreator();
 
-    return this.provider
-      .getBlob({
+      return await this.provider.getBlob({
         url: `${this.baseUrl}${url}`,
         headers,
         withCredentials: this.withCredentials,
         paramsSerializer: this.paramsSerializer,
         params: this.mergeParams('get', url, params),
-      })
-      .catch(this.throwWithInterceptor);
+      });
+    } catch (error) {
+      this.throwWithInterceptor(error);
+    }
   }
 }

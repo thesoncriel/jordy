@@ -29,18 +29,20 @@ export class BasicHttpUploadApi
     progressCallback?: (args: UploadStateArgs) => void,
     timeout?: number
   ): Promise<T> {
-    const headers = await this.headersCreator();
+    try {
+      const headers = await this.headersCreator();
 
-    return this.provider
-      .post({
+      return await this.provider.post({
         url: `${this.baseUrl}${this.mergeQueries('post', url, data)}`,
         headers,
         withCredentials: this.withCredentials,
         data,
         timeout,
         onProgress: progressCallback,
-      })
-      .catch(this.throwWithInterceptor) as Promise<T>;
+      });
+    } catch (error) {
+      this.throwWithInterceptor(error);
+    }
   }
 
   async putUpload<
@@ -52,17 +54,19 @@ export class BasicHttpUploadApi
     progressCallback?: (args: UploadStateArgs) => void,
     timeout?: number
   ): Promise<T> {
-    const headers = await this.headersCreator();
+    try {
+      const headers = await this.headersCreator();
 
-    return this.provider
-      .put({
+      return await this.provider.put({
         url: `${this.baseUrl}${this.mergeQueries('put', url, data)}`,
         headers,
         withCredentials: this.withCredentials,
         data,
         timeout,
         onProgress: progressCallback,
-      })
-      .catch(this.throwWithInterceptor) as Promise<T>;
+      });
+    } catch (error) {
+      this.throwWithInterceptor(error);
+    }
   }
 }

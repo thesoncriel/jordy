@@ -179,18 +179,23 @@ describe('BasicHttpApi', () => {
         );
       });
 
-      it('오류가 발생되지 않는다면 error interceptor 를 호출하지 않는다.', async () => {
-        await httpApi[method]('/user/search', { q: 'lookpin' });
-
-        expect(errorInterMock).not.toBeCalled();
-      });
-
-      it('header 에서 오류 발생 시 error interceptor 를 호출하지 않는다.', async () => {
-        headerCreatorMock.mockRejectedValueOnce(new Error('some error!'));
+      it('header 에서 오류 발생 시 error interceptor 를 호출한다.', async () => {
+        headerCreatorMock.mockRejectedValueOnce(new Error('need to login!'));
 
         await expect(
           httpApi[method]('/user/search', { q: 'lookpin' })
         ).rejects.toThrow();
+
+        expect(errorInterMock).toBeCalledTimes(1);
+        expect(errorInterMock).toBeCalledWith(
+          expect.objectContaining({
+            message: 'need to login!',
+          })
+        );
+      });
+
+      it('오류가 발생되지 않는다면 error interceptor 를 호출하지 않는다.', async () => {
+        await httpApi[method]('/user/search', { q: 'lookpin' });
 
         expect(errorInterMock).not.toBeCalled();
       });
@@ -323,18 +328,23 @@ describe('BasicHttpApi', () => {
         );
       });
 
-      it('오류가 발생되지 않는다면 error interceptor 를 호출하지 않는다.', async () => {
-        await httpApi.getBlob('/user/search', { q: 'lookpin' });
-
-        expect(errorInterMock).not.toBeCalled();
-      });
-
-      it('header 에서 오류 발생 시 error interceptor 를 호출하지 않는다.', async () => {
-        headerCreatorMock.mockRejectedValueOnce(new Error('some error!'));
+      it('header 에서 오류 발생 시 error interceptor 를 호출한다.', async () => {
+        headerCreatorMock.mockRejectedValueOnce(new Error('need to login!'));
 
         await expect(
           httpApi.getBlob('/user/search', { q: 'lookpin' })
         ).rejects.toThrow();
+
+        expect(errorInterMock).toBeCalledTimes(1);
+        expect(errorInterMock).toBeCalledWith(
+          expect.objectContaining({
+            message: 'need to login!',
+          })
+        );
+      });
+
+      it('오류가 발생되지 않는다면 error interceptor 를 호출하지 않는다.', async () => {
+        await httpApi.getBlob('/user/search', { q: 'lookpin' });
 
         expect(errorInterMock).not.toBeCalled();
       });
