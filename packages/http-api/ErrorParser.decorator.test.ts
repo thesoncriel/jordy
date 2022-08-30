@@ -1,4 +1,4 @@
-import { decorateErrorParser, ErrorParser } from './ErrorParser.decorator';
+import { ErrorParser } from './ErrorParser.decorator';
 import {
   AsyncHttpNetworkProvider,
   AsyncHttpUploadProvider,
@@ -207,38 +207,6 @@ describe('ErrorParser', () => {
       expect(mockFnDic.get).toBeCalledTimes(1);
       expect(mockFnDic.get).toBeCalledWith(path, params);
       expect(mockFnDic.post).not.toBeCalledWith(path, params);
-    });
-  });
-
-  describe('decorateErrorParser - 별도 생성된 객체에도 데코레이팅이 가능하다.', () => {
-    class MockHttpApi implements HttpApi {
-      get = mockFnDic.get;
-      put = mockFnDic.put;
-      post = mockFnDic.post;
-      patch = mockFnDic.patch;
-      delete = mockFnDic.delete;
-      getFile = mockFnDic.getFile;
-      getBlob = mockFnDic.getBlob;
-    }
-
-    function createHttpApi(): HttpApi {
-      return new MockHttpApi();
-    }
-
-    it.each(
-      methodList.map((key) => {
-        return [key, '/some/path', { name: 'theson' }] as const;
-      })
-    )('%s 메서드', async (method, path: string, params) => {
-      const decorator = decorateErrorParser(parserMockFn);
-      const httpApi = decorator(createHttpApi());
-
-      await expect(
-        (httpApi[method] as CallableFunction)(path, params as never)
-      ).rejects.toThrowError('some');
-
-      expect(parserMockFn).toBeCalled();
-      expect(mockFnDic[method]).toBeCalledWith(path, params);
     });
   });
 });
