@@ -4,5 +4,3 @@ export interface PromiseResolver<T, E = any> {
   resolve: (value: T | PromiseLike<T>) => void;
   reject: (reason?: E) => void;
 }
-
-export type RestHttpMethodType = 'get' | 'post' | 'put' | 'patch' | 'delete';

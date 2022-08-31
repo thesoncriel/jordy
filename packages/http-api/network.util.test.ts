@@ -1,4 +1,4 @@
-import { HttpRestError, HttpRestErrorLike } from '../types';
+import { HttpRestErrorLike, HttpRestError } from './HttpRestError';
 import {
   isBaseAsyncHttpNetworkConfig,
   throwHttpRestError,

@@ -1,4 +1,4 @@
-import { HttpRestError } from '../../types';
+import { HttpRestError } from '../HttpRestError';
 import { throwableAxiosErrorParser } from './throwableAxiosErrorParser';
 
 vi.mock('./axios.util', () => {

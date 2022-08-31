@@ -1,4 +1,4 @@
-import { RestHttpMethodType } from './etc.type';
+import { RestHttpMethodType } from './network.type';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export type HttpRestErrorType =

@@ -1,7 +1,7 @@
+import { createTokenProvider } from '../storage';
 import { createAsyncQueue } from '../util/AsyncQueue';
+import { JWTAuthTokenDto, JWTProvider } from './jwt.type';
 import { RefreshableJWTProvider } from './RefreshableJWTProvider';
-import { JWTAuthTokenDto, JWTProvider } from './storage.type';
-import { createTokenProvider } from './createTokenProvider.factory';
 
 export function createJWTProvider(
   accessTokenKey: string,

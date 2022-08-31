@@ -1,9 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import {
-  HttpRestError,
-  HttpRestErrorMetaArgs,
-  RestHttpMethodType,
-} from '../../types';
+import { HttpRestErrorMetaArgs, HttpRestError } from '../HttpRestError';
+import { RestHttpMethodType } from '../network.type';
 import { isAxiosError } from './axios.util';
 
 function tryGetMethod(

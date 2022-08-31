@@ -1,5 +1,6 @@
 /* eslint-disable no-param-reassign */
-import { JWTProvider, TokenProvider } from '../storage';
+import { JWTProvider } from '../jwt';
+import { TokenProvider } from '../storage';
 import { isServer } from '../util/envCheck';
 
 type HeaderFieldMaker = (

@@ -1,7 +1,8 @@
-import { PromiseResolver } from 'packages/types';
+import { PromiseResolver } from '../types';
 import { noop } from '../util';
 import { RefreshableJWTProvider } from './RefreshableJWTProvider';
-import { JWTAuthTokenDto, TokenProvider } from './storage.type';
+import { TokenProvider } from '../storage/storage.type';
+import { JWTAuthTokenDto } from './jwt.type';
 
 describe('RefreshableJWTProvider', () => {
   const TOKEN = {

@@ -1,9 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import {
-  HttpRestErrorLike,
-  MarshallingType,
-  RestHttpMethodType,
-} from '../types';
+import { MarshallingType } from '../types';
+import { HttpRestErrorLike } from './HttpRestError';
+
+export type RestHttpMethodType = 'get' | 'post' | 'put' | 'patch' | 'delete';
 
 /**
  * 업로드 상태를 확인할 수 있는 객체.
