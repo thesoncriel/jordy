@@ -1,9 +1,4 @@
-import {
-  AnyAction,
-  EnhancedStore,
-  Middleware,
-  MiddlewareArray,
-} from '@reduxjs/toolkit';
+import { AnyAction, EnhancedStore, MiddlewareArray } from '@reduxjs/toolkit';
 import { useCallback, useRef, useState } from 'react';
 
 interface MutationHooksCreatorSettingOptionDto<SR, SP, R, P, ReduxRootState> {
@@ -48,7 +43,8 @@ function defineConverter<P, R>(args: P) {
 }
 
 export function buildMutationCreator<S>(
-  store: EnhancedStore<S, AnyAction, MiddlewareArray<Middleware[]>>
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  store: EnhancedStore<S, AnyAction, MiddlewareArray<any[]>>
 ) {
   const keyDic: Record<string, boolean> = {};
 
