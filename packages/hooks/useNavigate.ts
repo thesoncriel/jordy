@@ -8,7 +8,7 @@ import {
   useSearchParams,
 } from 'react-router-dom';
 
-import { isObject, isUndefined } from '../util';
+import { isNullable, isObject, isUndefined } from '../util';
 
 export type SearchParams = Record<string, any>;
 export type SearchParamsOptions = NavigateOptions & { merge?: boolean };
@@ -87,6 +87,15 @@ export function useNavigate(): NavigationCommander {
       }
 
       if (instanceOfSearchParams(to)) {
+        let newQueries: Record<string, string> = {};
+
+        for (const key in to) {
+          if (isNullable(to[key]) || to[key] === '') {
+            continue;
+          }
+          newQueries = { ...newQueries, [key]: to[key] };
+        }
+
         if (isMergeQueries(option)) {
           const currentQueries = [...currentSearchParams].reduce(
             (acc, [key, value]) => {
@@ -96,10 +105,10 @@ export function useNavigate(): NavigationCommander {
             {} as Record<string, any>
           );
 
-          return setSearchParams({ ...currentQueries, ...to }, option);
+          return setSearchParams({ ...currentQueries, ...newQueries }, option);
         }
 
-        return setSearchParams(to, option);
+        return setSearchParams(newQueries, option);
       }
 
       return navigate(to, option);

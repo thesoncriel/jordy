@@ -35,6 +35,17 @@ function Home() {
         pagination
       </button>
       <button onClick={handleQueryCurried({ color: 'red' })}>color</button>
+      <button
+        onClick={handleQueryCurried({
+          color: undefined,
+          light: null,
+          width: '',
+          height: 0,
+          success: false,
+        })}
+      >
+        validCheck
+      </button>
       <button onClick={handleQueryCurried({ sort: 'newst' }, { merge: false })}>
         sort
       </button>
@@ -134,6 +145,18 @@ describe('useNavigate', () => {
 
       const search = window.location.search;
       expect(search).toBe('?sort=newst');
+    });
+
+    it('보내려는 query 중 빈 값, undefined, null이 있다면 해당 쿼리는 제외하여 변경한다.', () => {
+      const button = screen.getByText('validCheck');
+
+      fireEvent.click(button);
+
+      const search = window.location.search;
+      expect(search).not.toBe(
+        '?sort=newst&color=undefined&light=null&width&height=0&success=false'
+      );
+      expect(search).toBe('?sort=newst&height=0&success=false');
     });
   });
 });
