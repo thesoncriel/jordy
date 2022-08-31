@@ -1,4 +1,5 @@
-import { AnyAction, EnhancedStore, MiddlewareArray } from '@reduxjs/toolkit';
+import { AnyAction, EnhancedStore } from '@reduxjs/toolkit';
+import { ThunkMiddlewareFor } from '@reduxjs/toolkit/dist/getDefaultMiddleware';
 import { useCallback, useLayoutEffect, useRef, useState } from 'react';
 
 import { createStorage, StorageType } from '../storage';
@@ -133,8 +134,7 @@ function defConverter<P, R>(args: P) {
 }
 
 export function buildQueryCreator<S>(
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  store: EnhancedStore<S, AnyAction, MiddlewareArray<any[]>>
+  store: EnhancedStore<S>
 ): CreateRepositoryQuery<S> {
   const keyDic: Record<string, boolean> = {};
 
@@ -163,6 +163,12 @@ export function buildQueryCreator<S>(
     parameterConverter = defConverter,
     resultConverter = defConverter,
   }: QueryHooksCreatorSettingOptionDto<SR, SP, R, P, S>) {
+    const thunkStore = store as EnhancedStore<
+      S,
+      AnyAction,
+      [ThunkMiddlewareFor<S>]
+    >;
+
     if (key) {
       if (keyDic[key]) {
         console.warn(
@@ -171,6 +177,7 @@ export function buildQueryCreator<S>(
       }
       keyDic[key] = true;
     }
+
     const resultHooks: QueryHooks<R, P, E> = (requestParams?: P) => {
       const refFetching = useRef<boolean>(false);
       const [data, setData] = useState(defaultData);
@@ -199,7 +206,7 @@ export function buildQueryCreator<S>(
 
           if (cachedValue) {
             if (key) {
-              store.dispatch({
+              thunkStore.dispatch({
                 type: `QueryHooks/${key}/cached`,
                 params,
                 payload: cachedValue,
@@ -215,7 +222,7 @@ export function buildQueryCreator<S>(
         refFetching.current = true;
 
         if (key) {
-          store.dispatch({
+          thunkStore.dispatch({
             type: `QueryHooks/${key}/pending`,
             params,
           });
@@ -223,18 +230,18 @@ export function buildQueryCreator<S>(
 
         setLoading(true);
 
-        const prm = fetcher(parameterConverter(params, store.getState));
+        const prm = fetcher(parameterConverter(params, thunkStore.getState));
 
         await prm
           .then((res) => {
             const convertedData = resultConverter(
               res,
-              store.getState,
+              thunkStore.getState,
               params as P
             );
 
             if (key) {
-              store.dispatch({
+              thunkStore.dispatch({
                 type: `QueryHooks/${key}/fulfilled`,
                 params,
                 payload: convertedData,
@@ -252,7 +259,7 @@ export function buildQueryCreator<S>(
           })
           .catch((err) => {
             if (key) {
-              store.dispatch({
+              thunkStore.dispatch({
                 type: `QueryHooks/${key}/rejected`,
                 params,
                 payload: err,
