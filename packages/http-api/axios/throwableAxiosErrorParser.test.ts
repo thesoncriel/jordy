@@ -44,7 +44,8 @@ describe('throwableAxiosErrorParser', async () => {
             status: 404,
           },
           config: {
-            url: '/some/path',
+            url: '/some/path/10',
+            method: 'delete',
           },
         });
       } catch (error) {
@@ -52,7 +53,8 @@ describe('throwableAxiosErrorParser', async () => {
         expect((error as HttpRestError).toPlainObject()).toEqual({
           message: 'lookpin',
           errorType: 'notFound',
-          url: '/some/path',
+          url: '/some/path/10',
+          method: 'delete',
           rawData: expect.objectContaining({
             message: 'lookpin',
           }),
@@ -81,6 +83,7 @@ describe('throwableAxiosErrorParser', async () => {
           },
           config: {
             url: '/some/path',
+            method: 'PUT',
           },
         });
       } catch (error) {
@@ -89,6 +92,7 @@ describe('throwableAxiosErrorParser', async () => {
           message: HttpRestError.DEFAULT_MESSAGE,
           errorType: 'server',
           url: '/some/path',
+          method: 'put',
           rawData: expect.stringContaining('lorem'),
         });
       }
@@ -104,6 +108,7 @@ describe('throwableAxiosErrorParser', async () => {
             status: 401,
           },
           config: {
+            method: 'POST',
             url: '/some/path',
           },
         });
@@ -113,6 +118,7 @@ describe('throwableAxiosErrorParser', async () => {
           message: 'lookpin lover',
           errorType: 'auth',
           url: '/some/path',
+          method: 'post',
           rawData: expect.stringContaining('lover'),
         });
       }
@@ -129,7 +135,7 @@ describe('throwableAxiosErrorParser', async () => {
                 items: [1, 2, 3, 4, 5],
               },
             },
-            status: 404,
+            status: '404',
           },
           config: {
             url: '/some/path',
@@ -141,6 +147,7 @@ describe('throwableAxiosErrorParser', async () => {
           message: HttpRestError.DEFAULT_MESSAGE,
           errorType: 'notFound',
           url: '/some/path',
+          method: undefined,
           rawData: {
             meta: {
               items: [1, 2, 3, 4, 5],

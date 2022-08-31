@@ -1,3 +1,5 @@
+import { RestHttpMethodType } from './etc.type';
+
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export type HttpRestErrorType =
   | 'unknown'
@@ -13,12 +15,14 @@ export interface ErrorLike {
 
 export interface HttpRestErrorMeta {
   url: string;
+  method?: RestHttpMethodType;
   rawData?: any;
   errorType: HttpRestErrorType;
 }
 
 export interface HttpRestErrorMetaArgs {
   url: string;
+  method?: RestHttpMethodType;
   rawData: any;
   status: number;
 }
@@ -28,6 +32,8 @@ export interface HttpRestErrorLike extends ErrorLike, HttpRestErrorMeta {}
 export class HttpRestError extends Error implements HttpRestErrorLike {
   public static readonly DEFAULT_MESSAGE = '알 수 없는 서버 오류입니다';
 
+  public readonly name = 'HttpRestError';
+
   private _errorType: HttpRestErrorType = 'unknown';
   public get errorType() {
     return this._errorType;
@@ -36,6 +42,11 @@ export class HttpRestError extends Error implements HttpRestErrorLike {
   private _url = '';
   public get url() {
     return this._url;
+  }
+
+  private _method: RestHttpMethodType | undefined = undefined;
+  public get method(): RestHttpMethodType | undefined {
+    return this._method;
   }
 
   private _rawData: any = null;
@@ -60,8 +71,6 @@ export class HttpRestError extends Error implements HttpRestErrorLike {
   ) {
     super(message);
 
-    this.name = 'HttpRestError';
-
     if (typeof arg1 === 'number') {
       this._errorType = HttpRestError.toErrorType(arg1);
 
@@ -74,6 +83,7 @@ export class HttpRestError extends Error implements HttpRestErrorLike {
     }
     if (HttpRestError.isHttpRestErrorLike(arg1)) {
       this._url = arg1.url;
+      this._method = arg1.method;
       this._errorType = arg1.errorType;
       this._rawData = arg1.rawData;
 
@@ -81,7 +91,8 @@ export class HttpRestError extends Error implements HttpRestErrorLike {
     }
     if (typeof arg1 !== 'string' && arg1) {
       this._url = arg1.url || '';
-      this._errorType = HttpRestError.toErrorType(arg1.status);
+      this._method = arg1.method;
+      this._errorType = HttpRestError.toErrorType(Number(arg1.status));
       this._rawData = arg1.rawData;
     }
   }
@@ -89,6 +100,7 @@ export class HttpRestError extends Error implements HttpRestErrorLike {
   toPlainObject(): HttpRestErrorLike {
     return {
       message: this.message,
+      method: this._method,
       errorType: this._errorType,
       url: this._url,
       rawData: this._rawData,
