@@ -61,7 +61,7 @@ export class HttpRestError extends Error implements HttpRestErrorLike {
     super(message);
 
     if (typeof arg1 === 'number') {
-      this._errorType = this.toErrorType(arg1);
+      this._errorType = HttpRestError.toErrorType(arg1);
 
       return;
     }
@@ -79,12 +79,21 @@ export class HttpRestError extends Error implements HttpRestErrorLike {
     }
     if (typeof arg1 !== 'string' && arg1) {
       this._url = arg1.url || '';
-      this._errorType = this.toErrorType(arg1.status);
+      this._errorType = HttpRestError.toErrorType(arg1.status);
       this._rawData = arg1.rawData;
     }
   }
 
-  toErrorType(status: number): HttpRestErrorType {
+  toPlainObject(): HttpRestErrorLike {
+    return {
+      message: this.message,
+      errorType: this._errorType,
+      url: this._url,
+      rawData: this._rawData,
+    };
+  }
+
+  static toErrorType(status: number): HttpRestErrorType {
     if (status === 401) {
       return 'auth';
     }
@@ -97,19 +106,10 @@ export class HttpRestError extends Error implements HttpRestErrorLike {
     if (status >= 500) {
       return 'server';
     }
-    if (status < 500) {
+    if (status >= 400 && status < 500) {
       return 'badRequest';
     }
     return 'unknown';
-  }
-
-  toPlainObject(): HttpRestErrorLike {
-    return {
-      message: this.message,
-      errorType: this._errorType,
-      url: this._url,
-      rawData: this._rawData,
-    };
   }
 
   static isHttpRestErrorType(value: unknown): value is HttpRestErrorType {
