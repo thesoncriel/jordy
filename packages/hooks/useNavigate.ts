@@ -31,6 +31,16 @@ function isMergeQueries(option: SearchParamsOptions): boolean {
   return isUndefined(option) || (option && option['merge'] === true);
 }
 
+function refineQueries(queries: Record<string, any>): Record<string, any> {
+  return Object.entries(queries).reduce((acc, [key, value]) => {
+    if (!isNullable(queries[key]) && queries[key] !== '') {
+      acc[key] = value;
+    }
+
+    return acc;
+  }, {} as Record<string, any>);
+}
+
 /**
  * react-router-dom v6의 useNavigate 기반으로 기능을 확장한 hooks.
  *
@@ -87,15 +97,6 @@ export function useNavigate(): NavigationCommander {
       }
 
       if (instanceOfSearchParams(to)) {
-        let newQueries: Record<string, string> = {};
-
-        for (const key in to) {
-          if (isNullable(to[key]) || to[key] === '') {
-            continue;
-          }
-          newQueries = { ...newQueries, [key]: to[key] };
-        }
-
         if (isMergeQueries(option)) {
           const currentQueries = [...currentSearchParams].reduce(
             (acc, [key, value]) => {
@@ -105,10 +106,12 @@ export function useNavigate(): NavigationCommander {
             {} as Record<string, any>
           );
 
-          return setSearchParams({ ...currentQueries, ...newQueries }, option);
+          const mergeQueries = { ...currentQueries, ...to };
+
+          return setSearchParams(refineQueries(mergeQueries), option);
         }
 
-        return setSearchParams(newQueries, option);
+        return setSearchParams(refineQueries(to), option);
       }
 
       return navigate(to, option);
