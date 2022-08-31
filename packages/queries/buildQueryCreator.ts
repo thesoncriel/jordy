@@ -1,4 +1,4 @@
-import { AnyAction, EnhancedStore, MiddlewareArray } from '@reduxjs/toolkit';
+import { EnhancedStore } from '@reduxjs/toolkit';
 import { useCallback, useLayoutEffect, useRef, useState } from 'react';
 
 import { createStorage, StorageType } from '../storage';
@@ -134,7 +134,7 @@ function defConverter<P, R>(args: P) {
 
 export function buildQueryCreator<S>(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  store: EnhancedStore<S, AnyAction, MiddlewareArray<any[]>>
+  store: EnhancedStore<S, any, any>
 ): CreateRepositoryQuery<S> {
   const keyDic: Record<string, boolean> = {};
 
