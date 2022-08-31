@@ -60,8 +60,10 @@ export class HttpRestError extends Error implements HttpRestErrorLike {
   ) {
     super(message);
 
+    this.name = 'HttpRestError';
+
     if (typeof arg1 === 'number') {
-      this._errorType = HttpRestError.toErrorType(arg1);
+      this._errorType = this.toErrorType(arg1);
 
       return;
     }
@@ -79,7 +81,7 @@ export class HttpRestError extends Error implements HttpRestErrorLike {
     }
     if (typeof arg1 !== 'string' && arg1) {
       this._url = arg1.url || '';
-      this._errorType = HttpRestError.toErrorType(arg1.status);
+      this._errorType = this.toErrorType(arg1.status);
       this._rawData = arg1.rawData;
     }
   }
@@ -93,7 +95,7 @@ export class HttpRestError extends Error implements HttpRestErrorLike {
     };
   }
 
-  static toErrorType(status: number): HttpRestErrorType {
+  toErrorType(status: number): HttpRestErrorType {
     if (status === 401) {
       return 'auth';
     }
@@ -154,6 +156,10 @@ export class HttpRestError extends Error implements HttpRestErrorLike {
     }
     return false;
   }
+
+  static from(error: HttpRestErrorLike): HttpRestError;
+  static from(error: Error, errorType?: HttpRestErrorType): HttpRestError;
+  static from(message: string, errorType?: HttpRestErrorType): HttpRestError;
 
   static from(error: any, errorType?: HttpRestErrorType): HttpRestError {
     if (HttpRestError.isHttpRestErrorLike(error)) {
