@@ -33,7 +33,7 @@ function isMergeQueries(option: SearchParamsOptions): boolean {
 
 function refineQueries(queries: Record<string, any>): Record<string, any> {
   return Object.entries(queries).reduce((acc, [key, value]) => {
-    if (!isNullable(queries[key]) && queries[key] !== '') {
+    if (!isNullable(value) && value !== '') {
       acc[key] = value;
     }
 
