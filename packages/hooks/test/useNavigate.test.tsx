@@ -41,11 +41,10 @@ function Home() {
           light: null,
           width: '',
           height: 0,
-          fail: false,
-          success: 'true',
+          success: false,
         })}
       >
-        falsyCheck
+        validCheck
       </button>
       <button onClick={handleQueryCurried({ sort: 'newst' }, { merge: false })}>
         sort
@@ -148,14 +147,16 @@ describe('useNavigate', () => {
       expect(search).toBe('?sort=newst');
     });
 
-    it('보내려는 query 중 falsy가 있다면 해당 쿼리는 제외하여 변경한다.', () => {
-      const button = screen.getByText('falsyCheck');
+    it('보내려는 query 중 빈 값, undefined, null이 있다면 해당 쿼리는 제외하여 변경한다.', () => {
+      const button = screen.getByText('validCheck');
 
       fireEvent.click(button);
 
       const search = window.location.search;
-      expect(search).not.toBe('?sort=newst&color=&fail=');
-      expect(search).toBe('?sort=newst&success=true');
+      expect(search).not.toBe(
+        '?sort=newst&color=undefined&light=null&width&height=0&success=false'
+      );
+      expect(search).toBe('?sort=newst&height=0&success=false');
     });
   });
 });
