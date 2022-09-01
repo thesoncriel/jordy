@@ -1,5 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { HttpRestErrorLike, MarshallingType } from '../types';
+import { MarshallingType } from '../types';
+import { HttpRestErrorLike } from './HttpRestError';
+
+export type RestHttpMethodType = 'get' | 'post' | 'put' | 'patch' | 'delete';
 
 /**
  * 업로드 상태를 확인할 수 있는 객체.
@@ -157,8 +160,6 @@ export interface HttpFileApi {
  * HTTP 프로토콜을 이용하여 비동기 통신을 수행한다.
  */
 export interface HttpApi extends HttpRestApi, HttpFileApi {}
-
-export type RestHttpMethodType = 'get' | 'post' | 'put' | 'patch' | 'delete';
 
 export interface HttpInterceptorConfig {
   /**

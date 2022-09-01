@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { HttpRestErrorLike } from '../types';
+import { HttpRestErrorLike } from './HttpRestError';
 import { HttpInterceptorConfig, RestHttpMethodType } from './network.type';
 
 export class BaseInterceptorHttpApi {

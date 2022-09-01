@@ -1,13 +1,25 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { HttpRestError } from '../../types';
+import { HttpRestErrorMetaArgs, HttpRestError } from '../HttpRestError';
+import { RestHttpMethodType } from '../network.type';
 import { isAxiosError } from './axios.util';
+
+function tryGetMethod(
+  method: string | undefined
+): RestHttpMethodType | undefined {
+  try {
+    return method.toLocaleLowerCase() as RestHttpMethodType;
+  } catch (error) {
+    return undefined;
+  }
+}
 
 export function throwableAxiosErrorParser(error: any) {
   if (isAxiosError(error)) {
     const errorData = error.response?.data;
-    const meta = {
+    const meta: HttpRestErrorMetaArgs = {
       url: error.config.url || '',
-      status: error.response?.status || 0,
+      method: tryGetMethod(error.config.method),
+      status: Number(error.response?.status || 0),
       rawData: errorData,
     };
 

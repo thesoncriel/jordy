@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { HttpRestError } from '../types';
 import { isNumber, isObject, isString, isUndefined } from '../util/typeCheck';
+import { HttpRestError } from './HttpRestError';
 import { BaseAsyncHttpNetworkConfig } from './network.type';
 
 function isOptionalBoolean(value: unknown): value is undefined | boolean {
