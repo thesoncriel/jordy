@@ -2,6 +2,7 @@
 node_modules
 /cjs
 /esm5
+/esm6
 /types
 /libs
 _sample.ts
