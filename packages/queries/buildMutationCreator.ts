@@ -1,4 +1,5 @@
-import { AnyAction, EnhancedStore, MiddlewareArray } from '@reduxjs/toolkit';
+import { AnyAction, EnhancedStore } from '@reduxjs/toolkit';
+import { ThunkMiddlewareFor } from '@reduxjs/toolkit/dist/getDefaultMiddleware';
 import { useCallback, useRef, useState } from 'react';
 
 interface MutationHooksCreatorSettingOptionDto<SR, SP, R, P, ReduxRootState> {
@@ -42,10 +43,12 @@ function defineConverter<P, R>(args: P) {
   return args as unknown as R;
 }
 
-export function buildMutationCreator<S>(
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  store: EnhancedStore<S, AnyAction, MiddlewareArray<any[]>>
-) {
+export function buildMutationCreator<S>(store: EnhancedStore<S>) {
+  const thunkStore = store as EnhancedStore<
+    S,
+    AnyAction,
+    [ThunkMiddlewareFor<S>]
+  >;
   const keyDic: Record<string, boolean> = {};
 
   return function createRepositoryMutation<SR, SP, R, P, E extends Error>({
@@ -88,17 +91,17 @@ export function buildMutationCreator<S>(
         refFetching.current = true;
 
         if (key) {
-          store.dispatch({ type: `MutationHooks/${key}/pending`, params });
+          thunkStore.dispatch({ type: `MutationHooks/${key}/pending`, params });
         }
 
-        const prm = mutator(parameterConverter(params, store.getState));
+        const prm = mutator(parameterConverter(params, thunkStore.getState));
 
         return await prm
           .then((res) => {
-            const convertedData = resultConverter(res, store.getState);
+            const convertedData = resultConverter(res, thunkStore.getState);
 
             if (key) {
-              store.dispatch({
+              thunkStore.dispatch({
                 type: `MutationHooks/${key}/fulfilled`,
                 params,
                 payload: convertedData,
@@ -115,7 +118,7 @@ export function buildMutationCreator<S>(
 
           .catch((err) => {
             if (key) {
-              store.dispatch({
+              thunkStore.dispatch({
                 type: `MutationHooks/${key}/rejected`,
                 params,
                 payload: err,
