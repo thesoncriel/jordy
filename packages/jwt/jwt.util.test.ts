@@ -1,4 +1,4 @@
-import { isJWTAuthTokenDto } from './storage.util';
+import { isJWTAuthTokenDto } from './jwt.util';
 
 describe('isJWTAuthTokenDto - 토큰 정보 유효성 검사', () => {
   it.each([

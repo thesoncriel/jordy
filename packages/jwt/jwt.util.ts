@@ -1,4 +1,4 @@
-import { JWTAuthTokenDto } from './storage.type';
+import { JWTAuthTokenDto } from './jwt.type';
 
 export function isJWTAuthTokenDto(value: unknown): value is JWTAuthTokenDto {
   const target = value as JWTAuthTokenDto;
