@@ -45,7 +45,7 @@ export function ErrorParser<E = any>(throwableParser: (error: E) => any) {
         this.network = new ClassConstructor(args[0], args[1], args[2]);
       }
 
-      parse(error: any): any {
+      parse = async (error: any) => {
         const nextError = throwableParser(error);
 
         if (nextError) {
@@ -53,7 +53,7 @@ export function ErrorParser<E = any>(throwableParser: (error: E) => any) {
         }
 
         throwHttpRestError(error);
-      }
+      };
 
       get(...args: any[]) {
         return this.network.get

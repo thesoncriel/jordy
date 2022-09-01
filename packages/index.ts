@@ -1,17 +1,5 @@
 import { DeviceDetectProvider, withAdaptiveRender } from './adaptive-render';
 
-import {
-  createHttpApi,
-  createHttpUploadApi,
-  createHttpHeaderPipe,
-  httpHeaderOperator,
-  HttpApi,
-  HttpUploadApi,
-  HttpInterceptorHandler,
-  HttpInterceptorConfig,
-  UploadStateArgs,
-  XhrUploadStateArgs,
-} from './http-api';
 import { cache } from './proxies';
 import { ModuleRouteModel, useRouteSystem } from './route-system';
 import validate, {
@@ -22,25 +10,17 @@ import validate, {
   ValidateResultModel,
 } from './validate';
 
+export * from './http-api';
 export * from './hooks';
 export * from './queries';
 export * from './storage';
 export * from './types';
 export * from './util';
+export * from './jwt';
 export {
   ModuleRouteModel,
   DeviceDetectProvider,
   withAdaptiveRender,
-  createHttpApi,
-  createHttpUploadApi,
-  createHttpHeaderPipe,
-  httpHeaderOperator,
-  HttpApi,
-  HttpUploadApi,
-  HttpInterceptorHandler,
-  HttpInterceptorConfig,
-  UploadStateArgs,
-  XhrUploadStateArgs,
   cache,
   useRouteSystem,
   validate,

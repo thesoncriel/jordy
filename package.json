@@ -1,15 +1,20 @@
 {
   "name": "jordy",
-  "version": "0.14.4",
+  "version": "0.14.10",
   "description": "typescript based frontend toolkit",
-  "main": "./esm5/index.js",
-  "module": "./esm5/index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/thesoncriel/jordy"
+  },
+  "main": "./esm6/index.js",
+  "module": "./esm6/index.js",
   "types": "./libs/index.d.ts",
   "scripts": {
+    "compile:esm6": "tsc -b tsconfig.esm6.json",
     "compile:esm5": "tsc -b tsconfig.esm5.json",
     "compile:types": "tsc -b tsconfig.types.json",
-    "clean": "rimraf cjs esm5 types libs",
-    "build": "npm-run-all clean compile:esm5 compile:types",
+    "clean": "rimraf cjs esm5 esm6 types libs",
+    "build": "npm-run-all clean compile:esm6 compile:types",
     "test": "vitest run",
     "test:watch": "vitest watch",
     "prettier": "prettier './packages/**/*.ts'",
@@ -50,12 +55,12 @@
     "rimraf": "^3.0.2",
     "ts-node": "^10.3.0",
     "tslib": "^2.3.1",
-    "typescript": "^4.7.4",
+    "typescript": "^4.8.2",
     "vite": "^3.0.2",
     "vitest": "^0.22.1"
   },
   "files": [
-    "esm5/**/*.js",
+    "esm6/**/*.js",
     "libs/**/*.d.ts"
   ]
 }

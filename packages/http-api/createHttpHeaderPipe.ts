@@ -1,6 +1,8 @@
 /* eslint-disable no-param-reassign */
-import { JWTProvider, TokenProvider } from '../storage';
+import { JWTProvider } from '../jwt';
+import { TokenProvider } from '../storage';
 import { isServer } from '../util/envCheck';
+import { HttpRestError } from './HttpRestError';
 
 type HeaderFieldMaker = (
   defHeader: Map<string, string>,
@@ -15,6 +17,9 @@ function makeHeaders(pipes: HeaderFieldMaker[], token = '') {
 
   return Object.fromEntries(rawMap) as Record<string, string>;
 }
+
+const MSG_DEFAULT =
+  '로그인 상태가 만료 되었습니다.\n다시 로그인 하여 주시기 바랍니다.';
 
 /**
  * HTTP 헤더를 제공한다.
@@ -60,7 +65,7 @@ function makeHeaders(pipes: HeaderFieldMaker[], token = '') {
  */
 export const createHttpHeaderPipe = (
   provider?: TokenProvider | JWTProvider,
-  loginRequiredMessage = '로그인 상태가 만료 되었습니다.\n다시 로그인 하여 주시기 바랍니다.'
+  loginRequiredMessage = MSG_DEFAULT
 ) => {
   return async function headerPipe(...pipes: HeaderFieldMaker[]) {
     let token = '';
@@ -69,7 +74,7 @@ export const createHttpHeaderPipe = (
       token = await provider.get();
 
       if (!token && !isServer()) {
-        throw new Error(loginRequiredMessage);
+        throw new HttpRestError(loginRequiredMessage, 'auth');
       }
     }
 
