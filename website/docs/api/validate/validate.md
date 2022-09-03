@@ -82,7 +82,7 @@ function validate<T>(state: T, opt: ValidateBulkOptionType<T>): ValidateBulkResu
 
 ### example
 ```ts
-import { validate } from 'ts-fe-toolkit';
+import { validate } from 'jordy';
 
 interface UserModel {
     name: string;
