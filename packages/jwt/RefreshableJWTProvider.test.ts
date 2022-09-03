@@ -93,11 +93,26 @@ describe('RefreshableJWTProvider', () => {
     it('refresh 성공 시 내부 토큰 제공자에 받은 값들을 설정한다.', async () => {
       await provider.get();
 
-      expect(accessTokenMock.set).toBeCalledWith(AUTH_TOKEN_DTO.accessToken);
+      expect(accessTokenMock.set).toBeCalledWith(
+        AUTH_TOKEN_DTO.accessToken,
+        AUTH_TOKEN_DTO.accessTokenExpiredDate
+      );
       expect(refreshTokenMock.set).toBeCalledWith(
         AUTH_TOKEN_DTO.refreshToken,
         AUTH_TOKEN_DTO.refreshTokenExpiredDate
       );
+    });
+
+    it('내부 토큰 제공자가 전달하는 값에 유효기간이 비어있다면 undefined 로 전달한다.', async () => {
+      refresherMock.mockResolvedValueOnce({
+        accessToken: 'jordy',
+        refreshToken: 'lookpin',
+      } as JWTAuthTokenDto);
+
+      await provider.get();
+
+      expect(accessTokenMock.set).toBeCalledWith('jordy', undefined);
+      expect(refreshTokenMock.set).toBeCalledWith('lookpin', undefined);
     });
 
     it('refresh 성공 시 Async Queue 에 등록된 요청을 모두 resolve 시킨다.', async () => {

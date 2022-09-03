@@ -1,8 +1,8 @@
 export interface JWTAuthTokenDto {
   accessToken: string;
-  accessTokenExpiredDate: string;
+  accessTokenExpiredDate?: string;
   refreshToken: string;
-  refreshTokenExpiredDate: string;
+  refreshTokenExpiredDate?: string;
 }
 
 /**

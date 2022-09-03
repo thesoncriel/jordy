@@ -35,13 +35,13 @@ import { MarshallingType } from '../types';
  *
  * sto.remove(); // 스토리지에서 데이터 삭제
  *
- * @param type 스토리지 타입. session, local, memory 중 하나. 기본 session.
- * @param key 스토리지에서 쓰이는 키. 기본값은 '_' (underbar).
+ * @param type 스토리지 타입. session, local, memory 중 하나.
+ * @param key 스토리지에서 쓰이는 키.
  * @param expiredTime 유효시간 (seconds). 시간을 주지 않거나 0보다 작다면 자료 유효시간이 없다. 기본값은 0.
  */
 export const createStorage = <T extends MarshallingType>(
-  type: StorageType = 'session',
-  key = '_',
+  type: StorageType,
+  key: string,
   expiredTime = 0
 ): SimpleStorage<T> => {
   let ret: SimpleStorage<T>;

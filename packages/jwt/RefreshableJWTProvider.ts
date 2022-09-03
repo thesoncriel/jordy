@@ -52,7 +52,10 @@ export class RefreshableJWTProvider implements JWTProvider {
   }
 
   set(tokenValue: JWTAuthTokenDto): void {
-    this.accessTokenProvider.set(tokenValue.accessToken);
+    this.accessTokenProvider.set(
+      tokenValue.accessToken,
+      tokenValue.accessTokenExpiredDate
+    );
     this.refreshTokenProvider.set(
       tokenValue.refreshToken,
       tokenValue.refreshTokenExpiredDate
