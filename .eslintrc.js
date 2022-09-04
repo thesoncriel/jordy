@@ -23,9 +23,10 @@ module.exports = {
     quotes: ['error', 'single'],
     semi: ['error', 'always'],
     '@typescript-eslint/explicit-module-boundary-types': 'off',
+    "no-unused-vars": "off",
     "@typescript-eslint/no-unused-vars": [
       "error",
-      { "argsIgnorePattern": "^_" }
+      { "argsIgnorePattern": "^_", "varsIgnorePattern": "^_" }
     ],
     indent: 'off',
   },

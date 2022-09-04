@@ -19,7 +19,7 @@
     "types": ["vitest/globals"],
     "baseUrl": ".",
     "paths": {
-      "ts-fe-toolkit": [
+      "jordy": [
         "packages/index"
       ]
     }
