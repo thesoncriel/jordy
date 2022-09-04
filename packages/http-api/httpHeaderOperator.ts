@@ -6,7 +6,7 @@ const pipeHeaderDataCurried =
 export const httpHeaderOperator = {
   /**
    * ### 헤더 오퍼레이터
-   * 아래와 같은 데이터가 추가 된다.
+   * 아래와 같은 데이터가 추가된다.
    *
    * Accept: 'application/json'
    * @param headerData 데이터를 추가 할 헤더
@@ -17,7 +17,7 @@ export const httpHeaderOperator = {
   ),
   /**
    * ### 헤더 오퍼레이터
-   * 아래와 같은 데이터가 추가 된다.
+   * 아래와 같은 데이터가 추가된다.
    *
    * Content-Type = 'application/x-www-form-urlencoded'
    * @param headerData 데이터를 추가 할 헤더
@@ -28,7 +28,7 @@ export const httpHeaderOperator = {
   ),
   /**
    * ### 헤더 오퍼레이터
-   * 아래와 같은 데이터가 추가 된다.
+   * 아래와 같은 데이터가 추가된다.
    *
    * Content-Type = 'multipart/form-data'
    * @param headerData 데이터를 추가 할 헤더
@@ -39,7 +39,7 @@ export const httpHeaderOperator = {
   ),
   /**
    * ### 헤더 오퍼레이터
-   * 아래와 같은 데이터가 추가 된다.
+   * 아래와 같은 데이터가 추가된다.
    *
    * Content-Type = 'application/json; charset=utf-8'
    * @param headerData 데이터를 추가 할 헤더
@@ -53,6 +53,11 @@ export const httpHeaderOperator = {
    * Bearer 토큰이 필요할 때 사용된다.
    *
    * 전달된 토큰 값이 비어있다면 키와 값을 설정하지 않는다.
+   *
+   * 아래와 같은 데이터가 추가된다.
+   *
+   * Authorization = 'Bearer {{token}}'
+   *
    * @param headerData 데이터를 추가 할 헤더
    * @param token 사용될 베어러 토큰.
    */

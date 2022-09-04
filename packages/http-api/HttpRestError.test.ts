@@ -121,7 +121,11 @@ describe('HttpRestError', () => {
         },
         'unknown',
       ],
-      ['모든 필드가 비었음', {}, 'unknown'],
+      [
+        '모든 필드가 비었음',
+        {}, //
+        'unknown',
+      ],
     ])('%s', (_, arg: HttpRestErrorMetaArgs, errorType) => {
       const result = new HttpRestError('lookpin', arg);
 
@@ -131,5 +135,28 @@ describe('HttpRestError', () => {
         rawData: arg.rawData,
       });
     });
+  });
+
+  it('생성된 오류 객체에서 stack 을 호출할 수 있다.', () => {
+    const result = new HttpRestError('blah blah');
+
+    expect(result.stack).toBeTruthy();
+  });
+
+  it('생성된 오류객체를 spread syntax 로 쓸 경우 함수를 제외한 내부값을 복사한다.', () => {
+    const meta: HttpRestErrorLike = {
+      message: 'lookpin lover',
+      url: 'lookpin.co.kr',
+      method: 'get',
+      errorType: 'badRequest',
+      rawData: {
+        name: 'jordy',
+        age: 21,
+      },
+    };
+    const given = new HttpRestError(meta.message, meta);
+    const { stack: _stack, name: _name, ...result } = { ...given };
+
+    expect(result).toEqual(meta);
   });
 });

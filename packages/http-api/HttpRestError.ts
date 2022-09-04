@@ -29,30 +29,16 @@ export interface HttpRestErrorMetaArgs {
 
 export interface HttpRestErrorLike extends ErrorLike, HttpRestErrorMeta {}
 
-export class HttpRestError extends Error implements HttpRestErrorLike {
-  public static readonly DEFAULT_MESSAGE = '알 수 없는 서버 오류입니다';
+export class HttpRestError implements Error, HttpRestErrorLike {
+  public static readonly DEFAULT_MESSAGE = '알 수 없는 서버 오류입니다.';
 
   public readonly name = 'HttpRestError';
 
-  private _errorType: HttpRestErrorType = 'unknown';
-  public get errorType() {
-    return this._errorType;
-  }
-
-  private _url = '';
-  public get url() {
-    return this._url;
-  }
-
-  private _method: RestHttpMethodType | undefined = undefined;
-  public get method(): RestHttpMethodType | undefined {
-    return this._method;
-  }
-
-  private _rawData: any = null;
-  public get rawData() {
-    return this._rawData;
-  }
+  errorType: HttpRestErrorType = 'unknown';
+  url = '';
+  method: RestHttpMethodType | undefined = undefined;
+  rawData: any = null;
+  stack: string;
 
   constructor();
   constructor(message: string);
@@ -62,52 +48,61 @@ export class HttpRestError extends Error implements HttpRestErrorLike {
   constructor(message: string, meta: HttpRestErrorLike);
 
   constructor(
-    message = HttpRestError.DEFAULT_MESSAGE,
+    public readonly message = HttpRestError.DEFAULT_MESSAGE,
     arg1?:
       | HttpRestErrorMetaArgs
       | HttpRestErrorLike
       | HttpRestErrorType
       | number
   ) {
-    super(message);
+    this.stack = new Error(message).stack;
+    this.init(arg1);
+  }
 
-    if (typeof arg1 === 'number') {
-      this._errorType = HttpRestError.toErrorType(arg1);
-
-      return;
-    }
-    if (HttpRestError.isHttpRestErrorType(arg1)) {
-      this._errorType = arg1;
-
-      return;
-    }
-    if (HttpRestError.isHttpRestErrorLike(arg1)) {
-      this._url = arg1.url;
-      this._method = arg1.method;
-      this._errorType = arg1.errorType;
-      this._rawData = arg1.rawData;
+  init(
+    arg?: HttpRestErrorMetaArgs | HttpRestErrorLike | HttpRestErrorType | number
+  ) {
+    if (typeof arg === 'number') {
+      this.errorType = this.toErrorType(arg);
 
       return;
     }
-    if (typeof arg1 !== 'string' && arg1) {
-      this._url = arg1.url || '';
-      this._method = arg1.method;
-      this._errorType = HttpRestError.toErrorType(Number(arg1.status));
-      this._rawData = arg1.rawData;
+    if (HttpRestError.isHttpRestErrorType(arg)) {
+      this.errorType = arg;
+
+      return;
+    }
+    if (HttpRestError.isHttpRestErrorLike(arg)) {
+      this.url = arg.url;
+      this.method = arg.method;
+      this.errorType = arg.errorType;
+      this.rawData = arg.rawData;
+
+      return;
+    }
+    if (typeof arg !== 'string' && arg) {
+      this.url = arg.url || '';
+      this.method = arg.method;
+      this.errorType = this.toErrorType(Number(arg.status));
+      this.rawData = arg.rawData;
     }
   }
 
   toPlainObject(): HttpRestErrorLike {
     return {
       message: this.message,
-      method: this._method,
-      errorType: this._errorType,
-      url: this._url,
-      rawData: this._rawData,
+      method: this.method,
+      errorType: this.errorType,
+      url: this.url,
+      rawData: this.rawData,
     };
   }
 
-  static toErrorType(status: number): HttpRestErrorType {
+  toString() {
+    return `[${this.name} ${this.errorType}: ${this.message}]`;
+  }
+
+  toErrorType(status: number): HttpRestErrorType {
     if (status === 401) {
       return 'auth';
     }
