@@ -34,7 +34,7 @@ export class RefreshableJWTProvider implements JWTProvider {
 
   async refresh() {
     const defaultErrorMessage = RefreshableJWTProvider.MSG_LOGIN_REQUIRED;
-    const token = this.refreshToken;
+    const token = this.refreshTokenProvider.get();
 
     if (token) {
       try {
@@ -60,6 +60,7 @@ export class RefreshableJWTProvider implements JWTProvider {
       tokenValue.refreshToken,
       tokenValue.refreshTokenExpiredDate
     );
+    this._refreshed = true;
   }
   async get(): Promise<string> {
     if (this._refreshed) {
@@ -80,7 +81,6 @@ export class RefreshableJWTProvider implements JWTProvider {
       this.set(value);
 
       this._pending = false;
-      this._refreshed = true;
 
       if (this.asyncQueue.has()) {
         this.asyncQueue.resolveAll(value.accessToken);
