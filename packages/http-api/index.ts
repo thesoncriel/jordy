@@ -3,6 +3,7 @@ export * from './BasicHttpUploadApi';
 export * from './createHttpApi.factory';
 export * from './createHttpHeaderPipe';
 export * from './createHttpUploadApi.factory';
-export * from './network.type';
+export * from './createTokenRefresher';
 export * from './httpHeaderOperator';
 export * from './HttpRestError';
+export * from './network.type';

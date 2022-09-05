@@ -4,6 +4,11 @@ import { HttpRestErrorLike } from './HttpRestError';
 
 export type RestHttpMethodType = 'get' | 'post' | 'put' | 'patch' | 'delete';
 
+export type HeaderFieldMakingOperator = (
+  defHeader: Map<string, string>,
+  token?: string
+) => Map<string, string>;
+
 /**
  * 업로드 상태를 확인할 수 있는 객체.
  */

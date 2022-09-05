@@ -15,7 +15,7 @@ export class BasicHttpUploadApi
     private baseUrl: string,
     private headersCreator: () => Promise<Record<string, string>>,
     paramsSerializer: (params: any) => string,
-    private withCredentials = true
+    private withCredentials = false
   ) {
     super(paramsSerializer);
   }

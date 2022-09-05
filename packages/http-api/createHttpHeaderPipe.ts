@@ -3,13 +3,9 @@ import { JWTProvider } from '../jwt';
 import { TokenProvider } from '../storage';
 import { isServer } from '../util/envCheck';
 import { HttpRestError } from './HttpRestError';
+import { HeaderFieldMakingOperator } from './network.type';
 
-type HeaderFieldMaker = (
-  defHeader: Map<string, string>,
-  token?: string
-) => Map<string, string>;
-
-function makeHeaders(pipes: HeaderFieldMaker[], token = '') {
+function makeHeaders(pipes: HeaderFieldMakingOperator[], token = '') {
   const rawMap = pipes.reduce(
     (prev, fn) => fn(prev, token),
     new Map<string, string>()
@@ -67,7 +63,7 @@ export const createHttpHeaderPipe = (
   provider?: TokenProvider | JWTProvider,
   loginRequiredMessage = MSG_DEFAULT
 ) => {
-  return async function headerPipe(...pipes: HeaderFieldMaker[]) {
+  return async function headerPipe(...pipes: HeaderFieldMakingOperator[]) {
     let token = '';
 
     if (provider) {
