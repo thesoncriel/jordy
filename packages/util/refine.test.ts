@@ -60,6 +60,26 @@ describe('createPageSizeRefiner', () => {
 
     expect(result).toBe(10);
   });
+
+  it('문자열 페이지 값을 주면, 그것을 숫자형으로 자동으로 변환하여 비교한다.', () => {
+    const result = refine('50');
+
+    expect(result).toBe(50);
+  });
+
+  describe('기본 인덱스 설정 예외', () => {
+    it('기본 인덱스 설정이 음수라면 오류를 일으킨다.', () => {
+      expect(() => createPageSizeRefiner(given, -1)).toThrowError(
+        'defaultIndex'
+      );
+    });
+
+    it('페이지 목록의 최대 인덱스를 초과하면 오류를 일으킨다.', () => {
+      expect(() => createPageSizeRefiner(given, 5)).toThrowError(
+        'defaultIndex'
+      );
+    });
+  });
 });
 
 describe('refinePageNumber', () => {

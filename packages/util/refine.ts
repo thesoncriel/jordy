@@ -83,7 +83,23 @@ export function createEnumRefiner<T>(
  * @returns
  */
 export function createPageSizeRefiner(sizeList: number[], defaultIndex = 0) {
-  return createEnumRefiner(sizeList, sizeList[defaultIndex]);
+  if (defaultIndex < 0 || defaultIndex > sizeList.length - 1) {
+    throw new Error(`invalid defaultIndex: ${defaultIndex}`);
+  }
+
+  return function refineForEnum(target: unknown) {
+    try {
+      const page = Number(target);
+
+      if (sizeList.includes(page)) {
+        return page;
+      }
+    } catch (error) {
+      //
+    }
+
+    return sizeList[defaultIndex];
+  };
 }
 
 /**
