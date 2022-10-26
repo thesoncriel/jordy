@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { focusByNames } from '../util/etc';
 import {
   Dispatch,
   SetStateAction,
@@ -33,7 +34,7 @@ interface ValidateHookResult<T> {
   /**
    * 각 상태 항목별 오류 메시지가 담긴 객체.
    */
-  message: Partial<Record<keyof T, string>>;
+  errorMessage: Partial<Record<keyof T, string>>;
   /**
    * 특정 필드의 상태값을 바꾼다.
    *
@@ -58,6 +59,10 @@ interface ValidateHookResult<T> {
    * 검증에 실패했을 경우, 발생된 에러 메시지를 모두 `message` 필드에 자동으로 반영한다.
    */
   validate(): ValidateBulkResultModel;
+  /**
+   * 처음 오류가 발생된 입력 요소에 포커스를 준다.
+   */
+  focusAtFirstError(): void;
   /**
    * antd 에서 Form.Item 과 응용할 때 쓰인다.
    * @example
@@ -139,6 +144,7 @@ function dispatchField<T>(
  * 유효성 검증과 상태 제어 기능을 제공하는 훅스.
  * @param initData 설정할 초기 데이터
  * @param validateFn 유효성 검증에 필요한 함수. 설정하지 않으면 유효성 검증을 무시한다.
+ * @param autoFocusOnError 유효성 검증 실패 시 가장 첫번째 입력 요소에 자동으로 포커스를 준다. 기본 false.
  * @returns
  *
  * @example
@@ -155,7 +161,7 @@ function dispatchField<T>(
  *   const {
  *     state,
  *     setField,
- *     message,
+ *     errorMessage,
  *     validate,
  *     getAntdStatus
  *   } = useValidate(
@@ -181,7 +187,7 @@ function dispatchField<T>(
  *         value={state.textInput}
  *         onChange={({ target }) => setField('textInput', target.value)}
  *       />
- *       <p>{message.textInput}</p>
+ *       <p>{errorMessage.textInput}</p>
  *
  *       -- antd 활용 --
  *       <Form.Item {...getAntdStatus('textInput')}>
@@ -199,11 +205,13 @@ function dispatchField<T>(
  */
 export function useValidate<T extends Record<string, any>>(
   initData: T | (() => T),
-  validateFn?: (data: T) => ValidateBulkResultModel
+  validateFn?: (data: T) => ValidateBulkResultModel,
+  autoFocusOnError = false
 ): ValidateHookResult<T> {
   const [state, setState] = useState(initData);
   const refInitState = useRef(state);
   const refState = useRef(state);
+  const refResult = useRef<ValidateBulkResultModel | null>(null);
   const [message, setMessage] = useState<Partial<Record<keyof T, string>>>({});
 
   useLayoutEffect(() => {
@@ -241,11 +249,13 @@ export function useValidate<T extends Record<string, any>>(
 
   const clearMessage = useCallback(() => {
     setMessage({});
+    refResult.current = null;
   }, []);
 
   const reset = useCallback(() => {
     setMessage({});
     setState(refInitState.current);
+    refResult.current = null;
   }, []);
 
   const getAntdStatus = useCallback(
@@ -263,24 +273,39 @@ export function useValidate<T extends Record<string, any>>(
     const result = validateFn(refState.current);
 
     if (result.isValid === false) {
+      refResult.current = result;
       setMessage(result.errorMessages as Partial<Record<keyof T, string>>);
+
+      if (autoFocusOnError) {
+        focusByNames(result.invalidKeys);
+      }
 
       return result;
     }
 
+    refResult.current = null;
     setMessage({});
 
     return result;
-  }, [validateFn]);
+  }, [validateFn, autoFocusOnError]);
+
+  const focusAtFirstError = useCallback(() => {
+    const result = refResult.current;
+
+    if (result) {
+      focusByNames(result.invalidKeys);
+    }
+  }, []);
 
   return {
     state,
-    message,
+    errorMessage: message,
     setField,
     setMessage: setFieldMessage,
     clearMessage,
     reset,
     validate: doValidate,
+    focusAtFirstError,
     getAntdStatus,
   };
 }

@@ -37,10 +37,7 @@ export function mergeValidates(
     Array.prototype.push.apply(acc.invalidKeys, arg.invalidKeys);
 
     acc.isValid = acc.isValid && arg.isValid;
-    acc.results = {
-      ...acc.results,
-      ...arg.results,
-    };
+
     Array.prototype.push.apply(acc.validKeys, arg.validKeys);
 
     return acc;

@@ -28,75 +28,75 @@ const SAMPLE_MESSAGE_DIC = {
   hasCookie: '쿠키는 가져가셔야 합니다!',
 };
 
+function TestComponent({ validateFn }: TestProps) {
+  const fm = useValidate(getInitState, validateFn, true);
+
+  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const { name, value, checked } = event.target;
+
+    if (name === 'name') {
+      fm.setField(name, value);
+    } else if (name === 'age') {
+      fm.setField(name, Number(value));
+    } else if (name === 'hasCookie') {
+      fm.setField(name, checked);
+    }
+  };
+
+  return (
+    <div>
+      <textarea
+        data-testid="antd"
+        defaultValue={JSON.stringify(fm.getAntdStatus('name'))}
+      ></textarea>
+      <textarea
+        data-testid="state"
+        defaultValue={JSON.stringify(fm.state)}
+      ></textarea>
+      <textarea
+        data-testid="message"
+        defaultValue={JSON.stringify(fm.errorMessage)}
+      ></textarea>
+      <input
+        data-testid="input.name"
+        type="text"
+        name="name"
+        value={fm.state.name}
+        onChange={handleChange}
+      />
+      <input
+        data-testid="input.age"
+        type="number"
+        name="age"
+        value={fm.state.age}
+        onChange={handleChange}
+      />
+      <input
+        data-testid="input.hasCookie"
+        type="checkbox"
+        name="hasCookie"
+        value="cookie"
+        checked={fm.state.hasCookie}
+        onChange={handleChange}
+      />
+      <button
+        data-testid="btnApplyMessage"
+        onClick={() => fm.setMessage(SAMPLE_MESSAGE_DIC)}
+      >
+        메시지 적용
+      </button>
+      <button data-testid="btnClearMessage" onClick={() => fm.clearMessage()}>
+        메시지 초기화
+      </button>
+      <button data-testid="btnValidate" onClick={() => fm.validate()}>
+        유효성 검증
+      </button>
+      <button data-testid="btnReset" onClick={() => fm.reset()}></button>
+    </div>
+  );
+}
+
 describe('useValidate', () => {
-  function TestComponent({ validateFn }: TestProps) {
-    const fm = useValidate(getInitState, validateFn);
-
-    const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-      const { name, value, checked } = event.target;
-
-      if (name === 'name') {
-        fm.setField(name, value);
-      } else if (name === 'age') {
-        fm.setField(name, Number(value));
-      } else if (name === 'hasCookie') {
-        fm.setField(name, checked);
-      }
-    };
-
-    return (
-      <div>
-        <textarea
-          data-testid="antd"
-          defaultValue={JSON.stringify(fm.getAntdStatus('name'))}
-        ></textarea>
-        <textarea
-          data-testid="state"
-          defaultValue={JSON.stringify(fm.state)}
-        ></textarea>
-        <textarea
-          data-testid="message"
-          defaultValue={JSON.stringify(fm.message)}
-        ></textarea>
-        <input
-          data-testid="input.name"
-          type="text"
-          name="name"
-          value={fm.state.name}
-          onChange={handleChange}
-        />
-        <input
-          data-testid="input.age"
-          type="number"
-          name="age"
-          value={fm.state.age}
-          onChange={handleChange}
-        />
-        <input
-          data-testid="input.hasCookie"
-          type="checkbox"
-          name="hasCookie"
-          value="cookie"
-          checked={fm.state.hasCookie}
-          onChange={handleChange}
-        />
-        <button
-          data-testid="btnApplyMessage"
-          onClick={() => fm.setMessage(SAMPLE_MESSAGE_DIC)}
-        >
-          메시지 적용
-        </button>
-        <button data-testid="btnClearMessage" onClick={() => fm.clearMessage()}>
-          메시지 초기화
-        </button>
-        <button data-testid="btnValidate" onClick={() => fm.validate()}>
-          유효성 검증
-        </button>
-        <button data-testid="btnReset" onClick={() => fm.reset()}></button>
-      </div>
-    );
-  }
-
   function getInputElements() {
     return {
       name: screen.getByTestId('input.name'),
@@ -146,7 +146,6 @@ describe('useValidate', () => {
   const validateFnMock = vi.fn((_: TestState) => {
     const result: ValidateBulkResultModel = {
       isValid: true,
-      results: {},
       validKeys: [],
       invalidKeys: [],
       firstMessage: '',
@@ -283,7 +282,6 @@ describe('useValidate', () => {
       validateFnMock.mockImplementationOnce(() => {
         const result: ValidateBulkResultModel = {
           isValid: false,
-          results: {},
           validKeys: [],
           invalidKeys: [],
           firstMessage: messageDic.name,
@@ -309,7 +307,6 @@ describe('useValidate', () => {
       validateFnMock.mockImplementationOnce(() => {
         const result: ValidateBulkResultModel = {
           isValid: false,
-          results: {},
           validKeys: ['age', 'hasCookie'],
           invalidKeys: ['name'],
           firstMessage: errorMessage,
@@ -327,6 +324,29 @@ describe('useValidate', () => {
       expect(getMessages()).toEqual({
         name: errorMessage,
       });
+    });
+
+    it('유효성 검증 실패시 그들 중 가장 첫번째 요소에 포커스가 위치한다. (autoFocusOnError = true)', () => {
+      const errorMessage = '포메는 사랑입니다 ^^';
+
+      validateFnMock.mockImplementationOnce(() => {
+        const result: ValidateBulkResultModel = {
+          isValid: false,
+          validKeys: ['age', 'hasCookie'],
+          invalidKeys: ['name'],
+          firstMessage: errorMessage,
+          errorMessages: {
+            name: errorMessage,
+          },
+        };
+        return result;
+      });
+
+      expect(getInputElements().name).not.toHaveFocus();
+
+      doButtonAction('validate');
+
+      expect(getInputElements().name).toHaveFocus();
     });
   });
 

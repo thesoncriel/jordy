@@ -39,10 +39,6 @@ export interface ValidateBulkResultModel extends ErrorMessagesModel {
    */
   isValid: boolean;
   /**
-   * 각 필드별 결과. key 로 접근할 수 있다.
-   */
-  results: Record<string, ValidateResultModel>;
-  /**
    * 유효했던 키 목록
    */
   validKeys: string[];

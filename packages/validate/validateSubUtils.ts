@@ -7,7 +7,6 @@ import {
 function createValidateBulkResultModel() {
   const result: ValidateBulkResultModel = {
     isValid: true,
-    results: {},
     validKeys: [],
     invalidKeys: [],
     firstMessage: '',

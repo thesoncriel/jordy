@@ -26,3 +26,40 @@ export function timeout<T = void>(
  */
 // eslint-disable-next-line @typescript-eslint/no-empty-function
 export function noop() {}
+
+function findAndFocus(key: string) {
+  try {
+    const input = document.querySelector(
+      `*[name="${key}"], *[data-name="${key}"]`
+    ) as HTMLInputElement | HTMLButtonElement;
+
+    input && input.focus();
+
+    return Boolean(input);
+  } catch (error) {
+    return false;
+  }
+}
+
+/**
+ * 주어진 값을 바탕으로 `name` 혹은 `data-name` 속성값이 지정된 요소를 찾는다.
+ *
+ * 그리고 그 중 가장 첫번째 것에 포커스를 준다.
+ * @param inputNames
+ * @returns
+ */
+export function focusByNames(inputNames: string | string[]) {
+  if (Array.isArray(inputNames)) {
+    return inputNames.some((key) => {
+      const input = document.querySelector(
+        `*[name="${key}"], *[data-name="${key}"]`
+      ) as HTMLInputElement | HTMLButtonElement;
+
+      input && input.focus();
+
+      return Boolean(input);
+    });
+  }
+
+  return findAndFocus(inputNames);
+}

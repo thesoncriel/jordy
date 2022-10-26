@@ -16,7 +16,6 @@ export function validate<T>(
     const items = (opt as any)[key];
     const _mRet = validateBulk(val, state, items);
 
-    acc.results[key] = _mRet;
     acc.isValid = acc.isValid && _mRet.result;
 
     if (_mRet.result) {
