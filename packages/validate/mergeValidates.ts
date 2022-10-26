@@ -17,7 +17,7 @@ import { validateSubUtils } from './validateSubUtils';
  * console.log(result.isValid); // 유효할 경우 true
  * ```
  *
- * @param args 하나로
+ * @param args 하나로 만들 여러 유효성 검증 결과들.
  * @returns {ValidateBulkResultModel}
  */
 export function mergeValidates(

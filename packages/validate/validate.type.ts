@@ -59,15 +59,15 @@ export interface ValidateBulkResultModel extends ErrorMessagesModel {
 /**
  * 유효성 체크 요청에 쓰이는 모델.
  */
-export interface ValidateCheckModel<T> {
+export interface ValidateCheckModel<T, S> {
   /**
    * 해당 유효성 체크를 무시하는 조건.
    *
    * 설정하여 그 결과값이 true 라면 해당 필드의 모든 유효성 체크를 무시한다.
    *
-   * 설정 시 가장 첫번째 유효성 체크 설정에만 유효하다.
+   * 가장 첫번째 유효성 체크 설정에만 유효하다.
    */
-  ignore?: ((val: T) => boolean) | boolean;
+  ignore?: ((val: T, state: S) => boolean) | boolean;
   /**
    * 유효성 체크에 실패 했을 때 출력될 메시지
    */
@@ -77,7 +77,7 @@ export interface ValidateCheckModel<T> {
    *
    * 결과가 false 면 유효성 체크에 실패 한 것으로 간주한다.
    */
-  check: (val: T) => boolean;
+  check: (val: T, state: S) => boolean;
 }
 
 /**
@@ -95,7 +95,21 @@ export type ValidateBulkOptionType<T extends Record<string, any>> = {
    * 또 한 각 필드의 ignore 가 true 일 경우 그 필드 내 다음 조건은 무시하고 통과 된 것으로 간주한다.
    */
   [key in keyof T]?:
-    | ValidateCheckModel<T[key]>
-    | ValidateCheckModel<T[key]>[]
-    | ((value: T[key]) => ValidateBulkResultModel);
+    | ValidateCheckModel<T[key], T>
+    | ValidateCheckModel<T[key], T>[]
+    | ((value: T[key], state: T) => ValidateBulkResultModel);
 };
+
+/**
+ * antd 의 Form.Item 컴포넌트에 응용되는 유효성 체크 자료.
+ */
+export interface AntdFormItemValidationMessageDto {
+  /**
+   * 오류여부
+   */
+  validateStatus?: 'error';
+  /**
+   * 알려줄 유효성 메시지
+   */
+  help?: string;
+}
