@@ -35,26 +35,12 @@ type ValidateBulkOptionType<T extends Record<string, any>> = {
 
 #### - ValidateBulkResultModel
 ```ts
-interface ValidateResultModel {
-  /**
-   * 유효성 체크 결과.
-   */
-  result: boolean;
-  /**
-   * 사용자에게 보여줄 메시지.
-   */
-  message: string;
-}
 
 interface ValidateBulkResultModel {
   /**
    * 전체 유효성 검증 통과 여부. true 면 통과, false 면 아님
    */
   isValid: boolean;
-  /**
-   * 각 필드별 결과. key 로 접근할 수 있다.
-   */
-  results: Record<string, ValidateResultModel>;
   /**
    * 유효했던 키 목록
    */

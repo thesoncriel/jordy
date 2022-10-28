@@ -1,7 +1,7 @@
-import { validate } from './validate';
+import { validate as validateOrigin } from './validate';
 import fn from './fn';
 
-type ValidationCheckerType = typeof validate & {
+type ValidationCheckerType = typeof validateOrigin & {
   fn: typeof fn;
 };
 
@@ -19,7 +19,7 @@ type ValidationCheckerType = typeof validate & {
       password: string;
     }
 
-    function execValidation(user: UserModel) {
+    function validateUserModel(user: UserModel) {
       const result = validate(user, {
         // 한가지 검증일 땐 객체로 넘겨준다.
         name: {
@@ -54,11 +54,10 @@ type ValidationCheckerType = typeof validate & {
  * 
  * @see ValidateBulkResultModel
  */
-const validateFn = validate as ValidationCheckerType;
+export const validateFn = validateOrigin as ValidationCheckerType;
 
 validateFn.fn = fn;
 
-export default validateFn;
-
 export * from './mergeValidates';
 export * from './validate.type';
+export * from './useValidate';

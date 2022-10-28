@@ -7,7 +7,6 @@ import {
 function createValidateBulkResultModel() {
   const result: ValidateBulkResultModel = {
     isValid: true,
-    results: {},
     validKeys: [],
     invalidKeys: [],
     firstMessage: '',
@@ -16,11 +15,12 @@ function createValidateBulkResultModel() {
   return result;
 }
 
-function validateSingle<T>(
+function validateSingle<T, S>(
   val: T,
-  { check, message }: ValidateCheckModel<T>
+  state: S,
+  { check, message }: ValidateCheckModel<T, S>
 ): ValidateResultModel {
-  const result = check(val);
+  const result = check(val, state);
   const msg = !result ? message : '';
 
   return {
@@ -29,14 +29,15 @@ function validateSingle<T>(
   };
 }
 
-function checkIgnore<T>(
-  ignore: undefined | boolean | ((val: T) => boolean),
-  val: T
+function checkIgnore<T, S>(
+  ignore: undefined | boolean | ((val: T, state: S) => boolean),
+  val: T,
+  state: S
 ) {
   if (!ignore) {
     return false;
   }
-  return ignore === true || ignore(val);
+  return ignore === true || ignore(val, state);
 }
 
 function createValidateResultModel(): ValidateResultModel {
@@ -46,22 +47,23 @@ function createValidateResultModel(): ValidateResultModel {
   };
 }
 
-function validateBulk<T>(
+function validateBulk<T, S>(
   val: T,
+  state: S,
   opt:
-    | ValidateCheckModel<T>
-    | ValidateCheckModel<T>[]
+    | ValidateCheckModel<T, S>
+    | ValidateCheckModel<T, S>[]
     | ((value: T) => ValidateBulkResultModel)
 ): ValidateResultModel {
   let mRes: ValidateResultModel | undefined;
 
   if (Array.isArray(opt)) {
-    if (opt.length > 0 && checkIgnore(opt[0].ignore, val)) {
+    if (opt.length > 0 && checkIgnore(opt[0].ignore, val, state)) {
       return createValidateResultModel();
     }
 
     opt.every((_opt) => {
-      const _mRes = validateSingle(val, _opt);
+      const _mRes = validateSingle(val, state, _opt);
 
       if (!_mRes.result) {
         mRes = _mRes;
@@ -76,11 +78,11 @@ function validateBulk<T>(
       message: tmpRes.firstMessage,
     };
   } else {
-    if (checkIgnore(opt.ignore, val)) {
+    if (checkIgnore(opt.ignore, val, state)) {
       return createValidateResultModel();
     }
 
-    mRes = validateSingle(val, opt);
+    mRes = validateSingle(val, state, opt);
   }
 
   return mRes || createValidateResultModel();
