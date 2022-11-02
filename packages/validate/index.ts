@@ -54,9 +54,9 @@ type ValidationCheckerType = typeof validateOrigin & {
  * 
  * @see ValidateBulkResultModel
  */
-export const validateFn = validateOrigin as ValidationCheckerType;
+export const validate = validateOrigin as ValidationCheckerType;
 
-validateFn.fn = fn;
+validate.fn = fn;
 
 export * from './mergeValidates';
 export * from './validate.type';
