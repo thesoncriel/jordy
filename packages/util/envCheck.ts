@@ -97,25 +97,3 @@ export function isIOS() {
 
   return /iPad|iPhone|iPad/.test(ua);
 }
-
-let nativeAppKeyword = '';
-let bIsNativeApp: boolean | null = null;
-
-export function setNativeAppKeyword(keyword: string) {
-  nativeAppKeyword = keyword;
-}
-
-/**
- * user-agent 정보를 이용하여 native app 여부를 판단한다.
- */
-export function isNativeApp() {
-  const ua = userAgent;
-
-  if (!ua) {
-    return false;
-  }
-  if (bIsNativeApp === null) {
-    bIsNativeApp = ua.indexOf(nativeAppKeyword) >= 0;
-  }
-  return bIsNativeApp;
-}
