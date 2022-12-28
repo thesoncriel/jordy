@@ -1,4 +1,10 @@
-import { DeviceDetectProvider, withAdaptiveRender } from './adaptive-render';
+import {
+  DeviceDetectProvider,
+  withAdaptiveRender,
+  useIsMobile,
+  useIsTablet,
+  useIsNative,
+} from './adaptive-render';
 
 import { cache } from './proxies';
 import { ModuleRouteModel, useRouteSystem } from './route-system';
@@ -15,6 +21,9 @@ export {
   ModuleRouteModel,
   DeviceDetectProvider,
   withAdaptiveRender,
+  useIsMobile,
+  useIsTablet,
+  useIsNative,
   cache,
   useRouteSystem,
 };
