@@ -5,8 +5,7 @@ export interface InputChangeArgs {
 export interface RowInputChangeArgs extends InputChangeArgs {
   index: number;
 }
-export interface CheckedChangeArgs {
-  name: string;
+export interface CheckedChangeArgs extends InputChangeArgs {
   checked: boolean;
 }
 export interface SelectOptionItemModel {
