@@ -1,9 +1,9 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import React from 'react';
 import { BrowserRouter, MemoryRouter } from 'react-router-dom';
 import '@testing-library/jest-dom';
 
-import App from '../useRouteSystem.fixture';
+import { App, AllLazyApp } from '../useRouteSystem.fixture';
 
 function renderWithRouter(link: string) {
   return render(
@@ -77,5 +77,44 @@ describe('renderRouteSystem', () => {
     renderWithRouter('/hello');
 
     expect(screen.getByText('hello world')).toBeInTheDocument();
+  });
+
+  it('redirect path를 지정했다면 wrap, element 여부 상관 없이 지정된 path로 redirect된다.', () => {
+    renderWithRouter('/redirect');
+
+    expect(screen.getByText('hello world')).toBeInTheDocument();
+  });
+
+  it('lazy가 true라면 컴포넌트를 lazy로 불러온다.', async () => {
+    renderWithRouter('/lazy');
+
+    expect(screen.getByText('loading')).toBeInTheDocument();
+    await waitFor(() => expect(screen.getByText('lazy')).toBeInTheDocument());
+
+    renderWithRouter('/lazy/child');
+
+    expect(screen.getByText('child loading')).toBeInTheDocument();
+    await waitFor(() =>
+      expect(screen.getByText('lazy child')).toBeInTheDocument()
+    );
+  });
+});
+
+describe('renderRouteSystem with lazy', () => {
+  beforeAll(() => {
+    render(<AllLazyApp />, { wrapper: BrowserRouter });
+  });
+
+  afterAll(() => {
+    render(<AllLazyApp />, { wrapper: BrowserRouter }).unmount();
+  });
+
+  it('<App />이 lazy로 렌더링된다.', async () => {
+    expect(screen.getByText('lazy loading...')).toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(screen.getByText('index')).toBeInTheDocument();
+      expect(screen.getByText('indexWrapper')).toBeInTheDocument();
+    });
   });
 });

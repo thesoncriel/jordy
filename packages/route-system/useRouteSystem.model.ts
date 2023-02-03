@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { ComponentType } from 'react';
+import { ComponentType, ReactNode } from 'react';
 
 export interface ModuleRouteChildModel {
   /**
@@ -28,6 +28,24 @@ export interface ModuleRouteChildModel {
    * }
    */
   children?: ModuleRouteChildModel[];
+  /**
+   * 자동 리다이렉트할 path 여부
+   */
+  redirect?: string;
+  /**
+   * Suspense fallback 여부.
+   *
+   * @default <></>
+   */
+  fallback?: React.ReactNode;
+  /**
+   * lazy 여부
+   *
+   * - lazy하기 위해선 등록하는 element가 export default로 내보내져야 한다.
+   *
+   * @default false
+   */
+  lazy?: boolean;
 }
 
 export interface ModuleRouteModel extends ModuleRouteChildModel {
@@ -41,4 +59,19 @@ export interface ModuleRouteModel extends ModuleRouteChildModel {
    * ({children}) => <div>{children}</div>
    */
   wrap?: ComponentType<any>;
+}
+
+export interface ModuleRouteDefaultLazyOption {
+  /**
+   * 모든 route의 lazy 설정
+   *
+   * @default false
+   */
+  lazy?: boolean;
+  /**
+   * 모든 route의 fallback 설정
+   *
+   * @default <></>
+   */
+  fallback?: ReactNode;
 }

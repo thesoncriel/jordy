@@ -74,11 +74,35 @@ export const routes: ModuleRouteModel[] = [
     ],
   },
   {
+    path: '/redirect',
+    wrap: createTestWrapper('redirect wrap'),
+    element: createTestComp('redirect'),
+    redirect: '/hello',
+  },
+  {
+    path: '/lazy',
+    element: createTestComp('lazy'),
+    lazy: true,
+    fallback: 'loading',
+    children: [
+      {
+        path: 'child',
+        element: createTestComp('lazy child'),
+        lazy: true,
+        fallback: 'child loading',
+      },
+    ],
+  },
+  {
     path: '*',
     element: createTestComp('fallback'),
   },
 ];
 
-export default function App() {
+export function App() {
   return useRouteSystem(routes);
+}
+
+export function AllLazyApp() {
+  return useRouteSystem(routes, { lazy: true, fallback: 'lazy loading...' });
 }

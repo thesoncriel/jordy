@@ -1,15 +1,35 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React from 'react';
-import { Outlet, RouteObject, useRoutes } from 'react-router-dom';
+import React, { ReactNode, Suspense, lazy as ReactLazy } from 'react';
+import { Navigate, Outlet, RouteObject, useRoutes } from 'react-router-dom';
 import {
   ModuleRouteChildModel,
+  ModuleRouteDefaultLazyOption,
   ModuleRouteModel,
 } from './useRouteSystem.model';
 
-function toJSXElement(
-  Wrapper?: React.ComponentType<any>,
-  Element?: React.ComponentType<any>
-) {
+function Redirect(path = '/') {
+  return <Navigate to={path} />;
+}
+
+interface ToJSXElementModel {
+  Wrapper?: React.ComponentType<any>;
+  Element?: React.ComponentType<any>;
+  redirect?: string;
+  lazy?: boolean;
+  fallback?: ReactNode;
+}
+
+function toJSXElement({
+  Wrapper,
+  Element,
+  redirect,
+  lazy,
+  fallback,
+}: ToJSXElementModel) {
+  if (redirect) {
+    return Redirect(redirect);
+  }
+
   if (!Wrapper && !Element) {
     return;
   }
@@ -23,20 +43,44 @@ function toJSXElement(
   }
 
   if (Element) {
-    return <Element />;
+    const LazyComponent =
+      lazy &&
+      ReactLazy(async () => {
+        return {
+          default: await Element,
+        };
+      });
+
+    return (
+      <>
+        {LazyComponent ? (
+          <Suspense fallback={fallback}>
+            <LazyComponent />
+          </Suspense>
+        ) : (
+          <Element />
+        )}
+      </>
+    );
   }
 }
 
 function recursionChildren({
   path,
   element,
+  fallback,
+  lazy,
+  redirect,
   children = [],
 }: ModuleRouteChildModel): RouteObject {
-  if (element && children.length > 0) {
+  if ((element && children.length > 0) || lazy) {
     return {
       path,
       children: [
-        { index: true, element: toJSXElement(undefined, element) },
+        {
+          index: true,
+          element: toJSXElement({ Element: element, lazy, fallback, redirect }),
+        },
         ...children.map(recursionChildren),
       ],
     };
@@ -44,7 +88,7 @@ function recursionChildren({
 
   return {
     path,
-    element: toJSXElement(undefined, element),
+    element: toJSXElement({ Element: element, lazy, fallback, redirect }),
     children: children.map(recursionChildren),
   };
 }
@@ -81,15 +125,42 @@ function recursionChildren({
  * @param moduleRoutes
  * @returns
  */
-export const useRouteSystem = (moduleRoutes: ModuleRouteModel[]) => {
+export const useRouteSystem = (
+  moduleRoutes: ModuleRouteModel[],
+  lazyOption?: ModuleRouteDefaultLazyOption
+) => {
   const routeObject: RouteObject[] = moduleRoutes.map(
-    ({ path, wrap, element, children = [] }) => {
-      if (wrap && element) {
+    ({ path, wrap, element, redirect, lazy, fallback, children = [] }) => {
+      const componentLazy = lazy || lazyOption?.lazy;
+      const componentFallback = fallback || lazyOption?.fallback;
+
+      if (redirect) {
+        return Object.assign(
+          { path },
+          children.length > 0
+            ? {
+                children: [
+                  { index: true, element: Redirect(redirect) },
+                  ...children.map(recursionChildren),
+                ],
+              }
+            : { element: Redirect(redirect) }
+        );
+      }
+
+      if ((wrap && element) || componentLazy) {
         return {
           path,
-          element: toJSXElement(wrap),
+          element: toJSXElement({ Wrapper: wrap }),
           children: [
-            { index: true, element: toJSXElement(undefined, element) },
+            {
+              index: true,
+              element: toJSXElement({
+                Element: element,
+                lazy: componentLazy,
+                fallback: componentFallback,
+              }),
+            },
             ...children.map(recursionChildren),
           ],
         };
@@ -97,7 +168,9 @@ export const useRouteSystem = (moduleRoutes: ModuleRouteModel[]) => {
 
       return {
         path,
-        element: toJSXElement(wrap, element),
+        element: toJSXElement({
+          Element: element,
+        }),
         children: children?.map(recursionChildren),
       };
     }
