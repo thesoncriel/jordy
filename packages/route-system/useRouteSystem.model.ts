@@ -41,8 +41,6 @@ export interface ModuleRouteChildModel {
   /**
    * lazy 여부
    *
-   * - lazy하기 위해선 등록하는 element가 export default로 내보내져야 한다.
-   *
    * @default false
    */
   lazy?: boolean;
