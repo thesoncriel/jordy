@@ -31,20 +31,6 @@ export interface UploadStateArgs {
   completed: boolean;
 }
 
-/**
- * Axios 에서 업로드 상태 전달 콜백에 인자로 들어오는 이벤트 객체.
- */
-export interface XhrUploadStateArgs {
-  /**
-   * 업로드 된 바이트 수
-   */
-  loaded: number;
-  /**
-   * 업로드 되어야 할 전체 바이트 수
-   */
-  total: number;
-}
-
 export interface HttpRestApi {
   /**
    * GET 메서드 호출

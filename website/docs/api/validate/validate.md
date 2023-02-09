@@ -68,7 +68,7 @@ function validate<T>(state: T, opt: ValidateBulkOptionType<T>): ValidateBulkResu
 
 ### example
 ```ts
-import { validate } from 'jordy';
+import { validate, validateFn } from 'jordy';
 
 interface UserModel {
     name: string;
@@ -83,17 +83,17 @@ function execValidation(user: UserModel) {
         // check 가 false 일 때 알려줄 메시지
         message: '이름을 채워주세요.',
         // 유효성 검사. 결과가 true 면 유효성이 검증된 것이다.
-        check: val => validate.fn.empty(val),
+        check: val => validateFn.empty(val),
     },
     // 여러가지 형태를 검증하고 메시지를 다르게 주고 싶을 땐 배열로 넘겨준다.
     password: [
         {
         message: '비밀번호를 입력하세요',
-        check: val => validate.fn.empty(val),
+        check: val => validateFn.empty(val),
         },
         {
         message: '비밀번호가 유효하지 않습니다.',
-        check: val => validate.fn.password(val),
+        check: val => validateFn.password(val),
         },
     ]
     });
