@@ -2,7 +2,6 @@ export * from './collection';
 import * as envCheck from './envCheck';
 export * from './typeCheck';
 export * from './etc';
-export * from './filter';
 export * from './format';
 export * from './josa';
 export * from './json';
