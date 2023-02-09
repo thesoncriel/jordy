@@ -4,7 +4,7 @@
 
 ## Requires
 - react-router-dom@6.3.x
-- axios
+- axios@1.3.x
 - redux
 - react-redux
 - @reduxjs/toolkit
