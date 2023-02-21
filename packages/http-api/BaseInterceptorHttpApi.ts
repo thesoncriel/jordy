@@ -55,10 +55,16 @@ export class BaseInterceptorHttpApi {
         return url;
       }
 
+      const serializedParams = this.paramsSerializer(paramsAdditional);
+
+      if (serializedParams[0] === '?') {
+        return url + serializedParams;
+      }
+
       return (
         url +
         (url.includes('?') ? '&' : '?') +
-        this.paramsSerializer(paramsAdditional)
+        serializedParams
       );
     }
 
