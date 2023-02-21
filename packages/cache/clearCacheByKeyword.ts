@@ -1,6 +1,6 @@
-import { memoryStorage, StorageKeyManager, StorageType } from '../../storage';
-
-type LargeStorageType = Exclude<StorageType, 'cookie'>;
+import { memoryStorage } from '../storage/memoryStorage';
+import { StorageKeyManager } from '../storage/storage.type';
+import { LargeStorageType } from './cache.type';
 
 function getStorage(type: LargeStorageType): StorageKeyManager {
   if (type === 'session') {
@@ -55,7 +55,9 @@ function findAllRelatedKeyFromStorage(
  *
  * @param type 캐시 타입 (쿠키 제외)
  * @param keyword 삭제 대상이 되는 키워드
- * @returns
+ * @returns 지워진 캐시 개수
+ *
+ * @see clearAllCachesExceptBy - 지정된 키워드 외의 모든 캐시를 지움.
  */
 export function clearCacheByKeyword(
   type: LargeStorageType,
