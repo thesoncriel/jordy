@@ -5,6 +5,8 @@ import { BasicHttpApi } from './BasicHttpApi';
 import { InterceptorHttpApi } from './network.type';
 import { defaultHeaderCreator } from './network.util';
 
+const defSerialize = (params: any) => qs.serialize(params);
+
 /**
  * HttpApi 를 생성한다.
  *
@@ -18,7 +20,7 @@ import { defaultHeaderCreator } from './network.util';
 export function createHttpApi(
   baseUrl: string,
   headerCreator: () => Promise<Record<string, string>> = defaultHeaderCreator,
-  paramsSerializer: (params: any) => string = qs.serialize,
+  paramsSerializer: (params: any) => string = defSerialize,
   withCredentials = false
 ): InterceptorHttpApi {
   return new BasicHttpApi(

@@ -97,7 +97,7 @@ export const qs: QueryString = {
         }`
       );
     }
-    return (withQuestionMark ? '?' : '') + _serialize(params);
+    return (withQuestionMark === true ? '?' : '') + _serialize(params);
   },
   append(search: string, data: Record<string, unknown>) {
     if (!search) {
