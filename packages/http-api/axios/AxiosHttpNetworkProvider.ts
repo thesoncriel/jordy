@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import axios, { AxiosResponse } from 'axios';
 import { ErrorParser } from '../ErrorParser.decorator';
 import {
@@ -11,83 +12,98 @@ export class AxiosHttpNetworkProvider implements AsyncHttpNetworkProvider {
   private extractData<T>(axiosRes: AxiosResponse<T>) {
     return axiosRes.data;
   }
-  private makeAxiosHeaders(headers: Record<string, string>) {
-    return {
-      common: headers,
-    };
-  }
 
-  get<T>({ url, headers, ...config }: AsyncHttpNetworkConfig): Promise<T> {
+  get<T>({
+    url,
+    paramsSerializer,
+    ...config
+  }: AsyncHttpNetworkConfig): Promise<T> {
     return axios
-      .get<T>(url, {
+      .get<T, AxiosResponse<T, any>, any>(url, {
         ...config,
-        headers: this.makeAxiosHeaders(headers),
+        paramsSerializer: {
+          serialize: paramsSerializer,
+        },
       })
       .then(this.extractData);
   }
 
   post<T>({
     url,
-    headers,
     params: data,
+    paramsSerializer,
     ...config
   }: AsyncHttpNetworkConfig): Promise<T> {
     return axios
-      .post<T>(url, data, {
+      .post<T, AxiosResponse<T, any>, any>(url, data, {
         ...config,
-        headers: this.makeAxiosHeaders(headers),
+        paramsSerializer: {
+          serialize: paramsSerializer,
+        },
       })
       .then(this.extractData);
   }
 
   put<T>({
     url,
-    headers,
     params: data,
+    paramsSerializer,
     ...config
   }: AsyncHttpNetworkConfig): Promise<T> {
     return axios
-      .put<T>(url, data, {
+      .put<T, AxiosResponse<T, any>, any>(url, data, {
         ...config,
-        headers: this.makeAxiosHeaders(headers),
+        paramsSerializer: {
+          serialize: paramsSerializer,
+        },
       })
       .then(this.extractData);
   }
 
   patch<T>({
     url,
-    headers,
     params: data,
+    paramsSerializer,
     ...config
   }: AsyncHttpNetworkConfig): Promise<T> {
     return axios
-      .patch<T>(url, data, {
+      .patch<T, AxiosResponse<T, any>, any>(url, data, {
         ...config,
-        headers: this.makeAxiosHeaders(headers),
+        paramsSerializer: {
+          serialize: paramsSerializer,
+        },
       })
       .then(this.extractData);
   }
 
   delete<T>({
     url,
-    headers,
     params: data,
+    paramsSerializer,
     ...config
   }: AsyncHttpNetworkConfig): Promise<T> {
     return axios
-      .delete<T>(url, {
+      .delete<T, AxiosResponse<T, any>, any>(url, {
         ...config,
         data,
-        headers: this.makeAxiosHeaders(headers),
+        paramsSerializer: {
+          serialize: paramsSerializer,
+        },
       })
       .then(this.extractData);
   }
 
-  getBlob({ url, headers, ...config }: AsyncHttpNetworkConfig): Promise<Blob> {
+  getBlob({
+    url,
+    paramsSerializer,
+    ...config
+  }: AsyncHttpNetworkConfig): Promise<Blob> {
     return axios
-      .get<Blob>(url, {
+      .get<Blob, AxiosResponse<Blob, any>, any>(url, {
         ...config,
-        headers: this.makeAxiosHeaders(headers),
+        paramsSerializer: {
+          serialize: paramsSerializer,
+        },
         responseType: 'blob',
       })
       .then(this.extractData);
