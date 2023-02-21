@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { ReactNode, Suspense, lazy as ReactLazy } from 'react';
+import React, { ReactNode, Suspense } from 'react';
 import { Navigate, Outlet, RouteObject, useRoutes } from 'react-router-dom';
 import {
   ModuleRouteChildModel,
-  ModuleRouteDefaultLazyOption,
+  ModuleRouteDefaultOption,
   ModuleRouteModel,
 } from './useRouteSystem.model';
 
@@ -15,7 +15,6 @@ interface ToJSXElementModel {
   Wrapper?: React.ComponentType<any>;
   Element?: React.ComponentType<any>;
   redirect?: string;
-  lazy?: boolean;
   fallback?: ReactNode;
 }
 
@@ -23,7 +22,6 @@ function toJSXElement({
   Wrapper,
   Element,
   redirect,
-  lazy,
   fallback,
 }: ToJSXElementModel) {
   if (redirect) {
@@ -43,19 +41,11 @@ function toJSXElement({
   }
 
   if (Element) {
-    const LazyComponent =
-      lazy &&
-      ReactLazy(async () => {
-        return {
-          default: await Element,
-        };
-      });
-
     return (
       <>
-        {LazyComponent ? (
+        {fallback ? (
           <Suspense fallback={fallback}>
-            <LazyComponent />
+            <Element />
           </Suspense>
         ) : (
           <Element />
@@ -69,17 +59,16 @@ function recursionChildren({
   path,
   element,
   fallback,
-  lazy,
   redirect,
   children = [],
 }: ModuleRouteChildModel): RouteObject {
-  if ((element && children.length > 0) || lazy) {
+  if ((element && children.length > 0) || fallback) {
     return {
       path,
       children: [
         {
           index: true,
-          element: toJSXElement({ Element: element, lazy, fallback, redirect }),
+          element: toJSXElement({ Element: element, fallback, redirect }),
         },
         ...children.map(recursionChildren),
       ],
@@ -88,7 +77,7 @@ function recursionChildren({
 
   return {
     path,
-    element: toJSXElement({ Element: element, lazy, fallback, redirect }),
+    element: toJSXElement({ Element: element, fallback, redirect }),
     children: children.map(recursionChildren),
   };
 }
@@ -127,12 +116,11 @@ function recursionChildren({
  */
 export const useRouteSystem = (
   moduleRoutes: ModuleRouteModel[],
-  lazyOption?: ModuleRouteDefaultLazyOption
+  defaultOption?: ModuleRouteDefaultOption
 ) => {
   const routeObject: RouteObject[] = moduleRoutes.map(
-    ({ path, wrap, element, redirect, lazy, fallback, children = [] }) => {
-      const componentLazy = lazy || lazyOption?.lazy;
-      const componentFallback = fallback || lazyOption?.fallback;
+    ({ path, wrap, element, redirect, fallback, children = [] }) => {
+      const componentFallback = fallback || defaultOption?.fallback;
 
       if (redirect) {
         return Object.assign(
@@ -148,7 +136,7 @@ export const useRouteSystem = (
         );
       }
 
-      if ((wrap && element) || componentLazy) {
+      if ((wrap && element) || componentFallback) {
         return {
           path,
           element: toJSXElement({ Wrapper: wrap }),
@@ -157,7 +145,6 @@ export const useRouteSystem = (
               index: true,
               element: toJSXElement({
                 Element: element,
-                lazy: componentLazy,
                 fallback: componentFallback,
               }),
             },

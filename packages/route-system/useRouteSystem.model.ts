@@ -34,16 +34,8 @@ export interface ModuleRouteChildModel {
   redirect?: string;
   /**
    * Suspense fallback 여부.
-   *
-   * @default <></>
    */
   fallback?: React.ReactNode;
-  /**
-   * lazy 여부
-   *
-   * @default false
-   */
-  lazy?: boolean;
 }
 
 export interface ModuleRouteModel extends ModuleRouteChildModel {
@@ -59,17 +51,11 @@ export interface ModuleRouteModel extends ModuleRouteChildModel {
   wrap?: ComponentType<any>;
 }
 
-export interface ModuleRouteDefaultLazyOption {
-  /**
-   * 모든 route의 lazy 설정
-   *
-   * @default false
-   */
-  lazy?: boolean;
+export interface ModuleRouteDefaultOption {
   /**
    * 모든 route의 fallback 설정
    *
-   * @default <></>
+   * 모든 route에 Suspense가 씌워진다.
    */
   fallback?: ReactNode;
 }

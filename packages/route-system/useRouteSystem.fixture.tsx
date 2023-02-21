@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { lazy } from 'react';
 import { useParams } from 'react-router-dom';
 
 import { ModuleRouteModel } from './useRouteSystem.model';
@@ -22,6 +22,13 @@ const createTestComp = (text: string) => {
     return <div>{text}</div>;
   };
 };
+
+const createLazyComp = (text: string) =>
+  lazy(async () => {
+    return {
+      default: await createTestComp(text),
+    };
+  });
 
 const createTestPathComp = () => {
   return function Test() {
@@ -81,14 +88,12 @@ export const routes: ModuleRouteModel[] = [
   },
   {
     path: '/lazy',
-    element: createTestComp('lazy'),
-    lazy: true,
+    element: createLazyComp('lazy'),
     fallback: 'loading',
     children: [
       {
         path: 'child',
-        element: createTestComp('lazy child'),
-        lazy: true,
+        element: createLazyComp('lazy child'),
         fallback: 'child loading',
       },
     ],
@@ -104,5 +109,19 @@ export function App() {
 }
 
 export function AllLazyApp() {
-  return useRouteSystem(routes, { lazy: true, fallback: 'lazy loading...' });
+  return useRouteSystem(
+    [
+      {
+        path: '/lazy',
+        element: createLazyComp('lazy'),
+        children: [
+          {
+            path: 'child',
+            element: createLazyComp('lazy child'),
+          },
+        ],
+      },
+    ],
+    { fallback: 'lazy loading...' }
+  );
 }

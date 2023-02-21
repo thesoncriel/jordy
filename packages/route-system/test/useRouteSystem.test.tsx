@@ -13,6 +13,14 @@ function renderWithRouter(link: string) {
   );
 }
 
+function renderWithLazyRouter(link: string) {
+  return render(
+    <MemoryRouter initialEntries={[link]}>
+      <AllLazyApp />
+    </MemoryRouter>
+  );
+}
+
 describe('renderRouteSystem', () => {
   beforeAll(() => {
     render(<App />, { wrapper: BrowserRouter });
@@ -110,11 +118,11 @@ describe('renderRouteSystem with lazy', () => {
   });
 
   it('<App />이 lazy로 렌더링된다.', async () => {
+    renderWithLazyRouter('/lazy');
     expect(screen.getByText('lazy loading...')).toBeInTheDocument();
 
     await waitFor(() => {
-      expect(screen.getByText('index')).toBeInTheDocument();
-      expect(screen.getByText('indexWrapper')).toBeInTheDocument();
+      expect(screen.getByText('lazy')).toBeInTheDocument();
     });
   });
 });
