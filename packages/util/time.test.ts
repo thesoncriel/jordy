@@ -1,4 +1,4 @@
-import { PredefinedDateRangeType } from 'packages/types';
+import { PredefinedDateRangeType } from '../types';
 import {
   addMonths,
   createDateRangeByType,

@@ -1,4 +1,4 @@
-import { StorageType } from 'packages/storage/storage.type';
+import { StorageType } from '../storage/storage.type';
 
 export type LargeStorageType = Exclude<StorageType, 'cookie'>;
 
