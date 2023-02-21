@@ -1,7 +1,6 @@
 import { memoryStorage } from '../storage/memoryStorage';
-import { StorageKeyManager, StorageType } from '../storage/storage.type';
-
-type LargeStorageType = Exclude<StorageType, 'cookie'>;
+import { StorageKeyManager } from '../storage/storage.type';
+import { LargeStorageType } from './cache.type';
 
 const findRelatedKeyCurried = (key: string) => (keyword: string) =>
   key.indexOf(keyword) >= 0;
