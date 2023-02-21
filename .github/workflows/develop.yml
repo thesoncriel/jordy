@@ -9,7 +9,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        node_version: ['12']
+        node_version: ['16']
         os: [ubuntu-latest]
 
     steps:
@@ -41,7 +41,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        node_version: ['12']
+        node_version: ['16']
         os: [ubuntu-latest]
 
     steps:
@@ -63,7 +63,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        node_version: ['12']
+        node_version: ['16']
         os: [ubuntu-latest]
 
     steps:
@@ -85,7 +85,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        node_version: ['12']
+        node_version: ['16']
         os: [ubuntu-latest]
 
     steps:
