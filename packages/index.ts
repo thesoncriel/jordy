@@ -6,9 +6,9 @@ import {
   useIsNative,
 } from './adaptive-render';
 
-import { cache } from './proxies';
 import { ModuleRouteModel, useRouteSystem } from './route-system';
 
+export * from './cache';
 export * from './http-api';
 export * from './hooks';
 export * from './queries';
@@ -24,6 +24,5 @@ export {
   useIsMobile,
   useIsTablet,
   useIsNative,
-  cache,
   useRouteSystem,
 };
