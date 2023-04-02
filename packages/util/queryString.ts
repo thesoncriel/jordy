@@ -1,24 +1,43 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { isNullable, isObject } from './typeCheck';
 
-function _serialize<T>(params: T, parentKey = '') {
-  return Object.entries(params).reduce((acc, [oriKey, value]) => {
-    const key = parentKey ? `${parentKey}%5B${oriKey}%5D` : oriKey;
-    let ret = acc + (acc.length > 1 ? '&' : '');
+function encodeFieldValue(key: string, value: string | number) {
+  return (
+    key +
+    '=' +
+    encodeURIComponent(isNullable(value) || Number.isNaN(value) ? '' : value)
+  );
+}
 
-    if (isObject(value)) {
-      ret += _serialize(value, key);
-    } else {
-      ret =
-        ret +
-        key +
-        '=' +
-        encodeURIComponent(
-          isNullable(value) || Number.isNaN(value) ? '' : value
-        );
-    }
+function _serialize<T extends Record<string, any>>(
+  params: T,
+  parentKey = ''
+): string {
+  return Object.entries(params)
+    .reduce((outerAcc, [oriKey, value]) => {
+      const key = parentKey ? `${parentKey}%5B${oriKey}%5D` : oriKey;
 
-    return ret;
-  }, '');
+      if (Array.isArray(value)) {
+        value.reduce((acc, val) => {
+          const subKey = `${key}%5B%5D`;
+
+          if (isObject(val)) {
+            acc.push(_serialize(val, subKey));
+          } else {
+            acc.push(encodeFieldValue(subKey, val));
+          }
+
+          return acc;
+        }, outerAcc);
+      } else if (isObject(value)) {
+        outerAcc.push(_serialize(value, key));
+      } else {
+        outerAcc.push(encodeFieldValue(key, value));
+      }
+
+      return outerAcc;
+    }, [] as string[])
+    .join('&');
 }
 
 const cache = new Map<string, Record<string, string>>();
@@ -41,7 +60,7 @@ interface QueryString {
    * @param withQuestionMark
    * @returns
    */
-  serialize<T = Record<string, unknown>>(
+  serialize<T = Record<string, any>>(
     params: T,
     withQuestionMark?: boolean
   ): string;
@@ -66,22 +85,25 @@ export const qs: QueryString = {
     if (cache.has(url)) {
       return cache.get(url);
     }
-    cache.clear();
+    if (cache.size > 100) {
+      cache.clear();
+    }
 
-    const result: Record<string, string> = {};
+    let result: Record<string, string> = {};
 
     try {
       const queryString = url.split('?')[1];
       const splittedQueries = queryString.split('&');
-      const len = splittedQueries.length;
-      let key = '';
-      let value = '';
 
-      for (let i = 0; i < len; i++) {
-        [key, value] = splittedQueries[i].split('=');
+      result = Object.fromEntries(
+        splittedQueries.reduce((tmpMap, item) => {
+          const [key, value] = item.split('=');
 
-        result[key] = decodeURIComponent(value);
-      }
+          tmpMap.set(key, decodeURIComponent(value));
+
+          return tmpMap;
+        }, new Map<string, string>())
+      );
     } catch (error) {
       //
     }
@@ -89,7 +111,7 @@ export const qs: QueryString = {
 
     return result;
   },
-  serialize<T = Record<string, unknown>>(params: T, withQuestionMark = false) {
+  serialize<T = Record<string, any>>(params: T, withQuestionMark = false) {
     if (!isObject(params)) {
       throw new Error(
         `serializeToQueryString: params is not object.\n${

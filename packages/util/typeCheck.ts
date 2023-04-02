@@ -82,7 +82,7 @@ export function isFunction(val: unknown): val is CallableFunction {
  * @param val
  * @returns
  */
-// eslint-disable-next-line @typescript-eslint/ban-types
-export function isObject(val: unknown): val is Object {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function isObject(val: unknown): val is Record<string, any> {
   return Object.prototype.toString.call(val) === '[object Object]';
 }

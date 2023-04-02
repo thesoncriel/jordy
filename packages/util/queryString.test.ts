@@ -48,6 +48,37 @@ describe('qs.serialize', () => {
 
     expect(result).toBe('sub%5Bname%5D=sonic&sub%5Bpage%5D=12&korea=yes');
   });
+  it('특정키에 하위 배열이 있다면 하위 배열 키 뒷쪽에 uri encoding 된 bracket 이 적용되어 있다.', () => {
+    const given = {
+      arr: [1, 2, 3],
+    };
+    const result = qs.serialize(given);
+
+    expect(result).toBe('arr%5B%5D=1&arr%5B%5D=2&arr%5B%5D=3');
+    expect(decodeURIComponent(result)).toBe('arr[]=1&arr[]=2&arr[]=3');
+  });
+  it('특정키에 하위 배열이 있고 그 요소가 객체라면 하위 배열 키 뒷쪽과 하위 객체 필드명에 uri encoding 된 bracket 이 적용된다.', () => {
+    const given = {
+      myData: [
+        {
+          name: 'theson',
+          age: 21,
+        },
+        {
+          name: '죠르디',
+          age: 20,
+        },
+      ],
+    };
+    const result = qs.serialize(given);
+
+    expect(result).toBe(
+      'myData%5B%5D%5Bname%5D=theson&myData%5B%5D%5Bage%5D=21&myData%5B%5D%5Bname%5D=%EC%A3%A0%EB%A5%B4%EB%94%94&myData%5B%5D%5Bage%5D=20'
+    );
+    expect(decodeURIComponent(result)).toBe(
+      'myData[][name]=theson&myData[][age]=21&myData[][name]=죠르디&myData[][age]=20'
+    );
+  });
   it('값에 한글이 포함되어 있다면 uri encoding 된다.', () => {
     const given = {
       sub: {
@@ -86,50 +117,27 @@ describe('qs.serialize', () => {
     expect(result).toBe('zero=0&empty=');
   });
   describe('값에 null 이나 undefined, NaN 등이 있으면 빈 값으로 처리한다.', () => {
-    const cases = [null, undefined, NaN];
+    it.each([null, undefined, NaN])('%s 일 때', (value) => {
+      const given = {
+        empty: value,
+        name: 'tails',
+      };
+      const result = qs.serialize(given);
 
-    cases.forEach((item) => {
-      it(`${item} 일 때`, () => {
-        const given = {
-          empty: item,
-          name: 'tails',
-        };
-        const result = qs.serialize(given);
-
-        expect(result).toBe('empty=&name=tails');
-      });
+      expect(result).toBe('empty=&name=tails');
     });
   });
   describe('값이 올바른 객체가 아니라면 오류를 일으킨다.', () => {
-    const cases = [
-      {
-        title: 'number',
-        value: 0,
-      },
-      {
-        title: 'string',
-        value: 'haha',
-      },
-      {
-        title: 'null',
-        value: null,
-      },
-      {
-        title: 'undefined',
-        value: undefined,
-      },
-      {
-        title: 'NaN',
-        value: NaN,
-      },
-    ];
-    cases.forEach((caseItem) => {
-      it(`${caseItem.title} 일 때`, () => {
-        const given = caseItem.value;
-        const resultFn = () => qs.serialize(given);
+    it.each([
+      ['number', 0],
+      ['string', 'haha'],
+      ['null', null],
+      ['undefined', undefined],
+      ['NaN', NaN],
+    ])('%s 일 때', (_, given) => {
+      const resultFn = () => qs.serialize(given);
 
-        expect(resultFn).toThrowError('not object');
-      });
+      expect(resultFn).toThrowError('not object');
     });
   });
 });
