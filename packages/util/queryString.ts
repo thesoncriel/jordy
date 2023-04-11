@@ -9,7 +9,22 @@ function encodeFieldValue(key: string, value: string | number) {
   );
 }
 
-function _serialize<T extends Record<string, any>>(
+function _serialize<T>(params: T, parentKey = '') {
+  return Object.entries(params).reduce((acc, [oriKey, value]) => {
+    const key = parentKey ? `${parentKey}%5B${oriKey}%5D` : oriKey;
+    let ret = acc + (acc.length > 1 ? '&' : '');
+
+    if (isObject(value)) {
+      ret += _serialize(value, key);
+    } else {
+      ret += encodeFieldValue(key, value);
+    }
+
+    return ret;
+  }, '');
+}
+
+function _serializeWithBrackets<T extends Record<string, any>>(
   params: T,
   parentKey = ''
 ): string {
@@ -22,7 +37,7 @@ function _serialize<T extends Record<string, any>>(
           const subKey = `${key}%5B%5D`;
 
           if (isObject(val)) {
-            acc.push(_serialize(val, subKey));
+            acc.push(_serializeWithBrackets(val, subKey));
           } else {
             acc.push(encodeFieldValue(subKey, val));
           }
@@ -30,7 +45,7 @@ function _serialize<T extends Record<string, any>>(
           return acc;
         }, outerAcc);
       } else if (isObject(value)) {
-        outerAcc.push(_serialize(value, key));
+        outerAcc.push(_serializeWithBrackets(value, key));
       } else {
         outerAcc.push(encodeFieldValue(key, value));
       }
@@ -56,6 +71,9 @@ interface QueryString {
 
   /**
    * 전달되는 객체의 key 와 value 를 이용하여 쿼리 파라미터 문자열로 바꿔준다.
+   *
+   * 배열 데이터는 쉼표(,) 로 각 요소를 구분하도록 표현된다.
+   *
    * @param params
    * @param withQuestionMark
    * @returns
@@ -64,6 +82,21 @@ interface QueryString {
     params: T,
     withQuestionMark?: boolean
   ): string;
+
+  /**
+   * 전달되는 객체의 key 와 value 를 이용하여 쿼리 파라미터 문자열로 바꿔준다.
+   *
+   * 배열 데이터는 bracket([]) 형식으로 바꿔준다.
+   *
+   * @param params
+   * @param withQuestionMark
+   * @returns
+   */
+  serializeWithBrackets<T = Record<string, any>>(
+    params: T,
+    withQuestionMark?: boolean
+  ): string;
+
   /**
    * 검색 문자열 (search string) 에 지정된 자료로 쿼리 파라미터를 덧붙인다.
    * @param search "?"로 시작되는 search string
@@ -120,6 +153,21 @@ export const qs: QueryString = {
       );
     }
     return (withQuestionMark === true ? '?' : '') + _serialize(params);
+  },
+  serializeWithBrackets<T = Record<string, any>>(
+    params: T,
+    withQuestionMark = false
+  ) {
+    if (!isObject(params)) {
+      throw new Error(
+        `serializeToQueryString: params is not object.\n${
+          params ? JSON.stringify(params) : params
+        }`
+      );
+    }
+    return (
+      (withQuestionMark === true ? '?' : '') + _serializeWithBrackets(params)
+    );
   },
   append(search: string, data: Record<string, unknown>) {
     if (!search) {
