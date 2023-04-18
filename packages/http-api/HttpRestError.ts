@@ -1,6 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { RestHttpMethodType } from './network.type';
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
 export type HttpRestErrorType =
   | 'unknown'
   | 'auth'
@@ -24,7 +24,8 @@ export interface HttpRestErrorMetaArgs {
   url: string;
   method?: RestHttpMethodType;
   rawData: any;
-  status: number;
+  status?: number;
+  errorType?: HttpRestErrorType;
 }
 
 export interface HttpRestErrorLike extends ErrorLike, HttpRestErrorMeta {}
@@ -83,7 +84,9 @@ export class HttpRestError implements Error, HttpRestErrorLike {
     if (typeof arg !== 'string' && arg) {
       this.url = arg.url || '';
       this.method = arg.method;
-      this.errorType = this.toErrorType(Number(arg.status));
+      this.errorType = arg.errorType
+        ? arg.errorType
+        : this.toErrorType(Number(arg.status));
       this.rawData = arg.rawData;
     }
   }
@@ -119,6 +122,19 @@ export class HttpRestError implements Error, HttpRestErrorLike {
       return 'badRequest';
     }
     return 'unknown';
+  }
+
+  static toStatusCodeFrom(type: HttpRestErrorType) {
+    const dic: Record<HttpRestErrorType, number> = {
+      auth: 401,
+      forbidden: 403,
+      notFound: 404,
+      server: 500,
+      badRequest: 400,
+      unknown: 0,
+    };
+
+    return dic[type];
   }
 
   static isHttpRestErrorType(value: unknown): value is HttpRestErrorType {

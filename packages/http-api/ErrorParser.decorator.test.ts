@@ -56,9 +56,15 @@ describe('ErrorParser', () => {
 
       await expect(
         (httpApi[method] as CallableFunction)(path, params as never)
-      ).rejects.toThrowError('some');
+      ).rejects.toThrow('some');
 
-      expect(parserMockFn).toBeCalled();
+      expect(parserMockFn).toBeCalledWith(
+        expect.objectContaining({
+          message: expect.stringContaining('some error'),
+        }),
+        method === 'getBlob' ? 'get' : method,
+        path
+      );
       expect(mockFnDic[method]).toBeCalledWith(path, params);
     });
   });
@@ -81,7 +87,7 @@ describe('ErrorParser', () => {
 
       expect(() =>
         (httpApi[method as never] as CallableFunction)(path, params as never)
-      ).toThrowError('of undefined');
+      ).toThrow('of undefined');
 
       expect(parserMockFn).not.toBeCalled();
       expect(mockFnDic[method]).not.toBeCalled();
@@ -98,7 +104,7 @@ describe('ErrorParser', () => {
 
       await expect(
         (httpApi[method as never] as CallableFunction)(path, params as never)
-      ).rejects.toThrowError(`${method}: some error`);
+      ).rejects.toThrow(`${method}: some error`);
 
       expect(parserMockFn).toBeCalled();
       expect(mockFnDic[method]).toBeCalledWith(path, params);
@@ -107,7 +113,7 @@ describe('ErrorParser', () => {
 
   describe('단일 메서드 테스트', () => {
     @ErrorParser(parserMockFn)
-    class NetworkProvider implements AsyncHttpNetworkProvider {
+    class NetworkProviderMock implements AsyncHttpNetworkProvider {
       get = mockFnDic.get;
       put = mockFnDic.put;
       post = mockFnDic.post;
@@ -117,11 +123,21 @@ describe('ErrorParser', () => {
     }
 
     it('parser 수행 중 스스로 오류를 일으키면, 그 내용을 오류값으로 이용한다.', async () => {
+      const fakeError = {
+        message: 'lookpin error',
+        someValue: 123,
+        myData: {
+          age: 20,
+          name: 'jordy',
+          job: '취준생',
+        },
+      };
+
       parserMockFn.mockImplementationOnce(() => {
-        throw new Error('lookpin error');
+        throw fakeError;
       });
 
-      const provider = new NetworkProvider();
+      const provider = new NetworkProviderMock();
       const url = '/some/path';
       const headers = {
         some_name: 'blahblah',
@@ -139,18 +155,29 @@ describe('ErrorParser', () => {
         timeout: 100,
       };
 
-      await expect(provider.post(config)).rejects.toThrowError('lookpin');
+      await expect(provider.post(config)).rejects.toThrow(
+        expect.objectContaining(fakeError)
+      );
 
       expect(parserMockFn).toBeCalledTimes(1);
       expect(mockFnDic.post).toBeCalledWith(config);
     });
 
     it('parser 수행 중 스스로 오류를 리턴하면, 그 내용을 오류값으로 이용한다.', async () => {
+      const fakeError = {
+        message: 'jordy error',
+        someValue: 123,
+        myData: {
+          age: 20,
+          name: 'jordy',
+          job: '취준생?!',
+        },
+      };
       parserMockFn.mockImplementationOnce(() => {
-        return new Error('theson error');
+        return fakeError;
       });
 
-      const provider = new NetworkProvider();
+      const provider = new NetworkProviderMock();
       const url = '/some/path';
       const headers = {
         some_name: 'blahblah',
@@ -168,7 +195,9 @@ describe('ErrorParser', () => {
         timeout: 10000,
       };
 
-      await expect(provider.post(config)).rejects.toThrowError('theson');
+      await expect(provider.post(config)).rejects.toThrow(
+        expect.objectContaining(fakeError)
+      );
 
       expect(parserMockFn).toBeCalledTimes(1);
       expect(mockFnDic.post).toBeCalledWith(config);
@@ -188,7 +217,7 @@ describe('ErrorParser', () => {
 
       vi.mocked(mockFnDic.get).mockResolvedValueOnce(value);
 
-      const provider = new NetworkProvider();
+      const provider = new NetworkProviderMock();
       const url = '/some/search';
       const headers = {
         some_name: 'blahblah',

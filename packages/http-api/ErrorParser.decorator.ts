@@ -2,6 +2,7 @@
 import {
   AsyncHttpNetworkProvider,
   AsyncHttpUploadProvider,
+  RestHttpMethodType,
 } from './network.type';
 import { throwHttpRestError } from './network.util';
 
@@ -30,7 +31,9 @@ function isConstructor(val: unknown): val is ConstructorType {
  * @see AsyncHttpNetworkProvider
  * @see AsyncHttpUploadProvider
  */
-export function ErrorParser<E = any>(throwableParser: (error: E) => any) {
+export function ErrorParser<E = any>(
+  throwableParser: (error: E, method: RestHttpMethodType, url: string) => any
+) {
   return function <C extends ConstructorType>(ClassConstructor: C): C {
     if (isConstructor(ClassConstructor) === false) {
       throw new Error('ErrorParser: argument is not function.');
@@ -45,8 +48,8 @@ export function ErrorParser<E = any>(throwableParser: (error: E) => any) {
         this.network = new ClassConstructor(args[0], args[1], args[2]);
       }
 
-      parse = async (error: any) => {
-        const nextError = throwableParser(error);
+      parse = async (error: any, method: RestHttpMethodType, url: string) => {
+        const nextError = throwableParser(error, method, url);
 
         if (nextError) {
           throw nextError;
@@ -58,32 +61,32 @@ export function ErrorParser<E = any>(throwableParser: (error: E) => any) {
       get(...args: any[]) {
         return this.network.get
           .apply(this.network, [...args])
-          .catch(this.parse);
+          .catch((err: any) => this.parse(err, 'get', args[0]));
       }
       post(...args: any[]) {
         return this.network.post
           .apply(this.network, [...args])
-          .catch(this.parse);
+          .catch((err: any) => this.parse(err, 'post', args[0]));
       }
       put(...args: any[]) {
         return this.network.put
           .apply(this.network, [...args])
-          .catch(this.parse);
+          .catch((err: any) => this.parse(err, 'put', args[0]));
       }
       patch(...args: any[]) {
         return this.network.patch
           .apply(this.network, [...args])
-          .catch(this.parse);
+          .catch((err: any) => this.parse(err, 'patch', args[0]));
       }
       delete(...args: any[]) {
         return this.network.delete
           .apply(this.network, [...args])
-          .catch(this.parse);
+          .catch((err: any) => this.parse(err, 'delete', args[0]));
       }
       getBlob(...args: any[]) {
         return this.network.getBlob
           .apply(this.network, [...args])
-          .catch(this.parse);
+          .catch((err: any) => this.parse(err, 'get', args[0]));
       }
     } as C;
   };
