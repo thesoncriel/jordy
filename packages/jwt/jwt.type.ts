@@ -32,6 +32,8 @@ export interface JWTProvider {
   set(tokenValue: JWTAuthTokenDto): void;
   /**
    * 엑세스 토큰값을 가져온다.
+   * 
+   * @throws 가져오는데 실패 했다면 오류를 일으킨다.
    */
   get(): Promise<string>;
   /**
