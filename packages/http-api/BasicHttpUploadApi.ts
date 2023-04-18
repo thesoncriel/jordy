@@ -41,7 +41,7 @@ export class BasicHttpUploadApi
         onProgress: progressCallback,
       });
     } catch (error) {
-      this.throwWithInterceptor(error);
+      this.throwWithInterceptor(error, 'post', url);
     }
   }
 
@@ -66,7 +66,7 @@ export class BasicHttpUploadApi
         onProgress: progressCallback,
       });
     } catch (error) {
-      this.throwWithInterceptor(error);
+      this.throwWithInterceptor(error, 'put', url);
     }
   }
 }
