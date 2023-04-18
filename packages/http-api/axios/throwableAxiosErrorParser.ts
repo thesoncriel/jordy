@@ -42,27 +42,6 @@ export function throwableAxiosErrorParser(
   }
 
   if (method && url) {
-    if (HttpRestError.isHttpRestErrorLike(error)) {
-      throw new HttpRestError(error.message, {
-        method: error.method || method,
-        url: error.url || url,
-        status: HttpRestError.toStatusCodeFrom(error.errorType),
-        errorType: error.errorType,
-        rawData: error.rawData,
-      });
-    }
-
-    const meta = {
-      method,
-      url,
-      status: 0,
-      rawData: error,
-    };
-
-    if (HttpRestError.isErrorLike(error)) {
-      throw new HttpRestError(error.message, meta);
-    }
-
-    throw new HttpRestError(HttpRestError.DEFAULT_MESSAGE, meta);
+    throw HttpRestError.withUrl(error, method, url);
   }
 }

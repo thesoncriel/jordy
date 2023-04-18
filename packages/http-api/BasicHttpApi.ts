@@ -35,7 +35,7 @@ export class BasicHttpApi
         timeout,
       });
     } catch (error) {
-      this.throwWithInterceptor(error);
+      this.throwWithInterceptor(error, 'get', url);
     }
   }
   async post<T = MarshallingType, P = void | Record<string, any>>(
@@ -55,7 +55,7 @@ export class BasicHttpApi
         timeout,
       });
     } catch (error) {
-      this.throwWithInterceptor(error);
+      this.throwWithInterceptor(error, 'post', url);
     }
   }
   async put<T = MarshallingType, P = void | Record<string, any>>(
@@ -75,7 +75,7 @@ export class BasicHttpApi
         timeout,
       });
     } catch (error) {
-      this.throwWithInterceptor(error);
+      this.throwWithInterceptor(error, 'put', url);
     }
   }
   async patch<T = MarshallingType, P = void | Record<string, any>>(
@@ -95,7 +95,7 @@ export class BasicHttpApi
         timeout,
       });
     } catch (error) {
-      this.throwWithInterceptor(error);
+      this.throwWithInterceptor(error, 'patch', url);
     }
   }
   async delete<T = MarshallingType, P = void | Record<string, any>>(
@@ -115,7 +115,7 @@ export class BasicHttpApi
         timeout,
       });
     } catch (error) {
-      this.throwWithInterceptor(error);
+      this.throwWithInterceptor(error, 'delete', url);
     }
   }
 
@@ -124,11 +124,9 @@ export class BasicHttpApi
     params?: P,
     filename?: string
   ): Promise<File> {
-    return this.getBlob(url, params)
-      .then((blob) => {
-        return new File([blob], filename || getFileName(url));
-      })
-      .catch(this.throwWithInterceptor);
+    return this.getBlob(url, params).then((blob) => {
+      return new File([blob], filename || getFileName(url));
+    });
   }
   async getBlob<P = void | Record<string, any>>(
     url: string,
@@ -145,7 +143,7 @@ export class BasicHttpApi
         params: this.mergeParams('get', url, params),
       });
     } catch (error) {
-      this.throwWithInterceptor(error);
+      this.throwWithInterceptor(error, 'get', url);
     }
   }
 }

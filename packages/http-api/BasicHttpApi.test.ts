@@ -98,6 +98,46 @@ describe('BasicHttpApi', () => {
       expect(providerMock[method]).not.toBeCalled();
     });
 
+    it('headersCreator 호출 시 발생된 오류는 요청된 method 와 url 정보가 포함된다.', async () => {
+      const message = 'unauthorized!';
+      headerCreatorMock.mockRejectedValueOnce(new Error(message));
+
+      await expect(
+        httpApi[method]('/user/search', { q: 'haha' })
+      ).rejects.toThrow(
+        expect.objectContaining({
+          errorType: 'unknown',
+          message,
+          method,
+          url: '/user/search',
+          rawData: expect.objectContaining({
+            message,
+          }),
+        })
+      );
+    });
+
+    it('headersCreator 호출 시 발생된 오류가 HttpRestError 타입과 유사하다면 그 내용을 가진다.', async () => {
+      const message = '죠르디다!';
+      const url = '/user/search';
+      const given = {
+        errorType: 'auth',
+        message,
+        method,
+        url,
+        rawData: {
+          name: 'sonic',
+          age: 20,
+        },
+      };
+
+      headerCreatorMock.mockRejectedValueOnce(given);
+
+      await expect(httpApi[method](url, { q: 'haha' })).rejects.toThrow(
+        expect.objectContaining(given)
+      );
+    });
+
     describe('interceptor 사용', () => {
       const paramsInterMock = vi.fn();
       const errorInterMock = vi.fn();

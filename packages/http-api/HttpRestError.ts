@@ -201,4 +201,29 @@ export class HttpRestError implements Error, HttpRestErrorLike {
     }
     return new HttpRestError();
   }
+
+  static withUrl(error: ErrorLike, method: RestHttpMethodType, url: string) {
+    if (HttpRestError.isHttpRestErrorLike(error)) {
+      return new HttpRestError(error.message, {
+        method: error.method || method,
+        url: error.url || url,
+        status: HttpRestError.toStatusCodeFrom(error.errorType),
+        errorType: error.errorType,
+        rawData: error.rawData,
+      });
+    }
+
+    const meta = {
+      method,
+      url,
+      status: 0,
+      rawData: error,
+    };
+
+    if (HttpRestError.isErrorLike(error)) {
+      return new HttpRestError(error.message, meta);
+    }
+
+    return new HttpRestError(HttpRestError.DEFAULT_MESSAGE, meta);
+  }
 }

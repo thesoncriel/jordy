@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { HttpRestErrorLike } from './HttpRestError';
+import { HttpRestError, HttpRestErrorLike } from './HttpRestError';
 import { HttpInterceptorConfig, RestHttpMethodType } from './network.type';
 
 export class BaseInterceptorHttpApi {
@@ -61,27 +61,27 @@ export class BaseInterceptorHttpApi {
         return url + serializedParams;
       }
 
-      return (
-        url +
-        (url.includes('?') ? '&' : '?') +
-        serializedParams
-      );
+      return url + (url.includes('?') ? '&' : '?') + serializedParams;
     }
 
     return url;
   };
 
   throwWithInterceptor = <E extends HttpRestErrorLike = any>(
-    err: E
+    err: E,
+    method: RestHttpMethodType,
+    url: string
   ): Promise<any> => {
+    const refinedError = HttpRestError.withUrl(err, method, url);
+
     if (this._interceptor.error) {
-      const nextError = this._interceptor.error(err);
+      const nextError = this._interceptor.error(refinedError);
 
       if (nextError) {
         throw nextError;
       }
     }
 
-    throw err;
+    throw refinedError;
   };
 }
