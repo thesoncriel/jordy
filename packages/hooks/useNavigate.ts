@@ -77,12 +77,14 @@ function refineQueries(queries: Record<string, any>): Record<string, any> {
  */
 export function useNavigate(): NavigationCommander {
   const [currentSearchParams, setSearchParams] = useSearchParams();
-  const refSearchParams = useRef(currentSearchParams);
   const navigate = useRcNavigate();
+  const refSearchParams = useRef(currentSearchParams);
+  const refNavigate = useRef(navigate);
 
   useLayoutEffect(() => {
     refSearchParams.current = currentSearchParams;
-  }, [currentSearchParams]);
+    refNavigate.current = navigate;
+  }, [currentSearchParams, navigate]);
 
   const navigation = useCallback(
     (
@@ -90,15 +92,15 @@ export function useNavigate(): NavigationCommander {
       option?: NavigateOptions | SearchParamsOptions
     ): void => {
       if (typeof to === 'number') {
-        return navigate(to);
+        return refNavigate.current(to);
       }
 
       if (typeof to === 'string') {
-        return navigate(to, option);
+        return refNavigate.current(to, option);
       }
 
       if (instanceOfTo(to)) {
-        return navigate(to, option);
+        return refNavigate.current(to, option);
       }
 
       if (instanceOfSearchParams(to)) {
@@ -119,9 +121,9 @@ export function useNavigate(): NavigationCommander {
         return setSearchParams(refineQueries(to), option);
       }
 
-      return navigate(to, option);
+      return refNavigate.current(to, option);
     },
-    [navigate, setSearchParams]
+    [setSearchParams]
   );
 
   return navigation;
