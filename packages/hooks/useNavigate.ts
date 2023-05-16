@@ -79,12 +79,14 @@ export function useNavigate(): NavigationCommander {
   const [currentSearchParams, setSearchParams] = useSearchParams();
   const navigate = useRcNavigate();
   const refSearchParams = useRef(currentSearchParams);
+  const refSetSearchParams = useRef(setSearchParams);
   const refNavigate = useRef(navigate);
 
   useLayoutEffect(() => {
     refSearchParams.current = currentSearchParams;
     refNavigate.current = navigate;
-  }, [currentSearchParams, navigate]);
+    refSetSearchParams.current = setSearchParams;
+  }, [currentSearchParams, navigate, setSearchParams]);
 
   const navigation = useCallback(
     (
@@ -115,15 +117,18 @@ export function useNavigate(): NavigationCommander {
 
           const mergeQueries = { ...currentQueries, ...to };
 
-          return setSearchParams(refineQueries(mergeQueries), option);
+          return refSetSearchParams.current(
+            refineQueries(mergeQueries),
+            option
+          );
         }
 
-        return setSearchParams(refineQueries(to), option);
+        return refSetSearchParams.current(refineQueries(to), option);
       }
 
       return refNavigate.current(to, option);
     },
-    [setSearchParams]
+    []
   );
 
   return navigation;
