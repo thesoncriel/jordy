@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useCallback } from 'react';
+import { useCallback, useLayoutEffect, useRef } from 'react';
 import {
   NavigateOptions,
   Path,
@@ -77,7 +77,12 @@ function refineQueries(queries: Record<string, any>): Record<string, any> {
  */
 export function useNavigate(): NavigationCommander {
   const [currentSearchParams, setSearchParams] = useSearchParams();
+  const refSearchParams = useRef(currentSearchParams);
   const navigate = useRcNavigate();
+
+  useLayoutEffect(() => {
+    refSearchParams.current = currentSearchParams;
+  }, [currentSearchParams]);
 
   const navigation = useCallback(
     (
@@ -98,7 +103,7 @@ export function useNavigate(): NavigationCommander {
 
       if (instanceOfSearchParams(to)) {
         if (isMergeQueries(option)) {
-          const currentQueries = [...currentSearchParams].reduce(
+          const currentQueries = [...refSearchParams.current].reduce(
             (acc, [key, value]) => {
               acc[key] = value;
               return acc;
@@ -116,7 +121,7 @@ export function useNavigate(): NavigationCommander {
 
       return navigate(to, option);
     },
-    [currentSearchParams, navigate, setSearchParams]
+    [navigate, setSearchParams]
   );
 
   return navigation;
