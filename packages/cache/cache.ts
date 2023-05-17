@@ -1,5 +1,6 @@
 import { createStorage } from '../storage/createStorage.factory';
-import { CacheConfigDto } from './cache.type';
+import { CacheConfigDto, CachedAsyncFunction } from './cache.type';
+import { clearCacheByKeyword } from './clearCacheByKeyword';
 import { createCacheKey } from './createCacheKey';
 
 /**
@@ -32,7 +33,7 @@ export function cache<R, P = void>({
   type = 'session',
   expired,
   fetcher,
-}: CacheConfigDto<R, P>) {
+}: CacheConfigDto<R, P>): CachedAsyncFunction<R, P> {
   const resultFetcher = async function fetcherProxy(params: P) {
     const sto = createStorage<R>(type, createCacheKey(key, params), expired);
 
@@ -48,6 +49,8 @@ export function cache<R, P = void>({
 
     return newResult;
   };
+
+  resultFetcher.clear = () => clearCacheByKeyword(type, key);
 
   return resultFetcher;
 }

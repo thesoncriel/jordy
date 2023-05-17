@@ -26,3 +26,13 @@ export interface CacheConfigDto<R, P> {
    */
   fetcher: (params: P) => Promise<R>;
 }
+
+export interface CachedAsyncFunction<T, P = void> {
+  (params: P): Promise<T>;
+  /**
+   * 현재 저장된 캐시를 제거한다.
+   *
+   * @returns 삭제된 캐시 개수
+   */
+  clear(): number;
+}
