@@ -42,6 +42,30 @@ describe('queue', () => {
 
     const fnList = [
       queuedFn(1, 2, 3).then(passthrough(() => seqList.push(1))),
+      queuedFn(1, 2, 3).then(passthrough(() => seqList.push(2))),
+      queuedFn(1, 2, 3).then(passthrough(() => seqList.push(3))),
+    ];
+
+    setTimeout(() => {
+      resolver.resolve(MOCK_DATA as never);
+    }, 5);
+
+    const results = await Promise.all(fnList);
+
+    expect(mockFn).toBeCalledTimes(1);
+    expect(mockFn).toBeCalledWith(1, 2, 3);
+    expect(results).toEqual(seqList.map(() => MOCK_DATA));
+    expect(seqList).toEqual([1, 2, 3]);
+  });
+
+  it('첫 응답이 오기 전까지 이 후 요청되는 파라미터들은 무시되고 첫 요청 파라미터만 반영된다.', async () => {
+    const queuedFn = queue(mockFn);
+    const seqList: number[] = [];
+
+    const fnList = [
+      // 첫 요청 파라미터만 유효하다.
+      queuedFn(100, 200, 300).then(passthrough(() => seqList.push(1))),
+      // 이후 요청 파라미터는 무시한다.
       queuedFn(4, 5, 6).then(passthrough(() => seqList.push(2))),
       queuedFn(7, 8, 9).then(passthrough(() => seqList.push(3))),
       queuedFn(10, 11, 12).then(passthrough(() => seqList.push(4))),
@@ -55,7 +79,8 @@ describe('queue', () => {
     const results = await Promise.all(fnList);
 
     expect(mockFn).toBeCalledTimes(1);
-    expect(mockFn).toBeCalledWith(1, 2, 3);
+    expect(mockFn).toBeCalledWith(100, 200, 300);
+    // 응답 값은 모든 요청에 대해 동일하며 그 값은 첫 요청에 의한 것이다.
     expect(results).toEqual(seqList.map(() => MOCK_DATA));
     expect(seqList).toEqual([1, 2, 3, 4, 5]);
   });
