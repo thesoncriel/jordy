@@ -1,9 +1,14 @@
 import React from 'react';
 import { fireEvent, render, screen } from '@testing-library/react';
-import { BrowserRouter, NavigateOptions, To } from 'react-router-dom';
+import {
+  BrowserRouter,
+  NavigateOptions,
+  RouteObject,
+  To,
+  useRoutes,
+} from 'react-router-dom';
 import '@testing-library/jest-dom';
 
-import { ModuleRouteModel, useRouteSystem } from '../../route-system';
 import { SearchParamsOptions, useNavigate } from '../useNavigate';
 
 function Home() {
@@ -69,28 +74,28 @@ function QueryTestComp() {
 }
 
 function App() {
-  const routes: ModuleRouteModel[] = [
+  const routes: RouteObject[] = [
     {
       path: '/',
-      element: Home,
+      element: <Home />,
       children: [
         {
           path: 'route',
-          element: RouteTestComp,
+          element: <RouteTestComp />,
         },
         {
           path: 'query',
-          element: QueryTestComp,
+          element: <QueryTestComp />,
         },
       ],
     },
     {
       path: '/fallback',
-      element: () => <div>I am fallback</div>,
+      element: <div>I am fallback</div>,
     },
   ];
 
-  return useRouteSystem(routes);
+  return useRoutes(routes);
 }
 
 describe('useNavigate', () => {
