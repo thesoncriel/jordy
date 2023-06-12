@@ -1,6 +1,6 @@
 import { qs } from './queryString';
 
-describe.only('qs.parse', () => {
+describe('qs.parse', () => {
   it('일반 문자열이 들어가면 빈 객체를 되돌려준다.', () => {
     const result = qs.parse('스팀 만쉐이 하하하');
 
