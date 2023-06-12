@@ -132,7 +132,7 @@ export const qs: QueryString = {
         splittedQueries.reduce((tmpMap, item) => {
           const [key, value] = item.split('=');
 
-          tmpMap.set(key, decodeURIComponent(value));
+          tmpMap.set(key, decodeURIComponent(value.replace(/\+/g, '%20')));
 
           return tmpMap;
         }, new Map<string, string>())
