@@ -24,6 +24,15 @@ describe('qs.parse', () => {
       title: '하하호호가즈아!',
     });
   });
+  it('파라미터에 띄어쓰기에 의한 "+"가 존재한다면 이를 치환하여 반영한다.', () => {
+    const given =
+      'https://www.theson.com/?title=유니버시티+%2B+로얄+스탠다드+숏팬츠';
+    const result = qs.parse(given);
+
+    expect(result).toEqual({
+      title: '유니버시티 + 로얄 스탠다드 숏팬츠',
+    });
+  });
 });
 
 describe('qs.serialize', () => {
