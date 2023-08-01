@@ -2,7 +2,7 @@ import '@testing-library/jest-dom';
 import { fireEvent, render, screen } from '@testing-library/react';
 import React, { ChangeEvent } from 'react';
 import { useValidate } from './useValidate';
-import { ValidateBulkResultModel } from './validate.type';
+import { ValidateBulkResultUiState } from './validate.type';
 
 interface TestState {
   name: string;
@@ -11,7 +11,7 @@ interface TestState {
 }
 
 interface TestProps {
-  validateFn: (data: TestState) => ValidateBulkResultModel;
+  validateFn: (data: TestState) => ValidateBulkResultUiState;
 }
 
 function getInitState(): TestState {
@@ -144,7 +144,7 @@ describe('useValidate', () => {
   }
 
   const validateFnMock = vi.fn((_: TestState) => {
-    const result: ValidateBulkResultModel = {
+    const result: ValidateBulkResultUiState = {
       isValid: true,
       validKeys: [],
       invalidKeys: [],
@@ -280,7 +280,7 @@ describe('useValidate', () => {
       };
 
       validateFnMock.mockImplementationOnce(() => {
-        const result: ValidateBulkResultModel = {
+        const result: ValidateBulkResultUiState = {
           isValid: false,
           validKeys: [],
           invalidKeys: [],
@@ -305,7 +305,7 @@ describe('useValidate', () => {
       const errorMessage = '포메는 사랑입니다 ^^';
 
       validateFnMock.mockImplementationOnce(() => {
-        const result: ValidateBulkResultModel = {
+        const result: ValidateBulkResultUiState = {
           isValid: false,
           validKeys: ['age', 'hasCookie'],
           invalidKeys: ['name'],
@@ -330,7 +330,7 @@ describe('useValidate', () => {
       const errorMessage = '포메는 사랑입니다 ^^';
 
       validateFnMock.mockImplementationOnce(() => {
-        const result: ValidateBulkResultModel = {
+        const result: ValidateBulkResultUiState = {
           isValid: false,
           validKeys: ['age', 'hasCookie'],
           invalidKeys: ['name'],

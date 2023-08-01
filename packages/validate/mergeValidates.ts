@@ -1,14 +1,14 @@
-import { ValidateBulkResultModel } from './validate.type';
+import { ValidateBulkResultUiState } from './validate.type';
 import { validateSubUtils } from './validateSubUtils';
 
 /**
  * 유효성 검증 결과 여러개를 하나의 결과로 병합한다.
  *
- * 병합후엔 하나의 {ValidateBulkResultModel} 타입으로 만들어진다.
+ * 병합후엔 하나의 {ValidateBulkResultUiState} 타입으로 만들어진다.
  *
  * @example
  * ```ts
- * const result: ValidateBulkResultModel = mergeValidates(
+ * const result: ValidateBulkResultUiState = mergeValidates(
  *   validate(dataA, { someAttr: val => isSomeCondition(val) }),
  *   validate(dataB, { otherProps: val => isMyCondition(val) }),
  *   validate(dataC, { anotherName: val => hasSomeValues(val) }),
@@ -18,11 +18,11 @@ import { validateSubUtils } from './validateSubUtils';
  * ```
  *
  * @param args 하나로 만들 여러 유효성 검증 결과들.
- * @returns {ValidateBulkResultModel}
+ * @returns {ValidateBulkResultUiState}
  */
 export function mergeValidates(
-  ...args: ValidateBulkResultModel[]
-): ValidateBulkResultModel {
+  ...args: ValidateBulkResultUiState[]
+): ValidateBulkResultUiState {
   if (args.length === 1) {
     return args[0];
   }
@@ -41,5 +41,5 @@ export function mergeValidates(
     Array.prototype.push.apply(acc.validKeys, arg.validKeys);
 
     return acc;
-  }, validateSubUtils.createValidateBulkResultModel());
+  }, validateSubUtils.createValidateBulkResultUiState());
 }

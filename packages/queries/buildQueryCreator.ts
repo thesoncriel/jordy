@@ -101,13 +101,13 @@ interface QueryHooksCreatorSettingOptionDto<SR, SP, R, P, ReduxRootState> {
   /**
    * 파라미터 변환기.
    *
-   * UI Model 로 전달된 파라미터를 Server 측 파라미터로 변환한다.
+   * UI State 로 전달된 파라미터를 Server 측 파라미터로 변환한다.
    */
   parameterConverter?: (params: P, getState: () => ReduxRootState) => SP;
   /**
    * 받아온 결과 데이터에 대한 변환기.
    *
-   * Server 측 Entity 와 응답 자료를 UI Model 로 변환한다.
+   * Server 측 Entity 와 응답 자료를 UI State 로 변환한다.
    */
   resultConverter?: (
     result: SR,

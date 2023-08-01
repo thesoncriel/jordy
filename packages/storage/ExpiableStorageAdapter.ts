@@ -1,11 +1,11 @@
 import { MarshallingType } from '../types';
-import { SimpleStorage, ExpiableStorageModel } from './storage.type';
+import { SimpleStorage, ExpiableStorageUiState } from './storage.type';
 
 export class ExpiableStorageAdapter<T extends MarshallingType>
   implements SimpleStorage<T>
 {
   constructor(
-    private storage: SimpleStorage<ExpiableStorageModel<T>>,
+    private storage: SimpleStorage<ExpiableStorageUiState<T>>,
     public expiredTime = 0
   ) {}
 

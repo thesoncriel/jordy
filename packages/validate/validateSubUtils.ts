@@ -1,11 +1,11 @@
 import {
-  ValidateBulkResultModel,
-  ValidateCheckModel,
-  ValidateResultModel,
+  ValidateBulkResultUiState,
+  ValidateCheckUiState,
+  ValidateResultUiState,
 } from './validate.type';
 
-function createValidateBulkResultModel() {
-  const result: ValidateBulkResultModel = {
+function createValidateBulkResultUiState() {
+  const result: ValidateBulkResultUiState = {
     isValid: true,
     validKeys: [],
     invalidKeys: [],
@@ -18,8 +18,8 @@ function createValidateBulkResultModel() {
 function validateSingle<T, S>(
   val: T,
   state: S,
-  { check, message }: ValidateCheckModel<T, S>
-): ValidateResultModel {
+  { check, message }: ValidateCheckUiState<T, S>
+): ValidateResultUiState {
   const result = check(val, state);
   const msg = !result ? message : '';
 
@@ -40,7 +40,7 @@ function checkIgnore<T, S>(
   return ignore === true || ignore(val, state);
 }
 
-function createValidateResultModel(): ValidateResultModel {
+function createValidateResultUiState(): ValidateResultUiState {
   return {
     result: true,
     message: '',
@@ -51,15 +51,15 @@ function validateBulk<T, S>(
   val: T,
   state: S,
   opt:
-    | ValidateCheckModel<T, S>
-    | ValidateCheckModel<T, S>[]
-    | ((value: T) => ValidateBulkResultModel)
-): ValidateResultModel {
-  let mRes: ValidateResultModel | undefined;
+    | ValidateCheckUiState<T, S>
+    | ValidateCheckUiState<T, S>[]
+    | ((value: T) => ValidateBulkResultUiState)
+): ValidateResultUiState {
+  let mRes: ValidateResultUiState | undefined;
 
   if (Array.isArray(opt)) {
     if (opt.length > 0 && checkIgnore(opt[0].ignore, val, state)) {
-      return createValidateResultModel();
+      return createValidateResultUiState();
     }
 
     opt.every((_opt) => {
@@ -79,17 +79,17 @@ function validateBulk<T, S>(
     };
   } else {
     if (checkIgnore(opt.ignore, val, state)) {
-      return createValidateResultModel();
+      return createValidateResultUiState();
     }
 
     mRes = validateSingle(val, state, opt);
   }
 
-  return mRes || createValidateResultModel();
+  return mRes || createValidateResultUiState();
 }
 
 export const validateSubUtils = {
-  createValidateBulkResultModel,
+  createValidateBulkResultUiState,
   validateSingle,
   validateBulk,
   checkIgnore,

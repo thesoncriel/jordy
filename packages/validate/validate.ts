@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   ValidateBulkOptionType,
-  ValidateBulkResultModel,
+  ValidateBulkResultUiState,
 } from './validate.type';
 import { validateSubUtils } from './validateSubUtils';
 
-const { createValidateBulkResultModel, validateBulk } = validateSubUtils;
+const { createValidateBulkResultUiState, validateBulk } = validateSubUtils;
 
 /**
  * @description
@@ -15,13 +15,13 @@ const { createValidateBulkResultModel, validateBulk } = validateSubUtils;
  * ```ts
  *  import { validate, validateFn } from 'jordy';
  * 
-    interface UserModel {
+    interface UserUiState {
       name: string;
       phone: string;
       password: string;
     }
 
-    function validateUserModel(user: UserModel) {
+    function validateUserUiState(user: UserUiState) {
       const result = validate(user, {
         // 한가지 검증일 땐 객체로 넘겨준다.
         name: {
@@ -48,18 +48,18 @@ const { createValidateBulkResultModel, validateBulk } = validateSubUtils;
       console.log(result.isValid); // true 면 모든 유효성 통과.
       console.log(result.firstMessage); // 검증 중 가장 첫번째로 나타난 에러 메시지
       console.log(result.results); // 각 필드별 결과
-      // 자세한건 `ValidateBulkResultModel` 참고
+      // 자세한건 `ValidateBulkResultUiState` 참고
     }
  * ```
  * @param state 유효성 체크 할 값이 모여있는 객체.
  * @param opt 유효성 체크 옵션.
  * 
- * @see ValidateBulkResultModel
+ * @see ValidateBulkResultUiState
  */
 export function validate<T>(
   state: T,
   opt: ValidateBulkOptionType<T>
-): ValidateBulkResultModel {
+): ValidateBulkResultUiState {
   return Object.keys(opt).reduce((acc, key) => {
     const val = (state as any)[key];
     const items = (opt as any)[key];
@@ -79,5 +79,5 @@ export function validate<T>(
     }
 
     return acc;
-  }, createValidateBulkResultModel());
+  }, createValidateBulkResultUiState());
 }

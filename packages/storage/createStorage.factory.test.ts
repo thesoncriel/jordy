@@ -45,7 +45,7 @@ import { cookie } from './cookie';
 
 const { setIsServer, setIsStorageAvailable } = envCheck;
 
-interface TestModel {
+interface TestUiState {
   name: string;
   age: number;
   isYouth: boolean;
@@ -91,7 +91,7 @@ function createMockStorage(): Storage {
   };
 }
 
-function createTestModel() {
+function createTestUiState() {
   return {
     age: 32,
     isYouth: true,
@@ -101,7 +101,7 @@ function createTestModel() {
 function createTestArray() {
   return ['대한민국', '서울특별시', '강남구', '양재너구리'];
 }
-function createTestModelArray(): TestModel[] {
+function createTestUiStateArray(): TestUiState[] {
   return [
     {
       age: 30,
@@ -208,17 +208,17 @@ describe('storage factory', () => {
 
     describe('check: object', () => {
       const KEY = 'obj_people';
-      let sto: SimpleStorage<TestModel>;
+      let sto: SimpleStorage<TestUiState>;
 
       beforeEach(() => {
-        sto = createStorage<TestModel>(type, KEY);
+        sto = createStorage<TestUiState>(type, KEY);
       });
 
       it('just get: 설정하지 않았을 때 값을 가져오면 내용이 없어야 한다.', () => {
         expect(sto.get()).toBe(null);
       });
       it('set and get: 스토리지 서비스 및 로컬 스토리지의 설정된 값이 같아야 한다.', () => {
-        const value = createTestModel();
+        const value = createTestUiState();
         sto.set(value);
 
         const mValue = sto.get();
@@ -227,7 +227,7 @@ describe('storage factory', () => {
         expect(getCurrentStorage().getItem(KEY)).toBe(JSON.stringify(value));
       });
       it('remove: 삭제한 뒤 스토리지 내 값은 없어야 한다.', () => {
-        const value = createTestModel();
+        const value = createTestUiState();
         sto.set(value);
 
         const mValue = sto.get();
@@ -243,17 +243,17 @@ describe('storage factory', () => {
 
     describe('check: object array', () => {
       const KEY = 'obj_people_arr';
-      let sto: SimpleStorage<TestModel[]>;
+      let sto: SimpleStorage<TestUiState[]>;
 
       beforeEach(() => {
-        sto = createStorage<TestModel[]>(type, KEY);
+        sto = createStorage<TestUiState[]>(type, KEY);
       });
 
       it('just get: 설정하지 않았을 때 값을 가져오면 내용이 없어야 한다.', () => {
         expect(sto.get()).toBe(null);
       });
       it('set and get: 스토리지 서비스 및 로컬 스토리지의 설정된 값이 같아야 한다.', () => {
-        const value = createTestModelArray();
+        const value = createTestUiStateArray();
         sto.set(value);
 
         const aValue = sto.get();
@@ -262,7 +262,7 @@ describe('storage factory', () => {
         expect(getCurrentStorage().getItem(KEY)).toBe(JSON.stringify(value));
       });
       it('remove: 삭제한 뒤 스토리지 내 값은 없어야 한다.', () => {
-        const value = createTestModelArray();
+        const value = createTestUiStateArray();
         sto.set(value);
 
         const aValue = sto.get();
@@ -385,17 +385,17 @@ describe('storage factory : memory mode', () => {
 
     describe('check: object', () => {
       const KEY = 'obj_people';
-      let sto: SimpleStorage<TestModel>;
+      let sto: SimpleStorage<TestUiState>;
 
       beforeEach(() => {
-        sto = createStorage<TestModel>(type, KEY);
+        sto = createStorage<TestUiState>(type, KEY);
       });
 
       it('just get: 설정하지 않았을 때 값을 가져오면 내용이 없어야 한다.', () => {
         expect(sto.get()).toBe(null);
       });
       it('set and get: 스토리지 서비스 및 로컬 스토리지의 설정된 값이 같아야 한다.', () => {
-        const value = createTestModel();
+        const value = createTestUiState();
         sto.set(value);
 
         const mValue = sto.get();
@@ -403,7 +403,7 @@ describe('storage factory : memory mode', () => {
         expect(mValue).toEqual(value);
       });
       it('remove: 삭제한 뒤 스토리지 내 값은 없어야 한다.', () => {
-        const value = createTestModel();
+        const value = createTestUiState();
         sto.set(value);
 
         const mValue = sto.get();
@@ -418,17 +418,17 @@ describe('storage factory : memory mode', () => {
 
     describe('check: object array', () => {
       const KEY = 'obj_people_arr';
-      let sto: SimpleStorage<TestModel[]>;
+      let sto: SimpleStorage<TestUiState[]>;
 
       beforeEach(() => {
-        sto = createStorage<TestModel[]>(type, KEY);
+        sto = createStorage<TestUiState[]>(type, KEY);
       });
 
       it('just get: 설정하지 않았을 때 값을 가져오면 내용이 없어야 한다.', () => {
         expect(sto.get()).toBe(null);
       });
       it('set and get: 스토리지 서비스 및 로컬 스토리지의 설정된 값이 같아야 한다.', () => {
-        const value = createTestModelArray();
+        const value = createTestUiStateArray();
         sto.set(value);
 
         const aValue = sto.get();
@@ -436,7 +436,7 @@ describe('storage factory : memory mode', () => {
         expect(aValue).toEqual(value);
       });
       it('remove: 삭제한 뒤 스토리지 내 값은 없어야 한다.', () => {
-        const value = createTestModelArray();
+        const value = createTestUiStateArray();
         sto.set(value);
 
         const aValue = sto.get();
@@ -469,8 +469,8 @@ describe('expired time test', () => {
 
   function doCheck(type: StorageType) {
     it(`expired - mode=${type}: 자료를 설정하고 지정된 시간이 지나면 값이 존재하지 않아야 한다.`, async () => {
-      const sto = createStorage<TestModel>(type, KEY, 1);
-      const origin: TestModel = {
+      const sto = createStorage<TestUiState>(type, KEY, 1);
+      const origin: TestUiState = {
         age: 30,
         isYouth: false,
         name: 'thorn',
@@ -510,8 +510,8 @@ describe('expired time test', () => {
 
   describe('type: cookie', () => {
     it('expired - mode=cookie: 자료를 설정하고 지정된 시간이 지나면 값이 존재하지 않아야 한다.', async () => {
-      const sto = createStorage<TestModel>('cookie', KEY, 1);
-      const origin: TestModel = {
+      const sto = createStorage<TestUiState>('cookie', KEY, 1);
+      const origin: TestUiState = {
         age: 30,
         isYouth: false,
         name: 'thorn',

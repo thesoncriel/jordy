@@ -1,9 +1,9 @@
 import { FC, ComponentType } from 'react';
 
 /**
- * 적응형 함수 설정 시 필요한 모델.
+ * 적응형 함수 설정 시 필요한 상태.
  */
-export interface AdaptiveSettingModel<T> {
+export interface AdaptiveSettingUiState<T> {
   /**
    * 네이티브 모바일앱 에서만 수행될 기능.
    *
@@ -33,10 +33,10 @@ export interface AdaptiveSettingModel<T> {
 }
 
 /**
- * 적응형 렌더링에서 쓰이는 설정 모델.
+ * 적응형 렌더링에서 쓰이는 설정 상태.
  */
-export interface AdaptiveRenderSettingModel<T>
-  extends AdaptiveSettingModel<FC<T> | ComponentType<T>> {
+export interface AdaptiveRenderSettingUiState<T>
+  extends AdaptiveSettingUiState<FC<T> | ComponentType<T>> {
   /**
    * 네이티브 모바일앱 에서만 보여질 컴포넌트.
    *
