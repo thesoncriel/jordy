@@ -1,7 +1,7 @@
 /**
  * 유효성 검사 결과 데이터.
  */
-export interface ValidateResultModel {
+export interface ValidateResultUiState {
   /**
    * 유효성 체크 결과.
    * true면 통과, false 면 통과 못했음
@@ -19,7 +19,7 @@ export interface ValidateResultModel {
  *
  * 스토어 상태에 에러 메시지 항목을 추가 할 때 쓰인다.
  */
-export interface ErrorMessagesModel {
+export interface ErrorMessagesUiState {
   /**
    * 휴효하지 못했던 키와 그에 대한 메시지를 모아둔 자료.
    *
@@ -33,7 +33,7 @@ export interface ErrorMessagesModel {
 /**
  * 유효성 여부를 한번에 확인 후 받아볼 수 있는 결과 데이터
  */
-export interface ValidateBulkResultModel extends ErrorMessagesModel {
+export interface ValidateBulkResultUiState extends ErrorMessagesUiState {
   /**
    * 전체 유효성 검증 통과 여부. true 면 통과, false 면 아님
    */
@@ -53,9 +53,9 @@ export interface ValidateBulkResultModel extends ErrorMessagesModel {
 }
 
 /**
- * 유효성 체크 요청에 쓰이는 모델.
+ * 유효성 체크 요청에 쓰이는 설정.
  */
-export interface ValidateCheckModel<T, S> {
+export interface ValidateCheckUiState<T, S> {
   /**
    * 해당 유효성 체크를 무시하는 조건.
    *
@@ -77,7 +77,7 @@ export interface ValidateCheckModel<T, S> {
 }
 
 /**
- * 유효성 체크를 한번에 실시 할 때 쓰이는 모델. key : value 로 이뤄져 있다.
+ * 유효성 체크를 한번에 실시 할 때 쓰이는 타입. key : value 로 이뤄져 있다.
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type ValidateBulkOptionType<T extends Record<string, any>> = {
@@ -91,9 +91,9 @@ export type ValidateBulkOptionType<T extends Record<string, any>> = {
    * 또 한 각 필드의 ignore 가 true 일 경우 그 필드 내 다음 조건은 무시하고 통과 된 것으로 간주한다.
    */
   [key in keyof T]?:
-    | ValidateCheckModel<T[key], T>
-    | ValidateCheckModel<T[key], T>[]
-    | ((value: T[key], state: T) => ValidateBulkResultModel);
+    | ValidateCheckUiState<T[key], T>
+    | ValidateCheckUiState<T[key], T>[]
+    | ((value: T[key], state: T) => ValidateBulkResultUiState);
 };
 
 /**

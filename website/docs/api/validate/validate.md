@@ -5,9 +5,9 @@
 ## validate
 ### types
 
-#### - ValidateCheckModel
+#### - ValidateCheckUiState
 ```ts
-interface ValidateCheckModel<T> {
+interface ValidateCheckUiState<T> {
   /**
    * 해당 유효성 체크를 무시하는 조건.
    */
@@ -27,16 +27,16 @@ type ValidateBulkOptionType<T extends Record<string, any>> = {
    * 유효성 체크에 쓰이는 키, 메시지와 체크 함수 내용.
    */
   [key in keyof T]?:
-    | ValidateCheckModel<T[key]>
-    | ValidateCheckModel<T[key]>[]
-    | ((value: T[key]) => ValidateBulkResultModel);
+    | ValidateCheckUiState<T[key]>
+    | ValidateCheckUiState<T[key]>[]
+    | ((value: T[key]) => ValidateBulkResultUiState);
 };
 ```
 
-#### - ValidateBulkResultModel
+#### - ValidateBulkResultUiState
 ```ts
 
-interface ValidateBulkResultModel {
+interface ValidateBulkResultUiState {
   /**
    * 전체 유효성 검증 통과 여부. true 면 통과, false 면 아님
    */
@@ -63,20 +63,20 @@ interface ValidateBulkResultModel {
 
 
 ```ts
-function validate<T>(state: T, opt: ValidateBulkOptionType<T>): ValidateBulkResultModel
+function validate<T>(state: T, opt: ValidateBulkOptionType<T>): ValidateBulkResultUiState
 ```
 
 ### example
 ```ts
 import { validate, validateFn } from 'jordy';
 
-interface UserModel {
+interface UserUiState {
     name: string;
     phone: string;
     password: string;
 }
 
-function execValidation(user: UserModel) {
+function execValidation(user: UserUiState) {
     return validate(user, {
     // 한가지 검증일 땐 객체로 넘겨준다.
     name: {
@@ -118,11 +118,11 @@ function handleSubmit () {
 ## mergeValidates
 
 - validate로 검증한 결과를 하나의 결과로 병합한다.
-- 병합 후엔 `ValidateBulkResultModel` 타입으로 만들어진다.
+- 병합 후엔 `ValidateBulkResultUiState` 타입으로 만들어진다.
 
 ### type
 ```ts
-function mergeValidates(...args: ValidateBulkResultModel[]): ValidateBulkResultModel
+function mergeValidates(...args: ValidateBulkResultUiState[]): ValidateBulkResultUiState
 ```
 
 ### example

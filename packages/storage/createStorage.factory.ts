@@ -1,6 +1,6 @@
 import { CookieStorageAdapter } from './CookieStorageAdapter';
 import {
-  ExpiableStorageModel,
+  ExpiableStorageUiState,
   SimpleStorage,
   StorageType,
 } from './storage.type';
@@ -19,12 +19,12 @@ import { MarshallingType } from '../types';
  * 만약 서버 환경이거나 스토리지를 이용 할 수 없을 경우, type 은 memory 로 강제된다.
  *
  * @example
- * interface SampleModel {
+ * interface SampleUiState {
  *   name: string;
  *   age: number;
  * }
- * const sto = storageFactory<SampleModel>('local', 'sampleKey');
- * const data: SampleModel = {
+ * const sto = storageFactory<SampleUiState>('local', 'sampleKey');
+ * const data: SampleUiState = {
  *   name: '포메포메',
  *   age: 3,
  * };
@@ -48,7 +48,7 @@ export const createStorage = <T extends MarshallingType>(
 
   if (type !== 'cookie' && expiredTime > 0) {
     return new ExpiableStorageAdapter<T>(
-      createStorage<ExpiableStorageModel<T>>(type, key),
+      createStorage<ExpiableStorageUiState<T>>(type, key),
       expiredTime
     );
   }

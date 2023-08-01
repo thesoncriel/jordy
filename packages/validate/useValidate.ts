@@ -10,7 +10,7 @@ import {
 } from 'react';
 import {
   AntdFormItemValidationMessageDto,
-  ValidateBulkResultModel,
+  ValidateBulkResultUiState,
 } from './validate.type';
 import { validateSubUtils } from './validateSubUtils';
 
@@ -58,7 +58,7 @@ interface ValidateHookResult<T> {
    *
    * 검증에 실패했을 경우, 발생된 에러 메시지를 모두 `message` 필드에 자동으로 반영한다.
    */
-  validate(): ValidateBulkResultModel;
+  validate(): ValidateBulkResultUiState;
   /**
    * 처음 오류가 발생된 입력 요소에 포커스를 준다.
    */
@@ -151,7 +151,7 @@ function dispatchField<T>(
  * ```tsx
  * import { validate, useValidate } from 'jordy';
  *
- * function validateData(data: MyModel) {
+ * function validateData(data: MyUiState) {
  *   return validate(data, {
  *     // 유효성 검증 코드
  *   });
@@ -165,7 +165,7 @@ function dispatchField<T>(
  *     validate,
  *     getAntdStatus
  *   } = useValidate(
- *     createMyModel,
+ *     createMyUiState,
  *     validateData,
  *   );
  *
@@ -205,13 +205,13 @@ function dispatchField<T>(
  */
 export function useValidate<T extends Record<string, any>>(
   initData: T | (() => T),
-  validateFn?: (data: T) => ValidateBulkResultModel,
+  validateFn?: (data: T) => ValidateBulkResultUiState,
   autoFocusOnError = false
 ): ValidateHookResult<T> {
   const [state, setState] = useState(initData);
   const refInitState = useRef(state);
   const refState = useRef(state);
-  const refResult = useRef<ValidateBulkResultModel | null>(null);
+  const refResult = useRef<ValidateBulkResultUiState | null>(null);
   const [message, setMessage] = useState<Partial<Record<keyof T, string>>>({});
 
   useLayoutEffect(() => {
@@ -267,7 +267,7 @@ export function useValidate<T extends Record<string, any>>(
 
   const doValidate = useCallback(() => {
     if (!validateFn) {
-      return validateSubUtils.createValidateBulkResultModel();
+      return validateSubUtils.createValidateBulkResultUiState();
     }
 
     const result = validateFn(refState.current);

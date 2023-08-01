@@ -17,13 +17,13 @@ interface MutationHooksCreatorSettingOptionDto<SR, SP, R, P, ReduxRootState> {
   /**
    * 파라미터 변환기.
    *
-   * UI Model로 전달된 파라미터를 Server측 파라미터로 변환한다.
+   * UI State로 전달된 파라미터를 Server측 파라미터로 변환한다.
    */
   parameterConverter?: (params: P, getState: () => ReduxRootState) => SP;
   /**
    * 받아온 결과 데이터에 대한 변환기.
    *
-   * Server측 Entity와 response를 UI Model로 변환한다.
+   * Server측 Entity와 response를 UI State로 변환한다.
    */
   resultConverter?: (result: SR, getState: () => ReduxRootState) => R;
 }

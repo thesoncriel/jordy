@@ -1,6 +1,6 @@
 import React, { FC, ComponentType } from 'react';
 import { useIsMobile, useIsTablet, useIsNative } from './DeviceDetectContext';
-import { AdaptiveRenderSettingModel } from './adaptive-render.type';
+import { AdaptiveRenderSettingUiState } from './adaptive-render.type';
 
 /**
  * @description
@@ -34,7 +34,9 @@ import { AdaptiveRenderSettingModel } from './adaptive-render.type';
  *
  * @param settings 적응형으로 설정할 컴포넌트들.
  */
-export function withAdaptiveRender<T>(settings: AdaptiveRenderSettingModel<T>) {
+export function withAdaptiveRender<T>(
+  settings: AdaptiveRenderSettingUiState<T>
+) {
   const FnComp: FC<T> = (props) => {
     const isMobile = useIsMobile();
     const isTablet = useIsTablet();

@@ -8,15 +8,15 @@ export interface RowInputChangeArgs extends InputChangeArgs {
 export interface CheckedChangeArgs extends InputChangeArgs {
   checked: boolean;
 }
-export interface SelectOptionItemModel {
+export interface SelectOptionItemUiState {
   value: string;
   text: string;
 }
-export interface KeywordOptionItemModel extends SelectOptionItemModel {
+export interface KeywordOptionItemUiState extends SelectOptionItemUiState {
   keywords: string;
 }
 export interface SimpleDropDownListChangeArgs {
   name: string;
   value: string;
-  item: SelectOptionItemModel;
+  item: SelectOptionItemUiState;
 }
