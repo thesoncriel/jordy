@@ -3,7 +3,7 @@ import {
   DateRangeDto,
   PredefinedDateRangeType,
   PredefinedMaxMonthType,
-} from '../types';
+} from '../types/time.type';
 
 export const MAX_MONTH_LOOKUP_TABLE: Record<PredefinedMaxMonthType, number> = {
   month: 1,

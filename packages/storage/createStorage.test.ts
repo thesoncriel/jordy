@@ -38,12 +38,11 @@ vi.mock('./cookie', () => {
   };
 });
 
-import { timeout, envCheck } from '../util';
+import { timeout } from '../util/etc';
+import { setIsServer, setIsStorageAvailable } from '../util/envCheck';
 import { StorageType, SimpleStorage } from './storage.type';
-import { createStorage } from './createStorage.factory';
+import { createStorage } from './createStorage';
 import { cookie } from './cookie';
-
-const { setIsServer, setIsStorageAvailable } = envCheck;
 
 interface TestUiState {
   name: string;

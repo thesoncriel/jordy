@@ -8,7 +8,7 @@ import {
   useSearchParams,
 } from 'react-router-dom';
 
-import { isNullable, isObject, isUndefined } from '../util';
+import { isNullable, isObject, isUndefined } from '../util/typeCheck';
 
 export type SearchParams = Record<string, any>;
 export type SearchParamsOptions = NavigateOptions & { merge?: boolean };

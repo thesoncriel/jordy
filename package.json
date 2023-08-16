@@ -1,19 +1,28 @@
 {
   "name": "jordy",
-  "version": "0.21.3",
+  "version": "0.21.4",
   "description": "typescript based frontend toolkit",
   "repository": {
     "type": "git",
     "url": "https://github.com/thesoncriel/jordy"
   },
-  "main": "./esm5/index.js",
+  "main": "./cjs/index.js",
   "module": "./esm5/index.js",
   "types": "./libs/index.d.ts",
+  "exports": {
+    ".": {
+      "node": "./cjs/index.js",
+      "types": "./libs/index.d.ts",
+      "require": "./cjs/index.js",
+      "import": "./esm5/index.js"
+    }
+  },
   "scripts": {
+    "compile:cjs": "tsc -b tsconfig.cjs.json",
     "compile:esm5": "tsc -b tsconfig.esm5.json",
     "compile:types": "tsc -b tsconfig.types.json",
     "clean": "rimraf cjs esm5 esm5 types libs",
-    "build": "npm-run-all clean compile:esm5 compile:types",
+    "build": "npm-run-all clean compile:cjs compile:esm5 compile:types",
     "test": "vitest run",
     "test:watch": "vitest watch",
     "prettier": "prettier './packages/**/*.ts'",
@@ -56,6 +65,7 @@
     "vitest": "^0.22.1"
   },
   "files": [
+    "cjs/**/*.js",
     "esm5/**/*.js",
     "libs/**/*.d.ts"
   ]

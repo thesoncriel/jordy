@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { MarshallingType } from '../types';
-import { HttpRestErrorLike } from './HttpRestError';
+import { MarshallingType } from '../types/marshalling.type';
+import { HttpRestErrorLike } from './HttpRestError.type';
 
 export type RestHttpMethodType = 'get' | 'post' | 'put' | 'patch' | 'delete';
 

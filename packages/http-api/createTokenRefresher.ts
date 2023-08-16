@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { JWTAuthTokenDto } from '../jwt';
-import { TokenProvider } from '../storage';
-import { qs } from '../util';
-import { createHttpApi } from './createHttpApi.factory';
+import { JWTAuthTokenDto } from '../jwt/jwt.type';
+import { TokenProvider } from '../storage/storage.type';
+import { qs } from '../util/queryString';
+import { createHttpApi } from './createHttpApi';
 import { createHttpHeaderPipe } from './createHttpHeaderPipe';
 import { HeaderFieldMakingOperator, HttpApi } from './network.type';
 

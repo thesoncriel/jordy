@@ -1,5 +1,5 @@
-import { MarshallingType } from '../types';
-import { marshalJson, unmarshalJson } from '../util';
+import { MarshallingType } from '../types/marshalling.type';
+import { marshalJson, unmarshalJson } from '../util/json';
 import { SimpleStorage } from './storage.type';
 
 export class SimpleStorageAdapter<T extends MarshallingType>

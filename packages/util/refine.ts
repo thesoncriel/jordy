@@ -2,7 +2,7 @@ import {
   DateRangeDto,
   PredefinedMaxMonthType,
   PredefinedDateRangeType,
-} from '../types';
+} from '../types/time.type';
 import {
   isValidDateStr,
   createDateRangeByType,

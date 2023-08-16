@@ -1,4 +1,4 @@
-import { createStorage } from './createStorage.factory';
+import { createStorage } from './createStorage';
 import { StorageType, TokenProvider } from './storage.type';
 import { StorageTokenProvider } from './StorageTokenProvider';
 

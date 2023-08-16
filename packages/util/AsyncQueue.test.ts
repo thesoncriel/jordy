@@ -1,4 +1,4 @@
-import { PromiseResolver } from '../types';
+import { PromiseResolver } from '../types/etc.type';
 import { createAsyncQueue } from './AsyncQueue';
 
 describe('AsyncQueue', () => {

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { qs } from '../util';
-import { AxiosHttpNetworkProvider } from './axios';
+import { qs } from '../util/queryString';
+import { AxiosHttpNetworkProvider } from './axios/AxiosHttpNetworkProvider';
 import { BasicHttpApi } from './BasicHttpApi';
 import { InterceptorHttpApi } from './network.type';
 import { defaultHeaderCreator } from './network.util';
