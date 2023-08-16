@@ -94,6 +94,7 @@ export {
   isMobile,
   isTablet,
   isIOS,
+  envCheck,
 } from './util/envCheck';
 export { timeout, noop, focusByNames } from './util/etc';
 export { numberFormat } from './util/format';

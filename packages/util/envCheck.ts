@@ -97,3 +97,15 @@ export function isIOS() {
 
   return /iPad|iPhone|iPad/.test(ua);
 }
+
+export const envCheck = {
+  isServer,
+  setIsServer,
+  isStorageAvailable,
+  setIsStorageAvailable,
+  setUserAgent,
+  getUserAgent,
+  isMobile,
+  isTablet,
+  isIOS,
+};
