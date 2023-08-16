@@ -1,6 +1,6 @@
 import { TokenProvider } from '../storage/storage.type';
-import { PromiseResolver } from '../types';
-import { noop } from '../util';
+import { PromiseResolver } from '../types/etc.type';
+import { noop } from '../util/etc';
 import { JWTAuthTokenDto } from './jwt.type';
 import { RefreshableJWTProvider } from './RefreshableJWTProvider';
 

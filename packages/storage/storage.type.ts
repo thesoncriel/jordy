@@ -1,4 +1,4 @@
-import { MarshallingType } from '../types';
+import { MarshallingType } from '../types/marshalling.type';
 
 /**
  * 스토리지 타입

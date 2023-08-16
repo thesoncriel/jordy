@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useMemo } from 'react';
-import { isObject } from '../util';
+import { isObject } from '../util/typeCheck';
 
 export function useMakeDeps<T>(args?: T, keys?: string[] | (keyof T)[]) {
   const subKeys = useMemo(() => {

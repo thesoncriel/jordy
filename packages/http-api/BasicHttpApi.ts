@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { MarshallingType } from '../types';
-import { getFileName } from '../util';
+import { MarshallingType } from '../types/marshalling.type';
+import { getFileName } from '../util/path';
 import { BaseInterceptorHttpApi } from './BaseInterceptorHttpApi';
 import { AsyncHttpNetworkProvider, InterceptorHttpApi } from './network.type';
 

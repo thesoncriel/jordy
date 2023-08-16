@@ -1,6 +1,6 @@
 /* eslint-disable no-param-reassign */
-import { JWTProvider } from '../jwt';
-import { TokenProvider } from '../storage';
+import { JWTProvider } from '../jwt/jwt.type';
+import { TokenProvider } from '../storage/storage.type';
 import { isServer } from '../util/envCheck';
 import { HttpRestError } from './HttpRestError';
 import { HeaderFieldMakingOperator } from './network.type';

@@ -1,10 +1,11 @@
 import { AnyAction, EnhancedStore } from '@reduxjs/toolkit';
 import { ThunkMiddlewareFor } from '@reduxjs/toolkit/dist/getDefaultMiddleware';
-import { createCacheKey, clearCacheByKeyword } from '../cache';
 import { useCallback, useLayoutEffect, useRef, useState } from 'react';
-
-import { createStorage, StorageType } from '../storage';
+import { createCacheKey } from '../cache/createCacheKey';
+import { clearCacheByKeyword } from '../cache/clearCacheByKeyword';
 import { useMakeDeps } from '../hooks/useMakeDeps';
+import { createStorage } from '../storage/createStorage';
+import { StorageType } from '../storage/storage.type';
 
 /**
  * query hooks가 리턴하는 객체

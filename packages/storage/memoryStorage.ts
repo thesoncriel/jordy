@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-
 import { StorageKeyManager } from './storage.type';
 
 interface MemoryStorage extends StorageKeyManager {
@@ -36,4 +35,9 @@ class MemoryStorageImpl implements MemoryStorage {
   }
 }
 
+/**
+ * 메모리 스토리지 인스턴스.
+ *
+ * MemorySimpleStorage 에서 쓰인다.
+ */
 export const memoryStorage: MemoryStorage = new MemoryStorageImpl();

@@ -1,9 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import {
-  HttpRestError,
-  HttpRestErrorLike,
-  HttpRestErrorMetaArgs,
-} from './HttpRestError';
+import { HttpRestError } from './HttpRestError';
+import { HttpRestErrorLike, HttpRestErrorMetaArgs } from './HttpRestError.type';
 
 describe('HttpRestError', () => {
   it('첫번째 인자는 메시지로 적용된다.', () => {

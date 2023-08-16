@@ -1,4 +1,4 @@
-import { createStorage } from '../storage/createStorage.factory';
+import { createStorage } from '../storage/createStorage';
 import { CacheConfigDto, CachedAsyncFunction } from './cache.type';
 import { clearCacheByKeyword } from './clearCacheByKeyword';
 import { createCacheKey } from './createCacheKey';

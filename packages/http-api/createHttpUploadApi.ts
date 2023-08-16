@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { qs } from '../util';
-import { AxiosHttpUploadProvider } from './axios';
+import { qs } from '../util/queryString';
+import { AxiosHttpUploadProvider } from './axios/AxiosHttpUploadProvider';
 import { BasicHttpUploadApi } from './BasicHttpUploadApi';
 import { InterceptorHttpUploadApi } from './network.type';
 import { defaultHeaderCreator } from './network.util';

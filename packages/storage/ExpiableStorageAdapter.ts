@@ -1,4 +1,4 @@
-import { MarshallingType } from '../types';
+import { MarshallingType } from '../types/marshalling.type';
 import { SimpleStorage, ExpiableStorageUiState } from './storage.type';
 
 export class ExpiableStorageAdapter<T extends MarshallingType>

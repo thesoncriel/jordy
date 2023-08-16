@@ -9,7 +9,7 @@ import { MemorySimpleStorage } from './MemorySimpleStorage';
 import { SimpleStorageAdapter } from './SimpleStorageAdapter';
 import { cookie } from './cookie';
 import { isServer, isStorageAvailable } from '../util/envCheck';
-import { MarshallingType } from '../types';
+import { MarshallingType } from '../types/marshalling.type';
 
 /**
  * 캐시용 스토리지를 만드는 팩토리.

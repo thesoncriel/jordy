@@ -1,4 +1,4 @@
-import { createTokenProvider } from '../storage';
+import { createTokenProvider } from '../storage/createTokenProvider';
 import { createAsyncQueue } from '../util/AsyncQueue';
 import { JWTAuthTokenDto, JWTProvider } from './jwt.type';
 import { RefreshableJWTProvider } from './RefreshableJWTProvider';

@@ -1,4 +1,4 @@
-import { isNumber, isObject, isString } from '../util';
+import { isNumber, isObject, isString } from '../util/typeCheck';
 
 /**
  * 키와 파라미터를 조합하여 키값을 만든다.

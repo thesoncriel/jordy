@@ -11,6 +11,7 @@ import {
   isServer,
   isTablet as isTabletCheck,
 } from '../util/envCheck';
+import { createFakeMediaQueryList } from '../util/createFakeMediaQueryList';
 
 function getIsMobile(breakpoint: number): boolean {
   if (isServer()) {
@@ -78,11 +79,24 @@ interface DeviceDetectProviderProps {
   children?: React.ReactNode;
 }
 
+function getMatchMedia(query: string) {
+  try {
+    if (window && window.matchMedia) {
+      return window.matchMedia(query);
+    }
+  } catch (error) {
+    //
+  }
+  console.log('Non-WebBrowser environment detected.');
+
+  return createFakeMediaQueryList(query);
+}
+
 function subscribeForMobile(
   breakpoint: number,
   setIsMobile: (val: boolean) => void
 ) {
-  const mqMobile = window.matchMedia(`screen and (max-width: ${breakpoint}px)`);
+  const mqMobile = getMatchMedia(`screen and (max-width: ${breakpoint}px)`);
   const handleResizeForMobile = (e: MediaQueryListEvent) => {
     setIsMobile(e.matches);
   };
@@ -104,7 +118,7 @@ function subscribeForTablet(
       unsubscribe: noop,
     };
   }
-  const mqTablet = window.matchMedia(
+  const mqTablet = getMatchMedia(
     `screen and (min-width: ${breakpoints[0] + 1}px) and (max-width: ${
       breakpoints[1]
     }px)`

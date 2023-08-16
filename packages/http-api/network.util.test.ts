@@ -1,4 +1,5 @@
-import { HttpRestErrorLike, HttpRestError } from './HttpRestError';
+import { HttpRestError } from './HttpRestError';
+import { HttpRestErrorLike } from './HttpRestError.type';
 import {
   isBaseAsyncHttpNetworkConfig,
   throwHttpRestError,

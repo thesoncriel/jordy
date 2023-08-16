@@ -1,8 +1,8 @@
 import { JWTAuthTokenDto, JWTProvider } from './jwt.type';
 import { AsyncQueue } from '../util/AsyncQueue';
-import { isJWTAuthTokenDto } from './jwt.util';
+import { isJWTAuthTokenDto } from './isJWTAuthTokenDto';
 import { HttpRestError } from '../http-api/HttpRestError';
-import { TokenProvider } from '../storage';
+import { TokenProvider } from '../storage/storage.type';
 
 export class RefreshableJWTProvider implements JWTProvider {
   public static readonly MSG_LOGIN_REQUIRED = '로그인이 필요합니다.';

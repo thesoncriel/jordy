@@ -1,4 +1,5 @@
-import { TokenProvider, JWTProvider } from '../storage';
+import { JWTProvider } from '../jwt/jwt.type';
+import { TokenProvider } from '../storage/storage.type';
 import { setIsServer } from '../util/envCheck';
 import { createHttpHeaderPipe } from './createHttpHeaderPipe';
 

@@ -1,34 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import {
+  HttpRestErrorLike,
+  HttpRestErrorType,
+  HttpRestErrorMetaArgs,
+  ErrorLike,
+} from './HttpRestError.type';
 import { RestHttpMethodType } from './network.type';
-
-export type HttpRestErrorType =
-  | 'unknown'
-  | 'auth'
-  | 'forbidden'
-  | 'notFound'
-  | 'badRequest'
-  | 'server';
-
-export interface ErrorLike {
-  message: string;
-}
-
-export interface HttpRestErrorMeta {
-  url: string;
-  method?: RestHttpMethodType;
-  rawData?: any;
-  errorType: HttpRestErrorType;
-}
-
-export interface HttpRestErrorMetaArgs {
-  url: string;
-  method?: RestHttpMethodType;
-  rawData: any;
-  status?: number;
-  errorType?: HttpRestErrorType;
-}
-
-export interface HttpRestErrorLike extends ErrorLike, HttpRestErrorMeta {}
 
 export class HttpRestError implements Error, HttpRestErrorLike {
   public static readonly DEFAULT_MESSAGE = '알 수 없는 서버 오류입니다.';

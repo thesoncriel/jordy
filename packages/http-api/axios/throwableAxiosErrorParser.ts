@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { HttpRestErrorMetaArgs, HttpRestError } from '../HttpRestError';
+import { HttpRestError } from '../HttpRestError';
+import { HttpRestErrorMetaArgs } from '../HttpRestError.type';
 import { RestHttpMethodType } from '../network.type';
 import { isAxiosError } from './axios.util';
 

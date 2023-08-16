@@ -1,5 +1,5 @@
-import { AnyAction, EnhancedStore } from '@reduxjs/toolkit';
-import { ThunkMiddlewareFor } from '@reduxjs/toolkit/dist/getDefaultMiddleware';
+import type { AnyAction, EnhancedStore } from '@reduxjs/toolkit';
+import type { ThunkMiddlewareFor } from '@reduxjs/toolkit/dist/getDefaultMiddleware';
 import { useCallback, useRef, useState } from 'react';
 
 interface MutationHooksCreatorSettingOptionDto<SR, SP, R, P, ReduxRootState> {

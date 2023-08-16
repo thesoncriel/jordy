@@ -1,4 +1,4 @@
-import { MarshallingType } from '../types';
+import { MarshallingType } from '../types/marshalling.type';
 import { SimpleStorage } from './storage.type';
 import { memoryStorage } from './memoryStorage';
 
