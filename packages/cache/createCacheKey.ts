@@ -15,6 +15,10 @@ export function createCacheKey<P>(
   params?: P,
   subKeys?: Array<keyof P>
 ): string {
+  if (Array.isArray(params)) {
+    return `${key}-${params.join(',')}`;
+  }
+
   if (isObject(params)) {
     let appendedValues: string[];
 
@@ -42,6 +46,7 @@ export function createCacheKey<P>(
 
     return appendedValues.join('-');
   }
+
   if (params && (isString(params) || isNumber(params))) {
     return `${key}-${params}`;
   }
