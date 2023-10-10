@@ -67,7 +67,7 @@ export function isMobile() {
     return false;
   }
 
-  return /iPhone|iPod|Android/.test(ua);
+  return /iPhone|iPad|iPod|Android/.test(ua);
 }
 
 /**
