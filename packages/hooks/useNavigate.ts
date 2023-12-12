@@ -11,7 +11,10 @@ import {
 import { isNullable, isObject, isUndefined } from '../util/typeCheck';
 
 export type SearchParams = Record<string, any>;
-export type SearchParamsOptions = NavigateOptions & { merge?: boolean };
+export type SearchParamsOptions = NavigateOptions & {
+  merge?: boolean;
+  basePath?: string;
+};
 
 interface NavigationCommander {
   (to: To, option?: NavigateOptions): void;
@@ -29,6 +32,10 @@ function instanceOfSearchParams(to: unknown): to is SearchParams {
 
 function isMergeQueries(option: SearchParamsOptions): boolean {
   return isUndefined(option) || (option && option['merge'] === true);
+}
+
+function hasBasePath(option: unknown): option is SearchParamsOptions {
+  return isObject(option) && option['basePath'] !== undefined;
 }
 
 function refineQueries(queries: Record<string, any>): Record<string, any> {
@@ -106,6 +113,8 @@ export function useNavigate(): NavigationCommander {
       }
 
       if (instanceOfSearchParams(to)) {
+        let params = refineQueries(to);
+
         if (isMergeQueries(option)) {
           const currentQueries = [...refSearchParams.current].reduce(
             (acc, [key, value]) => {
@@ -115,15 +124,20 @@ export function useNavigate(): NavigationCommander {
             {} as Record<string, any>
           );
 
-          const mergeQueries = { ...currentQueries, ...to };
+          params = refineQueries({ ...currentQueries, ...to });
+        }
 
-          return refSetSearchParams.current(
-            refineQueries(mergeQueries),
+        if (hasBasePath(option)) {
+          return refNavigate.current(
+            {
+              search: new URLSearchParams(params).toString(),
+              pathname: option.basePath,
+            },
             option
           );
         }
 
-        return refSetSearchParams.current(refineQueries(to), option);
+        return refSetSearchParams.current(params, option);
       }
 
       return refNavigate.current(to, option);

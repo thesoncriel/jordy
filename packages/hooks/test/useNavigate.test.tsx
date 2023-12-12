@@ -58,8 +58,18 @@ function Home() {
       >
         validCheck2
       </button>
-      <button onClick={handleQueryCurried({ sort: 'newst' }, { merge: false })}>
+      <button
+        onClick={handleQueryCurried({ sort: 'newest' }, { merge: false })}
+      >
         sort
+      </button>
+      <button
+        onClick={handleQueryCurried(
+          { sort: 'newest' },
+          { merge: false, basePath: '/route' }
+        )}
+      >
+        basePath
       </button>
     </div>
   );
@@ -156,7 +166,7 @@ describe('useNavigate', () => {
       fireEvent.click(button);
 
       const search = window.location.search;
-      expect(search).toBe('?sort=newst');
+      expect(search).toBe('?sort=newest');
     });
 
     it('보내려는 query 중 빈 값, undefined, null이 있다면 해당 쿼리는 제외하여 변경한다.', () => {
@@ -166,9 +176,9 @@ describe('useNavigate', () => {
 
       const search = window.location.search;
       expect(search).not.toBe(
-        '?height=0&success=false&sort=newst&color=undefined&light=null&width=&height=0&success=false'
+        '?height=0&success=false&sort=newest&color=undefined&light=null&width=&height=0&success=false'
       );
-      expect(search).toBe('?sort=newst&height=0&success=false');
+      expect(search).toBe('?sort=newest&height=0&success=false');
     });
 
     it('현재의 query 값 중 빈 값, undefined, null이 된 쿼리가 있다면 제거한다.', () => {
@@ -177,7 +187,19 @@ describe('useNavigate', () => {
       fireEvent.click(button);
 
       const search = window.location.search;
-      expect(search).toBe('?sort=newst&height=0');
+      expect(search).toBe('?sort=newest&height=0');
+    });
+
+    it('basePath 값을 주입하면 pathname을 바꿔 쿼리 파라미터 조작을 수행한다.', () => {
+      const button = screen.getByText('basePath');
+
+      fireEvent.click(button);
+
+      const search = window.location.search;
+      const pathname = window.location.pathname;
+
+      expect(pathname).toBe('/route');
+      expect(search).toBe('?sort=newest');
     });
   });
 });
