@@ -98,7 +98,7 @@ let compiledFns: Record<string, CompiledTemplateFunction> = {};
  * @param data 적용될 객체 데이터
  * @returns 만들어진 메시지
  */
-export function messageTemplate<T extends Record<string, string | number>>(
+export function messageTemplate<T extends Record<string, any>>(
   tmplText: string,
   data: T
 ) {
