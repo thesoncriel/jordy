@@ -42,6 +42,29 @@ describe('messageTemplate', () => {
     });
     expect(result).toBe('하나둘셋넷다섯!');
   });
+  it('넘겨진 객체가 인스턴스 객체여도 의도대로 동작된다.', () => {
+    class TestData {
+      public get firstName(): string {
+        return this._firstName;
+      }
+      public get lastName(): string {
+        return this._lastName;
+      }
+
+      constructor(private _firstName: string, private _lastName: string) {}
+
+      getFullName() {
+        return this.firstName + ' ' + this.lastName;
+      }
+    }
+    const testInstance = new TestData('죠르디', '공룡');
+
+    const result = messageTemplate(
+      '{firstName}{는} {lastName} 입니다.',
+      testInstance
+    );
+    expect(result).toBe('죠르디는 공룡 입니다.');
+  });
   it('엔터와 특수기호가 포함된 템플릿도 정상적으로 적용된다.', () => {
     const result = messageTemplate(
       '{count}개가 적용됩니다.\n*****\n정말로 {status}으로 바꾸시겠습니까?',
