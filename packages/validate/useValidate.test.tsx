@@ -8,10 +8,15 @@ interface TestState {
   name: string;
   age: number;
   hasCookie: boolean;
+  content: string;
 }
 
 interface TestProps {
   validateFn: (data: TestState) => ValidateBulkResultUiState;
+}
+
+function decodeHtmlEntities(html: string) {
+  return html.replace(/&lt;/g, '<').replace(/&gt;/g, '>');
 }
 
 function getInitState(): TestState {
@@ -19,6 +24,7 @@ function getInitState(): TestState {
     name: '죠르디',
     age: 10,
     hasCookie: false,
+    content: '',
   };
 }
 
@@ -41,6 +47,10 @@ function TestComponent({ validateFn }: TestProps) {
     } else if (name === 'hasCookie') {
       fm.setField(name, checked);
     }
+  };
+
+  const handleTextAreaChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
+    fm.setField('content', event.target.value);
   };
 
   return (
@@ -79,6 +89,12 @@ function TestComponent({ validateFn }: TestProps) {
         checked={fm.state.hasCookie}
         onChange={handleChange}
       />
+      <textarea
+        data-testid="input.content"
+        name="content"
+        value={fm.state.content}
+        onChange={handleTextAreaChange}
+      />
       <button
         data-testid="btnApplyMessage"
         onClick={() => fm.setMessage(SAMPLE_MESSAGE_DIC)}
@@ -102,6 +118,7 @@ describe('useValidate', () => {
       name: screen.getByTestId('input.name'),
       age: screen.getByTestId('input.age'),
       hasCookie: screen.getByTestId('input.hasCookie'),
+      content: screen.getByTestId('input.content'),
     };
   }
 
@@ -197,6 +214,36 @@ describe('useValidate', () => {
     );
   });
 
+  it('html content 필드 설정 테스트', () => {
+    const html = `<p>반갑습니다람쥐</p>
+
+    <p>
+      <br>
+    </p>
+    
+    <p><img src="https://static.lookpin.co.kr/20221018142553-c57c/4d0518da5407c5edb4ddfa06683464a5.png" style="width: 48.04%;" class="fr-fic fr-dib"></p>
+    
+    <p>
+      <br>
+    </p>
+    
+    <p><img src="https://static.lookpin.co.kr/20221018142608-c6b4/233c77d9fc1b614f0fc68d987461aa5e.png" style="width: 100%;" class="fr-fic fr-dib"></p>
+    `;
+    doInput('content', html);
+
+    expect(decodeHtmlEntities(getState().content)).toBe(html);
+
+    const nextHtml = `주문번호는 고객 결제 기준 이력이 표시되는 전체 주문번호를 의미합니다. (파트너 조회 불가)
+
+    상품주문번호는 고객이 주문한 각 쇼핑몰 주문건의 고유 주문번호를 의미합니다. (파트너 조회 가능)
+    
+    대부분 여러 개의 쇼핑몰에서 한번에 결제하시는 경우가 많기 때문에 문의시 [상품주문번호] 를 알려주셔야 빠른 조회가 가능하니 업무에 참고 바랍니다.`;
+
+    doInput('content', nextHtml);
+
+    expect(decodeHtmlEntities(getState().content)).toBe(nextHtml);
+  });
+
   describe('적용된 메시지는 각 필드에 값이 설정되면 빈 값으로 바뀐다.', () => {
     beforeEach(() => {
       doButtonAction('applyMessage');
@@ -243,6 +290,7 @@ describe('useValidate', () => {
       name: '룩핀',
       age: 4455,
       hasCookie: true,
+      content: '',
     });
 
     doButtonAction('reset');

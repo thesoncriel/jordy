@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { focusByNames } from '../util/etc';
 import {
   Dispatch,
   SetStateAction,
   useCallback,
-  useLayoutEffect,
+  useEffect,
   useRef,
   useState,
 } from 'react';
+import { focusByNames } from '../util/etc';
 import {
   AntdFormItemValidationMessageDto,
   ValidateBulkResultUiState,
@@ -94,7 +94,6 @@ function getValidStatus(msg?: string): AntdFormItemValidationMessageDto {
 function dispatchField<T>(
   setState: Dispatch<SetStateAction<T>>,
   setMessage: Dispatch<SetStateAction<Partial<Record<keyof T, string>>>>,
-  prevValue: T,
   arg0: keyof T | Partial<T> | ((prev: T) => Partial<T>),
   arg1: T[keyof T]
 ) {
@@ -117,27 +116,39 @@ function dispatchField<T>(
   let nextValue: Partial<T>;
 
   if (typeof arg0 === 'function') {
-    nextValue = arg0({ ...prevValue });
+    setState((prev) => {
+      const result = { ...prev, ...arg0({ ...prev }) };
+
+      nextValue = result;
+
+      return result;
+    });
   } else if (typeof arg0 === 'object') {
+    setState((prev) => {
+      const result = {
+        ...prev,
+        ...nextValue,
+      };
+
+      nextValue = result;
+
+      return result;
+    });
     nextValue = arg0;
   } else {
     return;
   }
 
-  setState({
-    ...prevValue,
-    ...nextValue,
-  });
-  setMessage((prev) => {
-    return Object.keys(nextValue).reduce(
+  setMessage((prev) =>
+    Object.keys(nextValue).reduce(
       (acc, key) => {
         acc[key as keyof T] = '';
 
         return acc;
       },
       { ...prev }
-    );
-  });
+    )
+  );
 }
 
 /**
@@ -214,7 +225,7 @@ export function useValidate<T extends Record<string, any>>(
   const refResult = useRef<ValidateBulkResultUiState | null>(null);
   const [message, setMessage] = useState<Partial<Record<keyof T, string>>>({});
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     refState.current = state;
   }, [state]);
 
@@ -223,7 +234,7 @@ export function useValidate<T extends Record<string, any>>(
       arg0: keyof T | Partial<T> | ((prev: T) => Partial<T>),
       arg1: T[keyof T]
     ) => {
-      dispatchField(setState, setMessage, refState.current, arg0, arg1);
+      dispatchField(setState, setMessage, arg0, arg1);
     }) as FieldDispatch<T>,
     []
   );
