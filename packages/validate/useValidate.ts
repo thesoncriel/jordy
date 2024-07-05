@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { focusByNames } from '../util/etc';
 import {
   Dispatch,
   SetStateAction,
   useCallback,
-  useLayoutEffect,
+  useEffect,
   useRef,
   useState,
 } from 'react';
+import { focusByNames } from '../util/etc';
 import {
   AntdFormItemValidationMessageDto,
   ValidateBulkResultUiState,
@@ -124,9 +124,11 @@ function dispatchField<T>(
     return;
   }
 
-  setState({
-    ...prevValue,
-    ...nextValue,
+  setState((prev) => {
+    return {
+      ...prev,
+      ...nextValue,
+    };
   });
   setMessage((prev) => {
     return Object.keys(nextValue).reduce(
@@ -214,7 +216,7 @@ export function useValidate<T extends Record<string, any>>(
   const refResult = useRef<ValidateBulkResultUiState | null>(null);
   const [message, setMessage] = useState<Partial<Record<keyof T, string>>>({});
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     refState.current = state;
   }, [state]);
 
