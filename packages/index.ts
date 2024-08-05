@@ -109,13 +109,11 @@ export {
 } from './util/path';
 export { qs } from './util/queryString';
 export { clearMessageBy } from './util/redux';
-export {
-  createEnumRefiner,
-  createPageSizeRefiner,
-  refinePageNumber,
-  refineToRestrictedDateRange,
-  refineDateRange,
-} from './util/refine';
+export { createEnumSanitizer } from './util/createEnumSanitizer';
+export { createPageSizeSanitizer } from './util/createPageSizeSanitizer';
+export { sanitizeDateRange } from './util/sanitizeDateRange';
+export { sanitizePageNumber } from './util/sanitizePageNumber';
+export { sanitizeRestrictedDateRange } from './util/sanitizeRestrictedDateRange';
 export {
   MAX_MONTH_LOOKUP_TABLE,
   dateFormat,
