@@ -73,16 +73,16 @@ export class BaseInterceptorHttpApi {
     method: RestHttpMethodType,
     url: string
   ): Promise<any> => {
-    const refinedError = HttpRestError.withUrl(err, method, url);
+    const remadeError = HttpRestError.withUrl(err, method, url);
 
     if (this._interceptor.error) {
-      const nextError = this._interceptor.error(refinedError);
+      const nextError = this._interceptor.error(remadeError);
 
       if (nextError) {
         throw nextError;
       }
     }
 
-    throw refinedError;
+    throw remadeError;
   };
 }
