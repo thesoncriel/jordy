@@ -9,8 +9,8 @@
  *   PIN = 'P'
  * }
  *
- * const sanitize = createEnumSanitizer(MyEnum, MyEnum.LOOK);
- * const result = sanitize('anything');
+ * const refine = createEnumRefiner(MyEnum, MyEnum.LOOK);
+ * const result = refine('anything');
  *
  * console.log(result); // 'look'
  *
@@ -18,7 +18,7 @@
  * @param def 범위에 속하지 않을 때 내보낼 기본값
  * @returns
  */
-export function createEnumSanitizer<T>(
+export function createEnumRefiner<T>(
   enumType: Record<string, unknown>,
   def: T
 ): (target: unknown) => T;
@@ -28,8 +28,8 @@ export function createEnumSanitizer<T>(
  * @example
  * const LIST = ['가', '나', '다'];
  *
- * const sanitize = createEnumSanitizer(LIST, LIST[2]);
- * const result = sanitize('anything');
+ * const refine = createEnumRefiner(LIST, LIST[2]);
+ * const result = refine('anything');
  *
  * console.log(result); // '다'
  *
@@ -37,18 +37,15 @@ export function createEnumSanitizer<T>(
  * @param def 범위에 속하지 않을 때 내보낼 기본값
  * @returns
  */
-export function createEnumSanitizer<T>(
-  list: T[],
-  def: T
-): (target: unknown) => T;
+export function createEnumRefiner<T>(list: T[], def: T): (target: unknown) => T;
 
-export function createEnumSanitizer<T>(
+export function createEnumRefiner<T>(
   enumType: Record<string, unknown> | T[],
   def: T
 ) {
   const enumList = Array.isArray(enumType) ? enumType : Object.values(enumType);
 
-  return function sanitizeForEnum(target: unknown) {
+  return function refineForEnum(target: unknown) {
     if (enumList.includes(target)) {
       return target as T;
     }

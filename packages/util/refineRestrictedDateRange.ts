@@ -18,7 +18,7 @@ import {
  * @param defType 날짜범위 내용 중 하나라도 비었을 경우 기본적으로 만들어 줄 날짜 범위 유형
  * @returns
  */
-export function sanitizeRestrictedDateRange<T extends DateRangeDto>(
+export function refineRestrictedDateRange<T extends DateRangeDto>(
   dateRange: T,
   maxType: PredefinedMaxMonthType,
   defType?: PredefinedDateRangeType

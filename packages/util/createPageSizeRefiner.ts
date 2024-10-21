@@ -3,12 +3,12 @@
  *
  * @example
  *
- * const sanitize = createPageSizeSanitizer([10, 20, 30]);
- * let result = sanitize(100);
+ * const refine = createPageSizeRefiner([10, 20, 30]);
+ * let result = refine(100);
  *
  * console.log(result); // 10
  *
- * result = sanitize('20');
+ * result = refine('20');
  *
  * console.log(result); // 20
  *
@@ -16,12 +16,12 @@
  * @param defaultIndex 기본 0
  * @returns
  */
-export function createPageSizeSanitizer(sizeList: number[], defaultIndex = 0) {
+export function createPageSizeRefiner(sizeList: number[], defaultIndex = 0) {
   if (defaultIndex < 0 || defaultIndex > sizeList.length - 1) {
     throw new Error(`invalid defaultIndex: ${defaultIndex}`);
   }
 
-  return function sanitizeForEnum(target: unknown) {
+  return function refineForEnum(target: unknown) {
     try {
       const page = Number(target);
 

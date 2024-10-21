@@ -1,7 +1,7 @@
 import { DateRangeDto, PredefinedDateRangeType } from '../types/time.type';
 import { createDateRangeByType, isValidDateStr } from './time';
 
-function sanitizeDate(value: string | undefined, def: string) {
+function refineDate(value: string | undefined, def: string) {
   if (!isValidDateStr(value)) {
     return def;
   }
@@ -14,7 +14,7 @@ function sanitizeDate(value: string | undefined, def: string) {
  * @param preset 지정할 규칙
  * @returns
  */
-export function sanitizeDateRange(
+export function refineDateRange(
   dateRange: Partial<DateRangeDto> | Record<string, string> | undefined | null,
   preset: PredefinedDateRangeType = 'month'
 ) {
@@ -24,8 +24,8 @@ export function sanitizeDateRange(
     return def;
   }
 
-  const gte = sanitizeDate(dateRange.gte, def.gte);
-  const lte = sanitizeDate(dateRange.lte, def.lte);
+  const gte = refineDate(dateRange.gte, def.gte);
+  const lte = refineDate(dateRange.lte, def.lte);
 
   return {
     gte,
