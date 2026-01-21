@@ -26,6 +26,15 @@ interface MessageDispatch<T> {
   (messageDic: Partial<{ [key in keyof T]: string }>): void;
 }
 
+export interface ValidateResultWithState<T> extends ValidateBulkResultUiState {
+  /**
+   * 유효성 검증에 사용된 상태값.
+   *
+   * validate 수행 시 refiner 를 제공했다면 그 함수에 의해 정제된 값이다.
+   */
+  state: T;
+}
+
 interface ValidateHookResult<T> {
   /**
    * 사용될 상태값.
@@ -57,8 +66,10 @@ interface ValidateHookResult<T> {
    * 설정된 내부 상태값을 기반으로 유효성 검증을 수행한다.
    *
    * 검증에 실패했을 경우, 발생된 에러 메시지를 모두 `message` 필드에 자동으로 반영한다.
+   *
+   * @param refiner 상태값을 정제하는 함수. 미설정 시 현재 상태값을 그대로 유효성 검증을 수행한다.
    */
-  validate(): ValidateBulkResultUiState;
+  validate(refiner?: (state: T) => T): ValidateResultWithState<T>;
   /**
    * 처음 오류가 발생된 입력 요소에 포커스를 준다.
    */
@@ -265,29 +276,40 @@ export function useValidate<T extends Record<string, any>>(
     [message]
   );
 
-  const doValidate = useCallback(() => {
-    if (!validateFn) {
-      return validateSubUtils.createValidateBulkResultUiState();
-    }
+  const doValidate = useCallback(
+    (refiner?: (state: T) => T): ValidateResultWithState<T> => {
+      const state = refiner ? refiner(refState.current) : refState.current;
 
-    const result = validateFn(refState.current);
-
-    if (result.isValid === false) {
-      refResult.current = result;
-      setMessage(result.errorMessages as Partial<Record<keyof T, string>>);
-
-      if (autoFocusOnError) {
-        focusByNames(result.invalidKeys);
+      if (!validateFn) {
+        return {
+          ...validateSubUtils.createValidateBulkResultUiState(),
+          state,
+        };
       }
 
-      return result;
-    }
+      const result = validateFn(state);
 
-    refResult.current = null;
-    setMessage({});
+      if (result.isValid === false) {
+        refResult.current = result;
+        setMessage(result.errorMessages as Partial<Record<keyof T, string>>);
 
-    return result;
-  }, [validateFn, autoFocusOnError]);
+        if (autoFocusOnError) {
+          focusByNames(result.invalidKeys);
+        }
+
+        return { ...result, state };
+      }
+
+      refResult.current = null;
+      setMessage({});
+
+      return {
+        ...result,
+        state,
+      };
+    },
+    [validateFn, autoFocusOnError]
+  );
 
   const focusAtFirstError = useCallback(() => {
     const result = refResult.current;
