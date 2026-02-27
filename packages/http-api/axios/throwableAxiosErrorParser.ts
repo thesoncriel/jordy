@@ -9,6 +9,9 @@ function tryGetMethod(
   def: RestHttpMethodType
 ): RestHttpMethodType {
   try {
+    if (!method) {
+      return def;
+    }
     return (method.toLocaleLowerCase() || def) as RestHttpMethodType;
   } catch (error) {
     return def;
@@ -23,8 +26,8 @@ export function throwableAxiosErrorParser(
   if (isAxiosError(error)) {
     const errorData = error.response?.data;
     const meta: HttpRestErrorMetaArgs = {
-      url: error.config.url || url,
-      method: tryGetMethod(error.config.method, method),
+      url: error.config?.url || url,
+      method: tryGetMethod(error.config?.method, method),
       status: Number(error.response?.status || 0),
       rawData: errorData,
     };

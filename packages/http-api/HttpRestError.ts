@@ -33,7 +33,7 @@ export class HttpRestError implements Error, HttpRestErrorLike {
       | HttpRestErrorType
       | number
   ) {
-    this.stack = new Error(message).stack;
+    this.stack = new Error(message).stack || '';
     this.init(arg1);
   }
 
@@ -171,10 +171,10 @@ export class HttpRestError implements Error, HttpRestErrorLike {
       return new HttpRestError(error.message, error);
     }
     if (HttpRestError.isErrorLike(error)) {
-      return new HttpRestError(error.message, errorType);
+      return new HttpRestError(error.message, errorType as HttpRestErrorType);
     }
     if (typeof error === 'string') {
-      return new HttpRestError(error, errorType);
+      return new HttpRestError(error, errorType as HttpRestErrorType);
     }
     return new HttpRestError();
   }

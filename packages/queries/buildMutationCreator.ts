@@ -94,7 +94,9 @@ export function buildMutationCreator<S>(store: EnhancedStore<S>) {
           thunkStore.dispatch({ type: `MutationHooks/${key}/pending`, params });
         }
 
-        const prm = mutator(parameterConverter(params, thunkStore.getState));
+        const prm = mutator(
+          parameterConverter(params as P, thunkStore.getState)
+        );
 
         return await prm
           .then((res) => {

@@ -9,12 +9,25 @@ import { throwHttpRestError } from './network.util';
 type UnionHttpNetworkProviderType = AsyncHttpNetworkProvider &
   AsyncHttpUploadProvider;
 
+/** 데코레이터 내부에서 원본 메서드를 (path, params) 등 다양한 형태로 호출할 수 있도록 하는 타입 */
+type NetworkMethod = (...args: any[]) => Promise<unknown>;
+
 type ConstructorType = {
   new (...args: any[]): any;
 };
 
 function isConstructor(val: unknown): val is ConstructorType {
   return typeof val === 'function';
+}
+
+function getUrlFromFirstArg(first: unknown): string {
+  if (typeof first === 'string') {
+    return first;
+  }
+  if (first && typeof first === 'object' && 'url' in first) {
+    return (first as { url: string }).url;
+  }
+  return '';
 }
 
 /**
@@ -39,13 +52,15 @@ export function ErrorParser<E = any>(
       throw new Error('ErrorParser: argument is not function.');
     }
 
-    return class ErrorParserDecoratedUnionHttpNetworkProvider
-      implements UnionHttpNetworkProviderType
-    {
+    return class ErrorParserDecoratedUnionHttpNetworkProvider {
       private network: UnionHttpNetworkProviderType;
 
       constructor(...args: any[]) {
-        this.network = new ClassConstructor(args[0], args[1], args[2]);
+        this.network = new ClassConstructor(
+          args[0],
+          args[1],
+          args[2]
+        ) as UnionHttpNetworkProviderType;
       }
 
       parse = async (error: any, method: RestHttpMethodType, url: string) => {
@@ -58,36 +73,44 @@ export function ErrorParser<E = any>(
         throwHttpRestError(error);
       };
 
+      /* eslint-disable prefer-spread -- 존재하지 않는 메서드 호출 시 'of undefined' 오류 메시지를 위해 .apply 유지 */
       get(...args: any[]) {
-        return this.network.get
-          .apply(this.network, [...args])
-          .catch((err: any) => this.parse(err, 'get', args[0]));
+        const url = getUrlFromFirstArg(args[0]);
+        return (this.network.get as NetworkMethod)
+          .apply(this.network, args)
+          .catch((err: any) => this.parse(err, 'get', url));
       }
       post(...args: any[]) {
-        return this.network.post
-          .apply(this.network, [...args])
-          .catch((err: any) => this.parse(err, 'post', args[0]));
+        const url = getUrlFromFirstArg(args[0]);
+        return (this.network.post as NetworkMethod)
+          .apply(this.network, args)
+          .catch((err: any) => this.parse(err, 'post', url));
       }
       put(...args: any[]) {
-        return this.network.put
-          .apply(this.network, [...args])
-          .catch((err: any) => this.parse(err, 'put', args[0]));
+        const url = getUrlFromFirstArg(args[0]);
+        return (this.network.put as NetworkMethod)
+          .apply(this.network, args)
+          .catch((err: any) => this.parse(err, 'put', url));
       }
       patch(...args: any[]) {
-        return this.network.patch
-          .apply(this.network, [...args])
-          .catch((err: any) => this.parse(err, 'patch', args[0]));
+        const url = getUrlFromFirstArg(args[0]);
+        return (this.network.patch as NetworkMethod)
+          .apply(this.network, args)
+          .catch((err: any) => this.parse(err, 'patch', url));
       }
       delete(...args: any[]) {
-        return this.network.delete
-          .apply(this.network, [...args])
-          .catch((err: any) => this.parse(err, 'delete', args[0]));
+        const url = getUrlFromFirstArg(args[0]);
+        return (this.network.delete as NetworkMethod)
+          .apply(this.network, args)
+          .catch((err: any) => this.parse(err, 'delete', url));
       }
       getBlob(...args: any[]) {
-        return this.network.getBlob
-          .apply(this.network, [...args])
-          .catch((err: any) => this.parse(err, 'get', args[0]));
+        const url = getUrlFromFirstArg(args[0]);
+        return (this.network.getBlob as NetworkMethod)
+          .apply(this.network, args)
+          .catch((err: any) => this.parse(err, 'get', url));
       }
+      /* eslint-enable prefer-spread */
     } as C;
   };
 }

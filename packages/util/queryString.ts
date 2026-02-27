@@ -9,7 +9,7 @@ function encodeFieldValue(key: string, value: string | number) {
   );
 }
 
-function _serialize<T>(params: T, parentKey = '') {
+function _serialize<T extends Record<string, any>>(params: T, parentKey = '') {
   return Object.entries(params).reduce((acc, [oriKey, value]) => {
     const key = parentKey ? `${parentKey}%5B${oriKey}%5D` : oriKey;
     let ret = acc + (acc.length > 1 ? '&' : '');
@@ -108,6 +108,7 @@ interface QueryString {
 }
 
 /**
+ * @deprecated - qs 라이브러리를 사용할 것.
  * Query String 을 조작하는 유틸리티 모음.
  *
  * @description
@@ -116,7 +117,7 @@ interface QueryString {
 export const qs: QueryString = {
   parse(url: string) {
     if (cache.has(url)) {
-      return cache.get(url);
+      return cache.get(url) as Record<string, string>;
     }
     if (cache.size > 100) {
       cache.clear();

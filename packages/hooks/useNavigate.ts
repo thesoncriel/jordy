@@ -30,7 +30,7 @@ function instanceOfSearchParams(to: unknown): to is SearchParams {
   return !instanceOfTo(to) && isObject(to);
 }
 
-function isMergeQueries(option: SearchParamsOptions): boolean {
+function isMergeQueries(option: SearchParamsOptions | undefined): boolean {
   return isUndefined(option) || (option && option['merge'] === true);
 }
 

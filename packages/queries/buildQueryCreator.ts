@@ -6,6 +6,15 @@ import { clearCacheByKeyword } from '../cache/clearCacheByKeyword';
 import { useMakeDeps } from '../hooks/useMakeDeps';
 import { createStorage } from '../storage/createStorage';
 import { StorageType } from '../storage/storage.type';
+import { MarshallingType } from '../types/marshalling.type';
+
+/** 캐시 스토리지 (createStorage 제약을 우회하기 위한 런타임 호환 타입) */
+interface CacheStorage<R> {
+  get(): R | null;
+  set(value: R): void;
+  remove(): void;
+  readonly key: string;
+}
 
 /**
  * query hooks가 리턴하는 객체
@@ -193,11 +202,11 @@ export function buildQueryCreator<S>(
 
         const sto =
           key && cacheType !== false
-            ? createStorage<R>(
+            ? (createStorage<MarshallingType>(
                 cacheType,
                 createCacheKey(key, params, subKeysFromParams),
                 expired
-              )
+              ) as CacheStorage<R>)
             : null;
 
         setError(undefined);
@@ -231,7 +240,9 @@ export function buildQueryCreator<S>(
 
         setLoading(true);
 
-        const prm = fetcher(parameterConverter(params, thunkStore.getState));
+        const prm = fetcher(
+          parameterConverter(params as P, thunkStore.getState)
+        );
 
         await prm
           .then((res) => {

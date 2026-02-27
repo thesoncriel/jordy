@@ -44,7 +44,7 @@ export class RefreshableJWTProvider implements JWTProvider {
           return nextToken;
         }
       } catch (error) {
-        throw HttpRestError.from(error, 'auth');
+        throw HttpRestError.from(error as never, 'auth');
       }
     }
 

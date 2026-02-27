@@ -30,7 +30,7 @@ class MemoryStorageImpl implements MemoryStorage {
   setItem(key: string, value: any): void {
     if (this.cacheMap.has(key) === false) {
       if (this.cacheMap.size >= 50) {
-        const oldestKey = this.keys.shift();
+        const oldestKey = this.keys.shift() as string;
 
         this.cacheMap.delete(oldestKey);
       }

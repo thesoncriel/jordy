@@ -2,6 +2,7 @@
 import { MarshallingType } from '../types/marshalling.type';
 import { getFileName } from '../util/path';
 import { BaseInterceptorHttpApi } from './BaseInterceptorHttpApi';
+import { HttpRestErrorLike } from './HttpRestError.type';
 import { AsyncHttpNetworkProvider, InterceptorHttpApi } from './network.type';
 
 export class BasicHttpApi
@@ -35,7 +36,7 @@ export class BasicHttpApi
         timeout,
       });
     } catch (error) {
-      this.throwWithInterceptor(error, 'get', url);
+      throw this.throwWithInterceptor(error as HttpRestErrorLike, 'get', url);
     }
   }
   async post<T = MarshallingType, P = void | Record<string, any>>(
@@ -55,7 +56,7 @@ export class BasicHttpApi
         timeout,
       });
     } catch (error) {
-      this.throwWithInterceptor(error, 'post', url);
+      throw this.throwWithInterceptor(error as HttpRestErrorLike, 'post', url);
     }
   }
   async put<T = MarshallingType, P = void | Record<string, any>>(
@@ -75,7 +76,7 @@ export class BasicHttpApi
         timeout,
       });
     } catch (error) {
-      this.throwWithInterceptor(error, 'put', url);
+      throw this.throwWithInterceptor(error as HttpRestErrorLike, 'put', url);
     }
   }
   async patch<T = MarshallingType, P = void | Record<string, any>>(
@@ -95,7 +96,7 @@ export class BasicHttpApi
         timeout,
       });
     } catch (error) {
-      this.throwWithInterceptor(error, 'patch', url);
+      throw this.throwWithInterceptor(error as HttpRestErrorLike, 'patch', url);
     }
   }
   async delete<T = MarshallingType, P = void | Record<string, any>>(
@@ -115,7 +116,11 @@ export class BasicHttpApi
         timeout,
       });
     } catch (error) {
-      this.throwWithInterceptor(error, 'delete', url);
+      throw this.throwWithInterceptor(
+        error as HttpRestErrorLike,
+        'delete',
+        url
+      );
     }
   }
 
@@ -143,7 +148,7 @@ export class BasicHttpApi
         params: this.mergeParams('get', url, params),
       });
     } catch (error) {
-      this.throwWithInterceptor(error, 'get', url);
+      throw this.throwWithInterceptor(error as HttpRestErrorLike, 'get', url);
     }
   }
 }

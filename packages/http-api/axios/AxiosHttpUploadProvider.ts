@@ -16,7 +16,7 @@ export class AxiosHttpUploadProvider implements AsyncHttpUploadProvider {
 
   private handleDownloadProgressCurried =
     (onProgress: (args: UploadStateArgs) => void) =>
-    ({ loaded, total }: AxiosProgressEvent) =>
+    ({ loaded, total = 0 }: AxiosProgressEvent) =>
       onProgress({
         completed: loaded >= total,
         loaded,

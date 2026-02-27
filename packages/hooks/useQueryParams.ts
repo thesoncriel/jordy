@@ -46,10 +46,10 @@ export function useQueryParams<T>(
       ...query,
       ...params,
     };
-    const convertedData = selConverter(innerResult);
+    const convertedData = selConverter(innerResult as Record<string, string>);
 
     if (deepEqual) {
-      if (deepEqual(refPrev.current, convertedData)) {
+      if (deepEqual(refPrev.current as T, convertedData)) {
         return refPrev.current;
       }
 
@@ -59,5 +59,5 @@ export function useQueryParams<T>(
     return convertedData;
   }, [searchString, params, selConverter, deepEqual]);
 
-  return result;
+  return result as T;
 }

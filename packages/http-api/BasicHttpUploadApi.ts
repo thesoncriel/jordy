@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { BaseInterceptorHttpApi } from './BaseInterceptorHttpApi';
+import { HttpRestErrorLike } from './HttpRestError.type';
 import {
   AsyncHttpUploadProvider,
   InterceptorHttpUploadApi,
@@ -41,7 +42,7 @@ export class BasicHttpUploadApi
         onProgress: progressCallback,
       });
     } catch (error) {
-      this.throwWithInterceptor(error, 'post', url);
+      throw this.throwWithInterceptor(error as HttpRestErrorLike, 'post', url);
     }
   }
 
@@ -66,7 +67,7 @@ export class BasicHttpUploadApi
         onProgress: progressCallback,
       });
     } catch (error) {
-      this.throwWithInterceptor(error, 'put', url);
+      throw this.throwWithInterceptor(error as HttpRestErrorLike, 'put', url);
     }
   }
 }
