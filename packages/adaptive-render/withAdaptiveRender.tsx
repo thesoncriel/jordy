@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { FC, ComponentType } from 'react';
 import { useIsMobile, useIsTablet, useIsNative } from './DeviceDetectContext';
 import { AdaptiveRenderSettingUiState } from './adaptive-render.type';
@@ -34,7 +35,7 @@ import { AdaptiveRenderSettingUiState } from './adaptive-render.type';
  *
  * @param settings 적응형으로 설정할 컴포넌트들.
  */
-export function withAdaptiveRender<T>(
+export function withAdaptiveRender<T extends Record<string, any>>(
   settings: AdaptiveRenderSettingUiState<T>
 ) {
   const FnComp: FC<T> = (props) => {

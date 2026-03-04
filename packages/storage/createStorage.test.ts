@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable no-undef */
 vi.mock('./cookie', () => {
   const map: Record<
@@ -54,7 +55,7 @@ interface TempWindow {
   localStorage?: Storage;
   sessionStorage?: Storage;
 }
-type Global = typeof global;
+type Global = typeof globalThis;
 
 type TempGlobal = Global &
   TempWindow & {
@@ -135,7 +136,7 @@ describe('storage factory', () => {
     }
 
     beforeAll(() => {
-      Object.defineProperty(global, 'window', {
+      Object.defineProperty(globalThis, 'window', {
         configurable: true,
         value: {},
       });
@@ -276,28 +277,28 @@ describe('storage factory', () => {
     });
 
     afterAll(() => {
-      const mGlobal: TempGlobal = global;
+      const mGlobal: TempGlobal = globalThis;
 
-      delete mGlobal.window;
+      delete (mGlobal as any).window;
     });
   }
 
   beforeEach(() => {
     setIsServer(false);
     setIsStorageAvailable(true);
-    Object.defineProperty(global, 'localStorage', {
+    Object.defineProperty(globalThis, 'localStorage', {
       configurable: true,
       value: createMockStorage(),
     });
-    Object.defineProperty(global, 'sessionStorage', {
+    Object.defineProperty(globalThis, 'sessionStorage', {
       configurable: true,
       value: createMockStorage(),
     });
   });
   afterEach(() => {
-    const mGlobal: TempGlobal = global;
-    delete mGlobal.localStorage;
-    delete mGlobal.sessionStorage;
+    const mGlobal: TempGlobal = globalThis;
+    delete (mGlobal as any).localStorage;
+    delete (mGlobal as any).sessionStorage;
     setIsServer(true);
     setIsStorageAvailable(false);
   });
@@ -316,7 +317,7 @@ describe('storage factory : memory mode', () => {
       if (isServer) {
         return;
       }
-      Object.defineProperty(global, 'window', {
+      Object.defineProperty(globalThis, 'window', {
         configurable: true,
         value: {},
       });
@@ -449,9 +450,9 @@ describe('storage factory : memory mode', () => {
     });
 
     afterAll(() => {
-      const mGlobal: Global & { window?: TempWindow } = global;
+      const mGlobal: Global & { window?: TempWindow } = globalThis;
 
-      delete mGlobal.window;
+      delete (mGlobal as any).window;
     });
   }
 
@@ -505,7 +506,9 @@ describe('expired time test', () => {
     setIsStorageAvailable(false);
   });
 
-  describe.each(['session', 'local', 'memory'])('type: %s', doCheck);
+  describe.each(['session', 'local', 'memory'])('type: %s', (type) =>
+    doCheck(type as StorageType),
+  );
 
   describe('type: cookie', () => {
     it('expired - mode=cookie: 자료를 설정하고 지정된 시간이 지나면 값이 존재하지 않아야 한다.', async () => {

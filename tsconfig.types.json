@@ -8,7 +8,9 @@
     "declaration": true,
     "declarationMap": false,
     "emitDeclarationOnly": true,
+    "strict": true,
     "outDir": "./libs",
+    "skipLibCheck": true,
     // "outFile": "./types/index.d.ts"
   }
 }

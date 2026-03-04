@@ -60,7 +60,7 @@ class PassthroughTokenProvider implements TokenProvider {
  * JWT 토큰을 리프레시 할 때 필요한 함수를 생성한다.
  *
  * @example
- * import { createTokenRefresher, httpHeaderOperator } from 'jordy';
+ * import { createTokenRefresher, httpHeaderOperator } from '@jordy';
  *
  * interface AuthTokenRes {
  *   access: string;
@@ -109,7 +109,7 @@ export function createTokenRefresher({
     baseUrl,
     createHeaderProvider,
     paramsSerializer,
-    withCredentials
+    withCredentials,
   );
 
   return async function tokenRefresher(refreshToken: string) {

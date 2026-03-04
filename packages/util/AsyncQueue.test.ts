@@ -135,7 +135,7 @@ describe('AsyncQueue', () => {
         expect(mock.reject).toBeCalledWith(
           expect.objectContaining({
             message: expect.stringContaining('AsyncQueue'),
-          })
+          }),
         );
       });
 
@@ -146,14 +146,15 @@ describe('AsyncQueue', () => {
     describe('Promise 직접 활용', () => {
       it('resolveAll 을 수행하면 내부 요소는 모두 resolve 를 수행하고 비워진다.', async () => {
         const items = [0, 1, 2, 3, 4, 5];
-        const promises = items.map(() => {
-          return new Promise<string>((resolve, reject) => {
-            q.enqueue({
-              resolve,
-              reject,
-            });
-          });
-        });
+        const promises = items.map(
+          () =>
+            new Promise<string>((resolve, reject) => {
+              q.enqueue({
+                resolve,
+                reject,
+              });
+            }),
+        );
 
         expect(q.size()).toBe(items.length);
 
@@ -171,20 +172,21 @@ describe('AsyncQueue', () => {
 
       it('rejectAll 을 수행하면 내부 요소는 모두 reject 를 수행하고 비워진다.', async () => {
         const items = [0, 1, 2, 3, 4, 5, 7, 8, 9, 10];
-        const promises = items.map(() => {
-          return new Promise<string>((resolve, reject) => {
-            q.enqueue({
-              resolve,
-              reject,
-            });
-          });
-        });
+        const promises = items.map(
+          () =>
+            new Promise<string>((resolve, reject) => {
+              q.enqueue({
+                resolve,
+                reject,
+              });
+            }),
+        );
 
         expect(q.size()).toBe(items.length);
 
         setTimeout(() => {
           const workingSize = q.rejectAll(
-            new Error('hey! are you lookpin user?')
+            new Error('hey! are you lookpin user?'),
           );
 
           expect(workingSize).toBe(items.length);
@@ -194,13 +196,13 @@ describe('AsyncQueue', () => {
 
         expect(results).toHaveLength(items.length);
         expect(results).toEqual(
-          items.map(() => {
-            return expect.objectContaining({
+          items.map(() =>
+            expect.objectContaining({
               reason: expect.objectContaining({
                 message: expect.stringContaining('lookpin'),
               }),
-            });
-          })
+            }),
+          ),
         );
 
         expect(q.size()).toBe(0);
@@ -208,14 +210,15 @@ describe('AsyncQueue', () => {
 
       it('clear 를 수행하면 내부 요소는 모두 reject 를 수행하고 비워진다.', async () => {
         const items = [0, 1, 2, 3, 4, 5, 7, 8, 9, 10];
-        const promises = items.map(() => {
-          return new Promise<string>((resolve, reject) => {
-            q.enqueue({
-              resolve,
-              reject,
-            });
-          });
-        });
+        const promises = items.map(
+          () =>
+            new Promise<string>((resolve, reject) => {
+              q.enqueue({
+                resolve,
+                reject,
+              });
+            }),
+        );
 
         expect(q.size()).toBe(items.length);
 
@@ -227,13 +230,13 @@ describe('AsyncQueue', () => {
 
         expect(results).toHaveLength(items.length);
         expect(results).toEqual(
-          items.map(() => {
-            return expect.objectContaining({
+          items.map(() =>
+            expect.objectContaining({
               reason: expect.objectContaining({
                 message: expect.stringContaining('AsyncQueue'),
               }),
-            });
-          })
+            }),
+          ),
         );
 
         expect(q.size()).toBe(0);
@@ -253,9 +256,7 @@ describe('AsyncQueue', () => {
 
         expect(results).toHaveLength(items.length);
         expect(results).toEqual(
-          items.map(() => {
-            return expect.stringContaining('jordy');
-          })
+          items.map(() => expect.stringContaining('jordy')),
         );
       });
       it('Promise catch 에도 대응 가능하다.', async () => {
@@ -270,13 +271,13 @@ describe('AsyncQueue', () => {
 
         expect(results).toHaveLength(items.length);
         expect(results).toEqual(
-          items.map(() => {
-            return expect.objectContaining({
+          items.map(() =>
+            expect.objectContaining({
               reason: expect.objectContaining({
                 message: expect.stringContaining('happy'),
               }),
-            });
-          })
+            }),
+          ),
         );
       });
     }); // awaiting 수행 [end]
@@ -316,7 +317,7 @@ describe('AsyncQueue', () => {
         let index = 0;
 
         while (q.has()) {
-          const resolver = q.dequeue();
+          const resolver = q.dequeue() as PromiseResolver<string, Error>;
 
           expect(resolver.resolve('theson')).toBe(index++);
         }
@@ -367,13 +368,13 @@ describe('AsyncQueue', () => {
         const resultKeys = [] as string[];
         const promises = samples.map((key) => q.awaiting(key));
 
-        const nextPromises = promises.map((prm, index) => {
-          return prm.then(() => index);
-        });
+        const nextPromises = promises.map((prm, index) =>
+          prm.then(() => index),
+        );
 
         setTimeout(() => {
-          q.resolveAll('lookpin!', (key: string) => {
-            resultKeys.push(key);
+          q.resolveAll('lookpin!', (key: string | number | undefined) => {
+            resultKeys.push(key as string);
           });
           expect(resultKeys).toEqual(samples);
         }, 5);
@@ -399,29 +400,32 @@ describe('AsyncQueue', () => {
         const resultKeys = [] as string[];
         const promises = samples.map((key) => q.awaiting(key));
 
-        const nextPromises = promises.map((prm, index) => {
-          return prm.catch((err) =>
-            Promise.reject(new Error(`${err.message}: ${index}`))
-          );
-        });
+        const nextPromises = promises.map((prm, index) =>
+          prm.catch((err) =>
+            Promise.reject(new Error(`${err.message}: ${index}`)),
+          ),
+        );
 
         setTimeout(() => {
-          q.rejectAll(new Error('lookpin!'), (key: string) => {
-            resultKeys.push(key);
-          });
+          q.rejectAll(
+            new Error('lookpin!'),
+            (key: string | number | undefined | null) => {
+              resultKeys.push(key as string);
+            },
+          );
           expect(resultKeys).toEqual(samples);
         }, 5);
 
         const results = await Promise.allSettled(nextPromises);
 
         expect(results).toEqual(
-          samples.map((_, index) => {
-            return expect.objectContaining({
+          samples.map((_, index) =>
+            expect.objectContaining({
               reason: expect.objectContaining({
                 message: expect.stringContaining(index.toString()),
               }),
-            });
-          })
+            }),
+          ),
         );
       });
     }); // First In First Out 테스트 [end]

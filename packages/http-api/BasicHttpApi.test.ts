@@ -13,14 +13,14 @@ describe('BasicHttpApi', () => {
     } as MockEntity;
   }
 
-  const pseudoBlob: Blob = {
+  const pseudoBlob = {
     size: 0,
     type: '',
     arrayBuffer: vi.fn().mockResolvedValue([]),
     slice: vi.fn(),
-    stream: vi.fn(() => ({} as never)),
+    stream: vi.fn(() => ({}) as never),
     text: vi.fn().mockResolvedValue(''),
-  };
+  } as unknown as Blob;
 
   const providerMock = {
     get: vi.fn().mockResolvedValue(createMockEntity()),
@@ -44,7 +44,7 @@ describe('BasicHttpApi', () => {
     baseUrl,
     headerCreatorMock,
     serializerMock,
-    true
+    true,
   );
 
   const methodList = ['get', 'post', 'put', 'patch', 'delete'] as const;
@@ -67,7 +67,7 @@ describe('BasicHttpApi', () => {
           withCredentials: true,
           params,
           timeout: 100,
-        })
+        }),
       );
     });
 
@@ -78,7 +78,7 @@ describe('BasicHttpApi', () => {
       const params = { goods: 'jordy', corp: 'lookpin' };
 
       await expect(httpApi[method](subUrl, params, 100)).rejects.toThrowError(
-        'oops!'
+        'oops!',
       );
     });
 
@@ -92,7 +92,7 @@ describe('BasicHttpApi', () => {
       headerCreatorMock.mockRejectedValueOnce(new Error('unauthorized!'));
 
       await expect(
-        httpApi[method]('/user/search', { q: 'haha' })
+        httpApi[method]('/user/search', { q: 'haha' }),
       ).rejects.toThrowError('unauthorized!');
 
       expect(providerMock[method]).not.toBeCalled();
@@ -103,7 +103,7 @@ describe('BasicHttpApi', () => {
       headerCreatorMock.mockRejectedValueOnce(new Error(message));
 
       await expect(
-        httpApi[method]('/user/search', { q: 'haha' })
+        httpApi[method]('/user/search', { q: 'haha' }),
       ).rejects.toThrow(
         expect.objectContaining({
           errorType: 'unknown',
@@ -113,7 +113,7 @@ describe('BasicHttpApi', () => {
           rawData: expect.objectContaining({
             message,
           }),
-        })
+        }),
       );
     });
 
@@ -134,7 +134,7 @@ describe('BasicHttpApi', () => {
       headerCreatorMock.mockRejectedValueOnce(given);
 
       await expect(httpApi[method](url, { q: 'haha' })).rejects.toThrow(
-        expect.objectContaining(given)
+        expect.objectContaining(given),
       );
     });
 
@@ -182,14 +182,14 @@ describe('BasicHttpApi', () => {
                 q: 'lookpin',
                 n: 123,
               },
-            })
+            }),
           );
         } else {
           expect(serializerMock).toBeCalledTimes(1);
           expect(providerMock[method]).toBeCalledWith(
             expect.objectContaining({
               url: expect.stringContaining('q=lookpin&n=123'),
-            })
+            }),
           );
         }
       });
@@ -198,7 +198,7 @@ describe('BasicHttpApi', () => {
         headerCreatorMock.mockRejectedValueOnce(new Error('some error!'));
 
         await expect(
-          httpApi[method]('/user/search', { q: 'lookpin' })
+          httpApi[method]('/user/search', { q: 'lookpin' }),
         ).rejects.toThrow();
 
         expect(paramsInterMock).not.toBeCalled();
@@ -208,14 +208,14 @@ describe('BasicHttpApi', () => {
         providerMock[method].mockRejectedValueOnce(new Error('some error'));
 
         await expect(
-          httpApi[method]('/user/search', { q: 'lookpin' })
+          httpApi[method]('/user/search', { q: 'lookpin' }),
         ).rejects.toThrow();
 
         expect(errorInterMock).toBeCalledTimes(1);
         expect(errorInterMock).toBeCalledWith(
           expect.objectContaining({
             message: 'some error',
-          })
+          }),
         );
       });
 
@@ -223,14 +223,14 @@ describe('BasicHttpApi', () => {
         headerCreatorMock.mockRejectedValueOnce(new Error('need to login!'));
 
         await expect(
-          httpApi[method]('/user/search', { q: 'lookpin' })
+          httpApi[method]('/user/search', { q: 'lookpin' }),
         ).rejects.toThrow();
 
         expect(errorInterMock).toBeCalledTimes(1);
         expect(errorInterMock).toBeCalledWith(
           expect.objectContaining({
             message: 'need to login!',
-          })
+          }),
         );
       });
 
@@ -243,8 +243,8 @@ describe('BasicHttpApi', () => {
       it('후속 프로세스에서 오류가 발생된 것에 error interceptor 는 관여하지 않는다.', async () => {
         await expect(
           httpApi[method]('/user/search', { q: 'lookpin' }).then(() =>
-            Promise.reject(new Error('what the ??'))
-          )
+            Promise.reject(new Error('what the ??')),
+          ),
         ).rejects.toThrow();
 
         expect(errorInterMock).not.toBeCalled();
@@ -265,7 +265,7 @@ describe('BasicHttpApi', () => {
           headers,
           withCredentials: true,
           params,
-        })
+        }),
       );
     });
 
@@ -276,7 +276,7 @@ describe('BasicHttpApi', () => {
       const params = { goods: 'jordy', corp: 'lookpin' };
 
       await expect(httpApi.getBlob(subUrl, params)).rejects.toThrowError(
-        'oops!'
+        'oops!',
       );
     });
 
@@ -290,7 +290,7 @@ describe('BasicHttpApi', () => {
       headerCreatorMock.mockRejectedValueOnce(new Error('unauthorized!'));
 
       await expect(
-        httpApi.getBlob('/user/search', { q: 'haha' })
+        httpApi.getBlob('/user/search', { q: 'haha' }),
       ).rejects.toThrowError('unauthorized!');
 
       expect(providerMock.getBlob).not.toBeCalled();
@@ -339,7 +339,7 @@ describe('BasicHttpApi', () => {
               q: 'lookpin',
               n: 123,
             },
-          })
+          }),
         );
       });
 
@@ -347,7 +347,7 @@ describe('BasicHttpApi', () => {
         headerCreatorMock.mockRejectedValueOnce(new Error('some error!'));
 
         await expect(
-          httpApi.getBlob('/user/search', { q: 'lookpin' })
+          httpApi.getBlob('/user/search', { q: 'lookpin' }),
         ).rejects.toThrow();
 
         expect(paramsInterMock).not.toBeCalled();
@@ -357,14 +357,14 @@ describe('BasicHttpApi', () => {
         providerMock.getBlob.mockRejectedValueOnce(new Error('some error'));
 
         await expect(
-          httpApi.getBlob('/user/search', { q: 'lookpin' })
+          httpApi.getBlob('/user/search', { q: 'lookpin' }),
         ).rejects.toThrow();
 
         expect(errorInterMock).toBeCalledTimes(1);
         expect(errorInterMock).toBeCalledWith(
           expect.objectContaining({
             message: 'some error',
-          })
+          }),
         );
       });
 
@@ -372,14 +372,14 @@ describe('BasicHttpApi', () => {
         headerCreatorMock.mockRejectedValueOnce(new Error('need to login!'));
 
         await expect(
-          httpApi.getBlob('/user/search', { q: 'lookpin' })
+          httpApi.getBlob('/user/search', { q: 'lookpin' }),
         ).rejects.toThrow();
 
         expect(errorInterMock).toBeCalledTimes(1);
         expect(errorInterMock).toBeCalledWith(
           expect.objectContaining({
             message: 'need to login!',
-          })
+          }),
         );
       });
 
@@ -393,7 +393,7 @@ describe('BasicHttpApi', () => {
         await expect(
           httpApi
             .getBlob('/user/search', { q: 'lookpin' })
-            .then(() => Promise.reject(new Error('what the ??')))
+            .then(() => Promise.reject(new Error('what the ??'))),
         ).rejects.toThrow();
 
         expect(errorInterMock).not.toBeCalled();

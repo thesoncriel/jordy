@@ -69,7 +69,7 @@ describe('HttpRestError', () => {
         const result = new HttpRestError('lookpin', value as any);
 
         expect(result.errorType).toBe('unknown');
-      }
+      },
     );
   });
   it('두번째 인자가 HttpRestError 와 유사하다면 그 값을 그대로 적용한다.', () => {
@@ -123,7 +123,8 @@ describe('HttpRestError', () => {
         {}, //
         'unknown',
       ],
-    ])('%s', (_, arg: HttpRestErrorMetaArgs, errorType) => {
+    ])('%s', (_, rawArg, errorType) => {
+      const arg = rawArg as HttpRestErrorMetaArgs;
       const result = new HttpRestError('lookpin', arg);
 
       expect(result).toContain({
@@ -152,6 +153,7 @@ describe('HttpRestError', () => {
       },
     };
     const given = new HttpRestError(meta.message, meta);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { stack: _stack, name: _name, ...result } = { ...given };
 
     expect(result).toEqual(meta);

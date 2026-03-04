@@ -74,7 +74,7 @@ export * from './types/marshalling.type';
 export * from './types/time.type';
 
 // # util
-export { AsyncQueue, createAsyncQueue } from './util/AsyncQueue';
+export { type AsyncQueue, createAsyncQueue } from './util/AsyncQueue';
 export {
   reorder,
   update,

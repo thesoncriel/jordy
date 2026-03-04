@@ -4,8 +4,10 @@
   "compilerOptions": {
     "noEmit": false,
     "sourceMap": false,
+    "strict": true,
     "module": "commonjs",
     "target": "ES5",
-    "outDir": "./cjs"
+    "outDir": "./cjs",
+    "skipLibCheck": true
   }
 }

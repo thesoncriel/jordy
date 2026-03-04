@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { focusByNames } from '../util/etc';
 import {
   Dispatch,
   SetStateAction,
@@ -8,6 +7,7 @@ import {
   useRef,
   useState,
 } from 'react';
+import { focusByNames } from '../util/etc';
 import {
   AntdFormItemValidationMessageDto,
   ValidateBulkResultUiState,
@@ -107,7 +107,7 @@ function dispatchField<T>(
   setMessage: Dispatch<SetStateAction<Partial<Record<keyof T, string>>>>,
   prevValue: T,
   arg0: keyof T | Partial<T> | ((prev: T) => Partial<T>),
-  arg1: T[keyof T]
+  arg1: T[keyof T],
 ) {
   if (typeof arg0 === 'string') {
     const name = arg0;
@@ -139,16 +139,14 @@ function dispatchField<T>(
     ...prevValue,
     ...nextValue,
   });
-  setMessage((prev) => {
-    return Object.keys(nextValue).reduce(
-      (acc, key) => {
-        acc[key as keyof T] = '';
+  setMessage((prev) => Object.keys(nextValue).reduce(
+    (acc, key) => {
+      acc[key as keyof T] = '';
 
-        return acc;
-      },
-      { ...prev }
-    );
-  });
+      return acc;
+    },
+    { ...prev },
+  ));
 }
 
 /**
@@ -160,7 +158,7 @@ function dispatchField<T>(
  *
  * @example
  * ```tsx
- * import { validate, useValidate } from 'jordy';
+ * import { validate, useValidate } from '@jordy';
  *
  * function validateData(data: MyUiState) {
  *   return validate(data, {
@@ -217,7 +215,7 @@ function dispatchField<T>(
 export function useValidate<T extends Record<string, any>>(
   initData: T | (() => T),
   validateFn?: (data: T) => ValidateBulkResultUiState,
-  autoFocusOnError = false
+  autoFocusOnError = false,
 ): ValidateHookResult<T> {
   const [state, setState] = useState(initData);
   const refInitState = useRef(state);
@@ -232,11 +230,11 @@ export function useValidate<T extends Record<string, any>>(
   const setField = useCallback(
     ((
       arg0: keyof T | Partial<T> | ((prev: T) => Partial<T>),
-      arg1: T[keyof T]
+      arg1: T[keyof T],
     ) => {
       dispatchField(setState, setMessage, refState.current, arg0, arg1);
     }) as FieldDispatch<T>,
-    []
+    [],
   );
 
   const setFieldMessage = useCallback(
@@ -255,7 +253,7 @@ export function useValidate<T extends Record<string, any>>(
         [arg0]: arg1,
       }));
     }) as MessageDispatch<T>,
-    []
+    [],
   );
 
   const clearMessage = useCallback(() => {
@@ -270,10 +268,8 @@ export function useValidate<T extends Record<string, any>>(
   }, []);
 
   const getAntdStatus = useCallback(
-    (name: keyof T) => {
-      return getValidStatus(message[name]);
-    },
-    [message]
+    (name: keyof T) => getValidStatus(message[name]),
+    [message],
   );
 
   const doValidate = useCallback(
@@ -308,7 +304,7 @@ export function useValidate<T extends Record<string, any>>(
         state,
       };
     },
-    [validateFn, autoFocusOnError]
+    [validateFn, autoFocusOnError],
   );
 
   const focusAtFirstError = useCallback(() => {

@@ -7,8 +7,9 @@ import {
 } from '../network.type';
 import { throwableAxiosErrorParser } from './throwableAxiosErrorParser';
 
+export
 @ErrorParser(throwableAxiosErrorParser)
-export class AxiosHttpNetworkProvider implements AsyncHttpNetworkProvider {
+class AxiosHttpNetworkProvider implements AsyncHttpNetworkProvider {
   private extractData<T>(axiosRes: AxiosResponse<T>) {
     return axiosRes.data;
   }

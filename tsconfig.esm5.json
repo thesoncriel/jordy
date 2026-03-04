@@ -5,8 +5,10 @@
     "noEmit": false,
     "sourceMap": false,
     "importHelpers": true,
+    "strict": true,
     "module": "esnext",
     "target": "es5",
     "outDir": "./esm5",
+    "skipLibCheck": true
   }
 }

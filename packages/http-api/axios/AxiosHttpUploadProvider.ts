@@ -8,21 +8,22 @@ import {
 import { convertToFormData } from '../network.util';
 import { throwableAxiosErrorParser } from './throwableAxiosErrorParser';
 
+export
 @ErrorParser(throwableAxiosErrorParser)
-export class AxiosHttpUploadProvider implements AsyncHttpUploadProvider {
+class AxiosHttpUploadProvider implements AsyncHttpUploadProvider {
   private extractData<T>(axiosRes: AxiosResponse<T>) {
     return axiosRes.data;
   }
 
   private handleDownloadProgressCurried =
     (onProgress: (args: UploadStateArgs) => void) =>
-    ({ loaded, total = 0 }: AxiosProgressEvent) =>
-      onProgress({
-        completed: loaded >= total,
-        loaded,
-        progress: Math.floor((loaded * 1000) / total) / 10,
-        total,
-      });
+      ({ loaded, total = 0 }: AxiosProgressEvent) =>
+        onProgress({
+          completed: loaded >= total,
+          loaded,
+          progress: Math.floor((loaded * 1000) / total) / 10,
+          total,
+        });
 
   private upload(
     method: 'POST' | 'PUT',
@@ -33,7 +34,7 @@ export class AxiosHttpUploadProvider implements AsyncHttpUploadProvider {
       withCredentials,
       timeout,
       onProgress,
-    }: AsyncHttpUploadConfig
+    }: AsyncHttpUploadConfig,
   ) {
     return axios(url, {
       method,

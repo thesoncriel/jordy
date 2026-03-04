@@ -8,7 +8,7 @@ import { HeaderFieldMakingOperator } from './network.type';
 function makeHeaders(pipes: HeaderFieldMakingOperator[], token = '') {
   const rawMap = pipes.reduce(
     (prev, fn) => fn(prev, token),
-    new Map<string, string>()
+    new Map<string, string>(),
   );
 
   return Object.fromEntries(rawMap) as Record<string, string>;
@@ -28,7 +28,7 @@ const MSG_DEFAULT =
  *   createTokenProvider,
  *   createHttpHeaderPipe,
  *   httpHeaderOperator,
- * } from 'jordy';
+ * } from '@jordy';
  *
  * const tokenProvider = createTokenProvider('local', 'myValue');
  * const headerPipe = createHttpHeaderPipe(tokenProvider);
@@ -61,19 +61,17 @@ const MSG_DEFAULT =
  */
 export const createHttpHeaderPipe = (
   provider?: TokenProvider | JWTProvider,
-  loginRequiredMessage = MSG_DEFAULT
-) => {
-  return async function headerPipe(...pipes: HeaderFieldMakingOperator[]) {
-    let token = '';
+  loginRequiredMessage = MSG_DEFAULT,
+) => async function headerPipe(...pipes: HeaderFieldMakingOperator[]) {
+  let token = '';
 
-    if (provider) {
-      token = await provider.get();
+  if (provider) {
+    token = await provider.get();
 
-      if (!token && !isServer()) {
-        throw new HttpRestError(loginRequiredMessage, 'auth');
-      }
+    if (!token && !isServer()) {
+      throw new HttpRestError(loginRequiredMessage, 'auth');
     }
+  }
 
-    return makeHeaders(pipes, token);
-  };
+  return makeHeaders(pipes, token);
 };

@@ -1,3 +1,4 @@
+import { MarshallingType } from '../types/marshalling.type';
 import { createStorage } from '../storage/createStorage';
 import { CacheConfigDto, CachedAsyncFunction } from './cache.type';
 import { clearCacheByKeyword } from './clearCacheByKeyword';
@@ -28,7 +29,7 @@ import { createCacheKey } from './createCacheKey';
  * @param {CacheConfigDto} config 캐시 설정
  * @returns 캐시 기능이 적용된 비동기 함수
  */
-export function cache<R, P = void>({
+export function cache<R extends MarshallingType, P = void>({
   key,
   type = 'session',
   expired,
