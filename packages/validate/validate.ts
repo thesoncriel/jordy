@@ -13,7 +13,7 @@ const { createValidateBulkResultUiState, validateBulk } = validateSubUtils;
  * 
  * @example
  * ```ts
- *  import { validate, validateFn } from '@jordy';
+ *  import { validate, validateFn } from 'jordy';
  * 
     interface UserUiState {
       name: string;
@@ -58,7 +58,7 @@ const { createValidateBulkResultUiState, validateBulk } = validateSubUtils;
  */
 export function validate<T extends Record<string, any>>(
   state: T,
-  opt: ValidateBulkOptionType<T>,
+  opt: ValidateBulkOptionType<T>
 ): ValidateBulkResultUiState {
   return Object.keys(opt).reduce((acc, key) => {
     const val = (state as any)[key];
